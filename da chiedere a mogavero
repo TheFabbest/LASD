@@ -1,0 +1,13 @@
+1) questa riga di codice per evitare che venga fatto il confronto tra tipi di dato astratto
+bool operator==(const Container&) const noexcept = delete;
+funziona anche se uso Container &&, come mai?
+è utile specificare "const noexcept..."?
+in generale per i tipi di dato astratto vogliamo che non siano istanziabili né confrontabili, né assegnabili? e se non sono istanziabili perché impedirne il confronto?
+non posso voler confrontare due liste in quanto Container (cast), cioè confrontando ad esempio solo la size?
+
+2) virtual quando usare =0
+3) perché non c'è un file Container.cpp
+4) clear in clearable è astratto?
+5) a che livello della gerarchia size = 0?
+6) Testable container "concrete function should not throw exceptions" ma è virtual
+7) in Traversable, ad esempio nella funzione Traverse, usiamo le funzioni come argomento, non è chiaro come specifico che la funzione che passiamo in input debba essere const
