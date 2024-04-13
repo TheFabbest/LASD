@@ -43,7 +43,7 @@ Accumulator PreOrderTraversableContainer<Data>::PreOrderFold(FoldFun<Accumulator
         {
             accumulator = function(current, accumulator);
         }
-    )
+    );
     return accumulator;
 }
 
@@ -62,11 +62,47 @@ Accumulator PostOrderTraversableContainer<Data>::PostOrderFold(FoldFun<Accumulat
         {
             accumulator = function(current, accumulator);
         }
-    )
+    );
     return accumulator;
 }
 
 // InOrderTraversableContainer
+
+template <typename Data>
+inline void InOrderTraversableContainer<Data>::Traverse(TraverseFun function) const{
+    this->InOrderTraverse(function);
+}
+
+template <typename Data>
+template <typename Accumulator>
+Accumulator InOrderTraversableContainer<Data>::InOrderFold(FoldFun<Accumulator> function, Accumulator accumulator) const{
+    InOrderTraverse(
+        [function, &accumulator] (const Data& current)
+        {
+            accumulator = function(current, accumulator);
+        }
+    );
+    return accumulator;
+}
+
+// BreadthTraversableContainer
+
+template <typename Data>
+inline void BreadthTraversableContainer<Data>::Traverse(TraverseFun function) const{
+    this->BreadthTraverse(function);
+}
+
+template <typename Data>
+template <typename Accumulator>
+Accumulator BreadthTraversableContainer<Data>::BreadthFold(FoldFun<Accumulator> function, Accumulator accumulator) const{
+    BreadthTraverse(
+        [function, &accumulator] (const Data& current)
+        {
+            accumulator = function(current, accumulator);
+        }
+    );
+    return accumulator;
+}
 
 /* ************************************************************************** */
 
