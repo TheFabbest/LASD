@@ -20,11 +20,11 @@ template <typename Data>
 template <typename Accumulator>
 inline Accumulator TraversableContainer<Data>::Fold(FoldFun<Accumulator> function, Accumulator accumulator) const{
     Traverse(
-        [fun, &acc](const Data& current){
-            acc = fun(current, acc);
+        [function, &accumulator](const Data& current){
+            accumulator = function(current, accumulator);
         }
     );
-    return acc;
+    return accumulator;
 }
 
 // PreOrderTraversableContainer

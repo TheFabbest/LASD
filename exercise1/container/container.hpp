@@ -1,4 +1,3 @@
-
 #ifndef CONTAINER_HPP
 #define CONTAINER_HPP
 
@@ -134,7 +133,7 @@ public:
 
   // Specific member functions
 
-  virtual void Resize(const ulong newsize);
+  virtual void Resize(const unsigned long newsize);
 
   /* ************************************************************************ */
 

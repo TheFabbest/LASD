@@ -22,17 +22,17 @@ class List : virtual public ClearableContainer, virtual public LinearContainer<D
 
 private:
 
-  Node *head;
-  Node *tail;
+  struct Node *head;
+  struct Node *tail;
 
 protected:
 
   // using Container::???;
 
-  typedef struct NodeStruct {
+  struct Node {
 
     Data data;
-    Node *next;
+    struct Node *next;
 
     /* ********************************************************************** */
 
@@ -44,10 +44,10 @@ protected:
 
     // TODO
     // Copy constructor
-    Node(const Node & node) noexcept;
+    Node(const struct Node & node) noexcept;
 
     // Move constructor
-    Node(Node && node) noexcept;
+    Node(struct Node && node) noexcept;
 
     /* ********************************************************************** */
 
@@ -57,8 +57,8 @@ protected:
     /* ********************************************************************** */
 
     // Comparison operators
-    bool operator==(const Node&) const noexcept;
-    bool operator!=(const Node&) const noexcept;
+    bool operator==(const struct Node&) const noexcept;
+    bool operator!=(const struct Node&) const noexcept;
 
     /* ********************************************************************** */
 
@@ -66,7 +66,7 @@ protected:
 
     // ...
 
-  } Node;
+  };
 
   // ...
 

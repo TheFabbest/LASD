@@ -41,13 +41,13 @@ inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun function) const
 }
 
 template <typename Data>
-inline void LinearContainer<Data>::Map(MapFun function) const{
+inline void LinearContainer<Data>::Map(MapFun function){
     this->PreOrderMap(function);
 }
 
 template <typename Data>
-void LinearContainer<Data>::PreOrderMap(MapFun function) const{
-  ulong i;
+void LinearContainer<Data>::PreOrderMap(MapFun function){
+  unsigned long i;
   for (i = 0; i < this->size; ++i)
   {
     function(operator[](i));
@@ -55,8 +55,8 @@ void LinearContainer<Data>::PreOrderMap(MapFun function) const{
 }
 
 template <typename Data>
-void LinearContainer<Data>::PostOrderMap(MapFun function) const{
-  ulong i;
+void LinearContainer<Data>::PostOrderMap(MapFun function){
+  unsigned long i;
   for (i = this->size-1; i >= 0; --i)
   {
     function(operator[](i));
@@ -66,35 +66,35 @@ void LinearContainer<Data>::PostOrderMap(MapFun function) const{
 // SortableLinearContainer
 template <typename Data>
 void SortableLinearContainer<Data>::Sort() noexcept {
-  this->QuickSort(0, size-1);
+  this->QuickSort(0, this->size-1);
 }
 
 template <typename Data>
-void SortableLinearContainer<Data>::QuickSort(ulong left, ulong right) noexcept {
+void SortableLinearContainer<Data>::QuickSort(unsigned long left, unsigned long right) noexcept {
   if (left < right) {
-    ulong partitionIndex = Partition(left, right);
+    unsigned long partitionIndex = Partition(left, right);
     QuickSort(left, partitionIndex - 1); 
     QuickSort(partitionIndex + 1, right); 
   } 
 }
 
 template <typename Data>
-ulong SortableLinearContainer<Data>::Partition(ulong left, ulong right) noexcept {
-  Data pivot = operator[](left); 
-  ulong i = left;
-  ulong j = right; 
+unsigned long SortableLinearContainer<Data>::Partition(unsigned long left, unsigned long right) noexcept {
+  Data pivot = this->operator[](left); 
+  unsigned long i = left;
+  unsigned long j = right; 
   while (i < j) { 
-    while (operator[](i) <= pivot && i <= right - 1) { 
+    while (this->operator[](i) <= pivot && i <= right - 1) { 
       i++; 
     } 
-    while (operator[](j) > pivot && j >= left + 1) { 
+    while (this->operator[](j) > pivot && j >= left + 1) { 
       j--; 
     } 
     if (i < j) { 
-      std::swap(operator[](i), operator[](j)); 
+      std::swap(this->operator[](i), this->operator[](j)); 
     }
   } 
-  std::swap(operator[](left), operator[](j)); 
+  std::swap(this->operator[](left), this->operator[](j)); 
   return j; 
 }
 

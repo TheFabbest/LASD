@@ -15,9 +15,11 @@
             "makeArgs": ["PROJECT=armemu-test"]
         }
     ],
-    "makefile.makePath": "C:\\Users\\Inspiron 15\\AppData\\Local\\Microsoft\\WinGet\\Packages\\ezwinports.make_Microsoft.Winget.Source_8wekyb3d8bbwe\\bin\\make.exe",
-    "makefile.makefilePath": "./makefile",
     "makefile.launchConfigurations": [
-        null
+        {
+            "cwd": "/home/kali/Documents/GitHub/LASD/exercise1",
+            "binaryPath": "/home/kali/Documents/GitHub/LASD/exercise1/main",
+            "binaryArgs": []
+        }
     ]
 }

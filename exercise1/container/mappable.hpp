@@ -33,7 +33,7 @@ protected:
 public:
 
   // Destructor
-  ~MappableContainer() specifiers
+  ~MappableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -98,14 +98,14 @@ public:
   // Specific member function
 
   using typename MappableContainer<Data>::MapFun;
-
-  virtual void PreOrderMap(MapFun function) const noexcept = 0;
+  // TODO tolto noexcept perche la funzione mapfun non necessariamente e noexcept
+  virtual void PreOrderMap(MapFun function) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(MapFun function) const noexcept override; // Override MappableContainer member
+  inline void Map(MapFun function) override; // Override MappableContainer member
 
 };
 
@@ -149,13 +149,13 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  virtual void PostOrderMap(MapFun function) const noexcept = 0;
+  virtual void PostOrderMap(MapFun function) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(MapFun function) const noexcept override; // Override MappableContainer member
+  inline void Map(MapFun function) override; // Override MappableContainer member
 
 };
 
@@ -199,20 +199,20 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  virtual void InOrderMap(MapFun function) const noexcept = 0;
+  virtual void InOrderMap(MapFun function) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(MapFun function) const noexcept override; // Override MappableContainer member
+  inline void Map(MapFun function) override; // Override MappableContainer member
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class BreadthMappableContainer : virtual public MappalbleContainer<Data>, virtual public BreadthTraversableContainer<Data>{
+class BreadthMappableContainer : virtual public MappableContainer<Data>, virtual public BreadthTraversableContainer<Data>{
   // Must extend MappableContainer<Data>,
   //             BreadthTraversableContainer<Data>
 
@@ -249,13 +249,13 @@ public:
 
   using typename MappableContainer<Data>::MapFun;
 
-  virtual void BreadthMap(MapFun function) const noexcept = 0;
+  virtual void BreadthMap(MapFun function) = 0;
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MappableContainer)
 
-  inline void Map(MapFun function) const noexcept override; // Override MappableContainer member
+  inline void Map(MapFun function) override; // Override MappableContainer member
 
 
 };

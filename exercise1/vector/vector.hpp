@@ -37,7 +37,7 @@ public:
 
   // Specific constructors
   // TODO perche mappable &&
-  Vector(const ulong size); // A vector with a given initial dimension
+  Vector(const unsigned long size); // A vector with a given initial dimension
   Vector(const TraversableContainer<Data>& traversable); // A vector obtained from a TraversableContainer
   Vector(MappableContainer<Data>&& mappable); // A vector obtained from a MappableContainer
 
@@ -79,14 +79,14 @@ public:
 
   // Specific member function (inherited from ResizableContainer)
 
-  void Resize(const ulong newsize) override; // Override ResizableContainer member
+  void Resize(const unsigned long newsize) override; // Override ResizableContainer member
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  const Data& operator[](const ulong index) const override; // Override (NonMutable) LinearContainer member (must throw std::out_of_range when out of range)
-  Data& operator[](const ulong index) override; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
+  const Data& operator[](const unsigned long index) const override; // Override (NonMutable) LinearContainer member (must throw std::out_of_range when out of range)
+  Data& operator[](const unsigned long index) override; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
 
   const Data& Front() const override; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
   Data& Front() override; // Override (Mutable) LinearContainer member (must throw std::length_error when empty)

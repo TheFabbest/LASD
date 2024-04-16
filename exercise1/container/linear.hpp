@@ -48,14 +48,14 @@ public:
 
   // Specific member functions
 
-  inline virtual const Data& operator[](const ulong index) const = 0; // (non-mutable version; concrete function must throw std::out_of_range when out of range)
-  inline virtual Data& operator[](const ulong index) = 0; // (mutable version; concrete function must throw std::out_of_range when out of range)
+  inline virtual const Data& operator[](const unsigned long index) const = 0; // (non-mutable version; concrete function must throw std::out_of_range when out of range)
+  inline virtual Data& operator[](const unsigned long index) = 0; // (mutable version; concrete function must throw std::out_of_range when out of range)
 
   inline const Data& Front() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  inline Data& Front() const; // (mutable version; concrete function must throw std::length_error when empty)
+  inline Data& Front(); // (mutable version; concrete function must throw std::length_error when empty)
 
   inline const Data& Back() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  inline Data& Back() const; // (mutable version; concrete function must throw std::length_error when empty)
+  inline Data& Back(); // (mutable version; concrete function must throw std::length_error when empty)
 
   /* ************************************************************************ */
 
@@ -142,8 +142,8 @@ protected:
 
   // Auxiliary member functions
 
-  void QuickSort(ulong left, ulong right) noexcept;
-  ulong Partition(ulong left, ulong right) noexcept;
+  void QuickSort(unsigned long left, unsigned long right) noexcept;
+  unsigned long Partition(unsigned long left, unsigned long right) noexcept;
 
 };
 
