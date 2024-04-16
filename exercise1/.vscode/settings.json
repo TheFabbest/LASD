@@ -5,6 +5,19 @@
         "functional": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
-    }
+        "utility": "cpp",
+        "ios": "cpp",
+        "xiosbase": "cpp"
+    },
+    "makefile.configurations": [
+        {
+            "name": "myconfig",
+            "makeArgs": ["PROJECT=armemu-test"]
+        }
+    ],
+    "makefile.makePath": "C:\\Users\\Inspiron 15\\AppData\\Local\\Microsoft\\WinGet\\Packages\\ezwinports.make_Microsoft.Winget.Source_8wekyb3d8bbwe\\bin\\make.exe",
+    "makefile.makefilePath": "./makefile",
+    "makefile.launchConfigurations": [
+        null
+    ]
 }
