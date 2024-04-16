@@ -15,46 +15,50 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class List {
+class List : virtual public ClearableContainer, virtual public LinearContainer<Data>, virtual public DictionaryContainer<Data>{
   // Must extend ClearableContainer,
   //             LinearContainer<Data>,
   //             DictionaryContainer<Data>
 
 private:
 
-  // ...
+  Node *head;
+  Node *tail;
 
 protected:
 
   // using Container::???;
 
-  struct Node {
+  typedef struct NodeStruct {
 
-    // Data
-    // ...
+    Data data;
+    Node *next;
 
     /* ********************************************************************** */
 
     // Specific constructors
-    // ...
-
+    Node(const Data& data);
+    Node(Data&& data);
+    
     /* ********************************************************************** */
 
+    // TODO
     // Copy constructor
-    // ...
+    Node(const Node & node) noexcept;
 
     // Move constructor
-    // ...
+    Node(Node && node) noexcept;
 
     /* ********************************************************************** */
 
     // Destructor
-    // ...
+    ~Node();
 
     /* ********************************************************************** */
 
     // Comparison operators
-    // ...
+    bool operator==(const Node&) const noexcept;
+    bool operator!=(const Node&) const noexcept;
 
     /* ********************************************************************** */
 
@@ -62,14 +66,14 @@ protected:
 
     // ...
 
-  };
+  } Node;
 
   // ...
 
 public:
 
   // Default constructor
-  // List() specifiers;
+  List() = default;
 
   /* ************************************************************************ */
 

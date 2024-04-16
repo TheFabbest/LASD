@@ -134,7 +134,7 @@ public:
 
   // Specific member functions
 
-  virtual void Resize(unsigned long newsize);
+  virtual void Resize(const ulong newsize);
 
   /* ************************************************************************ */
 

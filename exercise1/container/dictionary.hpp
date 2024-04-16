@@ -12,6 +12,7 @@ namespace lasd {
 
 /* ************************************************************************** */
 
+// TODO mog
 template <typename Data>
 class DictionaryContainer : virtual public TestableContainer<Data> {
   // Must extend TestableContainer<Data>
@@ -47,9 +48,9 @@ public:
 
   // Specific member functions
 
-  virtual bool Insert(Data& data); // Copy of the value
+  virtual bool Insert(const Data& data); // Copy of the value
   virtual bool Insert(Data&& data); // Move of the value
-  virtual bool Remove(Data& data) noexcept;
+  virtual bool Remove(const Data& data) noexcept;
 
   inline bool InsertAll(const TraversableContainer<Data> &container); // Copy of the value; From TraversableContainer; True if all are inserted
   inline bool InsertAll(MappableContainer<Data> &&container); // Move of the value; From MappableContainer; True if all are inserted

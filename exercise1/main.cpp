@@ -12,9 +12,9 @@
 int main() {
   
   // std::cout << "Lasd Libraries 2024" << std::endl;
-  lasdtest();
+  //lasdtest();
   
-  //mytest();
+  mytest();
 
   return 0;
 }
