@@ -24,6 +24,7 @@ private:
 
 protected:
 
+  // TODO mog
   using Container::size;
 
   Data* Elements = nullptr;
@@ -113,7 +114,9 @@ private:
 
 protected:
 
-  // using Container::???;
+  // TODO mog
+  using Container::size;
+  using LinearContainer<Data>::operator[];
 
   // ...
 
@@ -125,30 +128,34 @@ public:
   /* ************************************************************************ */
 
   // Specific constructors
-  // SortableVector(argument) specifiers; // A vector with a given initial dimension
-  // SortableVector(argument) specifiers; // A vector obtained from a TraversableContainer
-  // SortableVector(argument) specifiers; // A vector obtained from a MappableContainer
+  SortableVector(const unsigned long size); // A vector with a given initial dimension
+  SortableVector(const TraversableContainer<Data>& traversable); // A vector obtained from a TraversableContainer
+  SortableVector(MappableContainer<Data>&& mappable); // A vector obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // SortableVector(argument) specifiers;
+  // TODO perche non Vector<Data> e perche non e noexcept
+  SortableVector(const SortableVector<Data>& other);
 
   // Move constructor
-  // SortableVector(argument) specifiers;
-
+  SortableVector(SortableVector<Data>&& other) noexcept;
+ 
   /* ************************************************************************ */
 
   // Destructor
-  // ~SortableVector() specifiers;
+  ~SortableVector();
 
   /* ************************************************************************ */
 
-  // Copy assignment
-  // type operator=(argument) specifiers;
+   // Copy assignment
+  SortableVector& operator=(const SortableVector<Data>& other);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  SortableVector& operator=(SortableVector<Data>&& other) noexcept;
+
+  // TODO reimplementa ricerca (?)
+
 
 protected:
 

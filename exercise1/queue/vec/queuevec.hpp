@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class QueueVec {
+class QueueVec : virtual public Queue<Data>, virtual protected Vector<Data>{
   // Must extend Queue<Data>,
   //             Vector<Data>
 
@@ -24,14 +24,15 @@ private:
 
 protected:
 
+  // TODO
   // using Vector<Data>::???;
 
-  // ...
+  unsigned long top;
 
 public:
 
   // Default constructor
-  // QueueVec() specifier;
+  QueueVec(); // TODO
 
   /* ************************************************************************ */
 

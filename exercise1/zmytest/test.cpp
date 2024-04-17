@@ -17,11 +17,10 @@
 #include <iostream>
 
 using namespace std;
-using namespace lasd;
 
 /* ************************************************************************** */
 
 void mytest() {
-  StackLst<int> gay = StackLst<int>();
+  lasd::StackLst<int> gay = lasd::StackLst<int>();
   printf("END\n");
 }

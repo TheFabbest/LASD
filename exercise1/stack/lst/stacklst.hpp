@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class StackLst : virtual public Stack<Data>, virtual public List<Data>{
+class StackLst : virtual public Stack<Data>, virtual protected List<Data>{
   // Must extend Stack<Data>,
   //             List<Data>
 
@@ -24,8 +24,9 @@ private:
 
 protected:
 
-  // TODO
-  //using List<Data>::;
+  using typename List<Data>::Node;
+  using List<Data>::head;
+  using List<Data>::tail;
 
   // ...
 

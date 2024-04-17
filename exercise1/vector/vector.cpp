@@ -144,6 +144,44 @@ void Vector<Data>::Resize(const unsigned long newsize){
   }
 }
 
+// SortableVector
+template <typename Data>
+SortableVector<Data>::SortableVector(const unsigned long size){
+  Vector<Data>::Vector(size);
+}
+
+template <typename Data>
+SortableVector<Data>::SortableVector(const TraversableContainer<Data>& traversable){
+  Vector<Data>::Vector(traversable);
+}
+
+template <typename Data>
+SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable){
+  Vector<Data>::Vector(mappable);
+}
+
+
+// TODO mog le prox 4
+// Copy constructor
+template <typename Data>
+SortableVector<Data>::SortableVector(const SortableVector<Data>& other):Vector<Data>::Vector(other){}
+
+// Move constructor
+template <typename Data>
+SortableVector<Data>::SortableVector(SortableVector<Data>&& other) noexcept : Vector<Data>::Vector(std::move(other)){}
+
+// Copy assignment
+template <typename Data>
+SortableVector& SortableVector<Data>::operator=(const SortableVector<Data>& other){
+  Vector<Data>::operator=(other);
+}
+
+// Move assignment
+template <typename Data>
+SortableVector& SortableVector<Data>::operator=(SortableVector<Data>&& other) noexcept{
+  Vector<Data>::operator=(std::move(other));
+}
+
 /* ************************************************************************** */
 
 }

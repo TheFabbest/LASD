@@ -62,7 +62,7 @@ Data& StackLst<Data>::Top() {
 template <typename Data>
 void StackLst<Data>::Pop() {
     if (tail == nullptr) throw std::length_error("Stack is empty");
-    struct Node* tmp = head;
+    Node* tmp = head;
     head = head->next;
     tmp->next = nullptr;
     delete[] tmp;
@@ -71,7 +71,7 @@ void StackLst<Data>::Pop() {
 template <typename Data>
 Data& StackLst<Data>::TopNPop() {
     if (tail == nullptr) throw std::length_error("Stack is empty");
-    struct Node* tmp = head;
+    Node* tmp = head;
     head = head->next;
     Data &ret = tmp->data;
     tmp->next = nullptr;
@@ -81,15 +81,15 @@ Data& StackLst<Data>::TopNPop() {
 
 template <typename Data>
 void StackLst<Data>::Push(const Data& data){
-    struct Node* tmp = head;
-    head = new struct Node(data);
+    Node* tmp = head;
+    head = new Node(data);
     head->next = tmp;
 }
 
 template <typename Data>
 void StackLst<Data>::Push(Data&& data){
-    struct Node* tmp = head;
-    head = new struct Node(data);
+    Node* tmp = head;
+    head = new Node(data);
     head->next = tmp;
 }
 

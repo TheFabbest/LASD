@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class QueueLst : virtual public Queue<Data>, virtual public List<Data>{
+class QueueLst : virtual public Queue<Data>, virtual protected List<Data>{
   // Must extend Queue<Data>,
   //             List<Data>
 
@@ -73,8 +73,8 @@ public:
   // Specific member functions (inherited from Queue)
 
 
-  const Data& Head() const override; // Override Queue member (non-mutable version; concrete function must throw std::length_error when empty)
-  Data& Head() override; // Override Queue member (mutable version; concrete function must throw std::length_error when empty)
+  inline const Data& Head() const override; // Override Queue member (non-mutable version; concrete function must throw std::length_error when empty)
+  inline Data& Head() override; // Override Queue member (mutable version; concrete function must throw std::length_error when empty)
   void Dequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
   Data& HeadNDequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
   void Enqueue(const Data& data) override; // Override Queue member (copy of the value)

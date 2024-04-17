@@ -46,10 +46,10 @@ bool QueueLst<Data>::operator!=(const QueueLst& other) const noexcept{
 }
 
 // operations on queue
+// TODO chiedi quale delle due e meglio (poi const e non sono uguali)
 template <typename Data>
-const Data& QueueLst<Data>::Head() const {
-    if (tail == nullptr) throw std::length_error("Queue is empty");
-    return head->data;
+inline const Data& QueueLst<Data>::Head() const {
+    return List<Data>::Front();
 }
 
 template <typename Data>
