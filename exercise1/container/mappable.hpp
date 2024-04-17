@@ -33,7 +33,7 @@ protected:
 public:
 
   // Destructor
-  ~MappableContainer() = default;
+  virtual ~MappableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -77,7 +77,7 @@ protected:
 public:
 
   // Destructor
-  ~PreOrderMappableContainer() = default;
+  virtual ~PreOrderMappableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -127,7 +127,7 @@ protected:
 public:
 
   // Destructor
-  ~PostOrderMappableContainer() = default;
+  virtual ~PostOrderMappableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -177,7 +177,7 @@ protected:
 public:
 
   // Destructor
-  // ~InOrderMappableContainer() specifiers
+  virtual ~InOrderMappableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -227,7 +227,7 @@ protected:
 public:
 
   // Destructor
-  ~BreadthMappableContainer() = default;
+  virtual ~BreadthMappableContainer() = default;
 
   /* ************************************************************************ */
 

@@ -31,7 +31,7 @@ protected:
 public:
 
   // Destructor
-  ~TraversableContainer() = default;
+  virtual ~TraversableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -85,7 +85,7 @@ protected:
 public:
 
   // Destructor
-  ~PreOrderTraversableContainer() = default;
+  virtual ~PreOrderTraversableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -141,7 +141,7 @@ protected:
 public:
 
   // Destructor
-  ~PostOrderTraversableContainer() = default;
+  virtual ~PostOrderTraversableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -197,7 +197,7 @@ protected:
 public:
 
   // Destructor
-  ~InOrderTraversableContainer() = default;
+  virtual ~InOrderTraversableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -253,7 +253,7 @@ protected:
 public:
 
   // Destructor
-  ~BreadthTraversableContainer() = default;
+  virtual ~BreadthTraversableContainer() = default;
 
   /* ************************************************************************ */
   

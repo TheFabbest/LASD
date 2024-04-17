@@ -28,7 +28,7 @@ protected:
 public:
 
   // Destructor
-  ~LinearContainer() = default;
+  virtual ~LinearContainer() = default;
 
   /* ************************************************************************ */
 
@@ -116,7 +116,7 @@ protected:
 public:
 
   // Destructor
-  ~SortableLinearContainer() = default;
+  virtual ~SortableLinearContainer() = default;
 
   /* ************************************************************************ */
 

@@ -19,6 +19,6 @@ using namespace lasd;
 /* ************************************************************************** */
 
 void mytest() {
-  //List<int> list;
+  List<int> list;
   printf("END\n");
 }

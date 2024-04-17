@@ -31,7 +31,7 @@ public:
 
   /* ************************************************************************ */
 
-  ~DictionaryContainer() = default;
+  virtual ~DictionaryContainer() = default;
   // Copy assignment
   DictionaryContainer& operator=(const DictionaryContainer&) = delete; // Copy assignment of abstract types is not possible.
 

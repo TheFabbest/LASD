@@ -26,7 +26,7 @@ protected:
 public:
 
   // Destructor
-  ~Container() = default;
+  virtual ~Container() = default;
 
   /* ************************************************************************ */
 
@@ -73,7 +73,7 @@ protected:
 public:
 
   // Destructor
-  ~ClearableContainer() = default;
+  virtual ~ClearableContainer() = default;
 
   /* ************************************************************************ */
 
@@ -113,7 +113,7 @@ protected:
 public:
 
   // Destructor
-  ~ResizableContainer() = default;
+  virtual ~ResizableContainer() = default;
 
   /* ************************************************************************ */
 

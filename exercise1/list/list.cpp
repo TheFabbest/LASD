@@ -52,6 +52,25 @@ List<Data>::Node::~Node(){
   delete next;
 }
 
+// List
+// constructors
+template <typename Data>
+inline List<Data>::List(const TraversableContainer<Data>& traversable)
+{
+  this->InsertAll(traversable);
+}
+
+template <typename Data>
+inline List<Data>::List(MappableContainer<Data>&& mappable)
+{
+  this->InsertAll(mappable);
+}
+
+template <typename Data>
+List<Data>::List(const List & list) noexcept{
+  
+}
+
 /* ************************************************************************** */
 
 }

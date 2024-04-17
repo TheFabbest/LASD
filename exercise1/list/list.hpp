@@ -78,16 +78,16 @@ public:
   /* ************************************************************************ */
 
   // Specific constructor
-  // List(argument) specifiers; // A list obtained from a TraversableContainer
-  // List(argument) specifiers; // A list obtained from a MappableContainer
+  inline List(const TraversableContainer<Data>& traversable); // A list obtained from a TraversableContainer
+  inline List(MappableContainer<Data>&& mappable); // A list obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // List(argument) specifiers;
+  List(const List & list) noexcept;
 
   // Move constructor
-  // List(argument) specifiers;
+  List(const List && list) noexcept;
 
   /* ************************************************************************ */
 
