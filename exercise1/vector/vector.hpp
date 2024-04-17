@@ -88,11 +88,11 @@ public:
   const Data& operator[](const unsigned long index) const override; // Override (NonMutable) LinearContainer member (must throw std::out_of_range when out of range)
   Data& operator[](const unsigned long index) override; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
 
-  const Data& Front() const override; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
-  Data& Front() override; // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
+  const Data& Front() const; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
+  Data& Front(); // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
 
-  const Data& Back() const override; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
-  Data& Back() override; // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
+  const Data& Back() const; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
+  Data& Back(); // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
 
 protected:
 
