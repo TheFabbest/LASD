@@ -3,7 +3,95 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// ...
+// constructors
+
+// traversable
+template <typename Data>
+StackLst<Data>::StackLst(const TraversableContainer<Data>& traversable){
+    List<Data>::List(traversable);
+}
+
+// mappable
+template <typename Data>
+StackLst<Data>::StackLst(MappableContainer<Data>&& mappable){
+    List<Data>::List(mappable);
+}
+
+// copy
+template <typename Data>
+StackLst<Data>::StackLst(const StackLst& other){
+    List<Data>::List(other);
+}
+
+// move
+template <typename Data>
+StackLst<Data>::StackLst(StackLst&& other){
+    List<Data>::List(other);
+}
+
+
+// destructor
+template <typename Data>
+StackLst<Data>::~StackLst(){
+    //TODO
+}
+
+template <typename Data>
+bool StackLst<Data>::operator==(const StackLst& other) const noexcept{
+    return List<Data>::operator==(other);
+}
+
+template <typename Data>
+bool StackLst<Data>::operator!=(const StackLst& other) const noexcept{
+  return !operator==(other);
+}
+
+// stack operations
+template <typename Data>
+const Data& StackLst<Data>::Top() const {
+    if (tail == nullptr) throw std::length_error("Stack is empty");
+    return head->data;
+}
+
+template <typename Data>
+Data& StackLst<Data>::Top() {
+    if (tail == nullptr) throw std::length_error("Stack is empty");
+    return head->data;
+}
+
+template <typename Data>
+void StackLst<Data>::Pop() {
+    if (tail == nullptr) throw std::length_error("Stack is empty");
+    struct Node* tmp = head;
+    head = head->next;
+    tmp->next = nullptr;
+    delete[] tmp;
+}
+
+template <typename Data>
+Data& StackLst<Data>::TopNPop() {
+    if (tail == nullptr) throw std::length_error("Stack is empty");
+    struct Node* tmp = head;
+    head = head->next;
+    Data &ret = tmp->data;
+    tmp->next = nullptr;
+    delete[] tmp;
+    return ret;
+}
+
+template <typename Data>
+void StackLst<Data>::Push(const Data& data){
+    struct Node* tmp = head;
+    head = new struct Node(data);
+    head->next = tmp;
+}
+
+template <typename Data>
+void StackLst<Data>::Push(Data&& data){
+    struct Node* tmp = head;
+    head = new struct Node(data);
+    head->next = tmp;
+}
 
 /* ************************************************************************** */
 

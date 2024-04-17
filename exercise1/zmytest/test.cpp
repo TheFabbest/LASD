@@ -8,6 +8,9 @@
 #include "../vector/vector.hpp"
 
 #include "../list/list.hpp"
+#include "../stack/stack.hpp"
+#include "../stack/lst/stacklst.hpp"
+#include "../stack/vec/stackvec.hpp"
 
 /* ************************************************************************** */
 
@@ -19,6 +22,6 @@ using namespace lasd;
 /* ************************************************************************** */
 
 void mytest() {
-  Vector<double> gay;
+  StackLst<int> gay = StackLst<int>();
   printf("END\n");
 }

@@ -47,12 +47,12 @@ public:
 
   // Specific member functions
 
-  const Data& Head() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  Data& Head(); // (mutable version; concrete function must throw std::length_error when empty)
-  void Dequeue(); // (concrete function must throw std::length_error when empty)
-  Data& HeadNDequeue(); // (concrete function must throw std::length_error when empty)
-  void Enqueue(const Data& data); // Copy of the value
-  void Enqueue(Data&& data); // Move of the value
+  virtual const Data& Head() const; // (non-mutable version; concrete function must throw std::length_error when empty)
+  virtual Data& Head(); // (mutable version; concrete function must throw std::length_error when empty)
+  virtual void Dequeue(); // (concrete function must throw std::length_error when empty)
+  virtual Data& HeadNDequeue(); // (concrete function must throw std::length_error when empty)
+  virtual void Enqueue(const Data& data); // Copy of the value
+  virtual void Enqueue(Data&& data); // Move of the value
 
 };
 
