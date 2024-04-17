@@ -34,7 +34,7 @@ public:
   Container& operator=(const Container&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  Container& operator=(Container&&) = delete;  // Move assignment of abstract types is not possible.
+  Container& operator=(Container&&) noexcept = delete;  // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -93,7 +93,7 @@ public:
 
   // Specific member functions
 
-  virtual void Clear() noexcept;
+  virtual void Clear() noexcept = 0;
 
 };
 
@@ -121,7 +121,7 @@ public:
   ResizableContainer& operator=(const ResizableContainer&) = delete; // Copy assignment of abstract types is not possible.
   
   // Move assignment
-  ResizableContainer& operator=(ResizableContainer&&) = delete; // Move assignment of abstract types is not possible.
+  ResizableContainer& operator=(ResizableContainer&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -133,7 +133,7 @@ public:
 
   // Specific member functions
 
-  virtual void Resize(const unsigned long newsize);
+  virtual void Resize(const unsigned long newsize) = 0;
 
   /* ************************************************************************ */
 

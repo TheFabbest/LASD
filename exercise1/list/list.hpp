@@ -64,7 +64,7 @@ protected:
 
     // Specific member functions
 
-    // ...
+    virtual Node * Clone(Node*);
 
   };
 
@@ -97,28 +97,28 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  List& operator=(const List&);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  List& operator=(List&&);
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  bool operator==(const List&) const noexcept;
+  bool operator!=(const List&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions
 
-  // type InsertAtFront(argument) specifier; // Copy of the value
-  // type InsertAtFront(argument) specifier; // Move of the value
-  // type RemoveFromFront() specifier; // (must throw std::length_error when empty)
-  // type FrontNRemove() specifier; // (must throw std::length_error when empty)
+  void InsertAtFront(const Data & data); // Copy of the value
+  void InsertAtFront(Data && data); // Move of the value
+  void RemoveFromFront(); // (must throw std::length_error when empty)
+  Data FrontNRemove(); // (must throw std::length_error when empty)
 
-  // type InsertAtBack(argument) specifier; // Copy of the value
-  // type InsertAtBack(argument) specifier; // Move of the value
+  void InsertAtBack(const Data& data); // Copy of the value
+  void InsertAtBack(Data&& data); // Move of the value
 
   /* ************************************************************************ */
 
@@ -130,16 +130,16 @@ public:
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  // type Insert(argument) specifier; // Copy of the value
-  // type Insert(argument) specifier; // Move of the value
-  // type Remove(argument) specifier;
+  bool Insert(const Data& data); // Copy of the value
+  bool Insert(Data&& data); // Move of the value
+  bool Remove(const Data& data) noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from LinearContainer)
 
-  // type operator[](argument) specifiers; // Override (NonMutable) LinearContainer member (must throw std::out_of_range when out of range)
-  // type operator[](argument) specifiers; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
+  const Data& operator[](const unsigned long index) const override; // Override (NonMutable) LinearContainer member (must throw std::out_of_range when out of range)
+  Data& operator[](const unsigned long index) override; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
 
   // type Front() specifiers; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
   // type Front() specifiers; // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
