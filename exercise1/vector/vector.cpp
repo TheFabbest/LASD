@@ -4,6 +4,7 @@ namespace lasd {
 /* ************************************************************************** */
 // Vector
 // constructors
+// TODO chiedi se va bene
 template<typename Data>
 Vector<Data>::Vector(const unsigned long size)
 {
