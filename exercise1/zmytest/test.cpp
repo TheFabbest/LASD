@@ -19,6 +19,6 @@ using namespace lasd;
 /* ************************************************************************** */
 
 void mytest() {
-  List<int> list;
+  Vector<double> gay;
   printf("END\n");
 }

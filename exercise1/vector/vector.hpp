@@ -48,12 +48,12 @@ public:
   Vector(const Vector& other);
 
   // Move constructor
-  Vector(const Vector&& other) noexcept;
+  Vector(Vector&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~Vector();
+  ~Vector();
 
   /* ************************************************************************ */
 
@@ -66,8 +66,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const Vector&) const noexcept;
-  inline bool operator!=(const Vector&) const noexcept;
+  bool operator==(const Vector<Data>&) const noexcept;
+  inline bool operator!=(const Vector<Data>&) const noexcept;
 
   /* ************************************************************************ */
 
@@ -103,7 +103,7 @@ protected:
 /* ************************************************************************** */
 
 template <typename Data>
-class SortableVector {
+class SortableVector : virtual public Vector<Data>, virtual public SortableLinearContainer<Data> {
   // Must extend Vector<Data>,
   //             SortableLinearContainer<Data>
 
@@ -120,7 +120,7 @@ protected:
 public:
 
   // Default constructor
-  // SortableVector() specifiers;
+  SortableVector() = default;
 
   /* ************************************************************************ */
 

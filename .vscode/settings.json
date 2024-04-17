@@ -1,3 +1,8 @@
 {
-    "makefile.makefilePath": ""
+    "makefile.makefilePath": "./exercise1/",
+    "files.associations": {
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
+    }
 }

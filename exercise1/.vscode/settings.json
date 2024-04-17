@@ -7,7 +7,22 @@
         "type_traits": "cpp",
         "utility": "cpp",
         "ios": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "unordered_map": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "istream": "cpp",
+        "new": "cpp",
+        "ostream": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "system_error": "cpp"
     },
     "makefile.configurations": [
         {
@@ -19,6 +34,11 @@
         {
             "cwd": "/home/kali/Documents/GitHub/LASD/exercise1",
             "binaryPath": "/home/kali/Documents/GitHub/LASD/exercise1/main",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/home/fab/Documenti/GitHub/LASD/exercise1",
+            "binaryPath": "/home/fab/Documenti/GitHub/LASD/exercise1/main",
             "binaryArgs": []
         }
     ]

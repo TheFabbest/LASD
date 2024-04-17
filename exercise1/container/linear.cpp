@@ -31,13 +31,22 @@ inline void LinearContainer<Data>::Traverse(TraverseFun function) const{
 // TODO vedi se va bene
 template <typename Data>
 inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun function) const{
-    this->PreOrderMap(function);
+    //this->PreOrderMap(function);
+    unsigned long i;
+    for (i = 0; i < this->size; ++i)
+    {
+      function(operator[](i));
+    }
 }
 
 // TODO vedi se va bene
 template <typename Data>
 inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun function) const{
-    this->PostOrderMap(function);
+  unsigned long i;
+  for (i = this->size-1; i >= 0; --i)
+  {
+    function(operator[](i));
+  }
 }
 
 template <typename Data>

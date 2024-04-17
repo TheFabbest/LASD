@@ -183,7 +183,7 @@ public:
 /* ************************************************************************** */
 
 template <typename Data>
-class InOrderTraversableContainer {
+class InOrderTraversableContainer : virtual public TraversableContainer<Data> {
   // Must extend TraversableContainer<Data>
 
 private:

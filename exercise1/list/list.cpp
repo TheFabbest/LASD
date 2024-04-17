@@ -55,7 +55,7 @@ List<Data>::Node::~Node(){
 
 // TODO mog what??
 template <typename Data>
-struct Node * List<Data>::Node::Clone(Node* tail){
+typename List<Data>::Node * List<Data>::Node::Clone(Node* tail){
   if (next == nullptr)
   {
     return tail;
@@ -87,7 +87,7 @@ List<Data>::List(const List & list) noexcept{
   if (list.tail != nullptr)
   {
     tail = new Node(*list.tail);
-    head = lst.head->Clone(tail);
+    head = list.head->Clone(tail);
     size = list.size;
   }
 }
@@ -210,6 +210,98 @@ Data& List<Data>::operator[](const unsigned long index) {
   }
   return curr->data;
 }
+
+// front non mutable
+// WHY THE FUCK "does not override" ???
+template <typename Data>
+const Data& List<Data>::Front() const{
+  if (head == nullptr) throw std::length_error("List is empty");
+  return head->data;
+}
+
+// front mutable
+template <typename Data>
+Data& List<Data>::Front() {
+  if (head == nullptr) throw std::length_error("List is empty");
+  return head->data;
+}
+
+// back non mutable
+template <typename Data>
+const Data& List<Data>::Back() const {
+  if (tail == nullptr) throw std::length_error("List is empty");
+  return tail->data;
+}
+
+// front non mutable
+template <typename Data>
+Data& List<Data>::Back() {
+  if (tail == nullptr) throw std::length_error("List is empty");
+  return tail->data;
+}
+
+// traverse
+template <typename Data>
+inline void List<Data>::Traverse(TraverseFun function) const {
+  PreOrderTraverse(function);
+}
+
+template <typename Data>
+void List<Data>::PreOrderTraverse(TraverseFun function) const {
+  struct Node *curr = head;
+  while (curr != nullptr)
+  {
+    function(curr->data);
+    curr = curr->next;
+  }
+}
+
+template <typename Data>
+inline void List<Data>::PostOrderTraverse(TraverseFun function) const {
+  PostOrderTraverse(function, head);
+}
+
+// aux function for postorder
+template <typename Data>
+void List<Data>::PostOrderTraverse(TraverseFun function, Node* curr) const {
+  if (curr != nullptr)
+  {
+    PostOrderTraverse(function, curr->next);
+    function(curr->data);
+  }
+}
+
+// map
+template <typename Data>
+inline void List<Data>::Map(MapFun function){
+  PreOrderMap(function);
+}
+
+template <typename Data>
+void List<Data>::PreOrderMap(MapFun function){
+  struct Node *curr = head;
+  while (curr != nullptr)
+  {
+    function(curr->data);
+    curr = curr->next;
+  }
+}
+
+template <typename Data>
+inline void List<Data>::PostOrderMap(MapFun function) {
+  PostOrderMap(function, head);
+}
+
+// aux function for postorder
+template <typename Data>
+void List<Data>::PostOrderMap(MapFun function, Node* curr) {
+  if (curr != nullptr)
+  {
+    PostOrderMap(function, curr->next);
+    function(curr->data);
+  }
+}
+
 
 /* ************************************************************************** */
 
