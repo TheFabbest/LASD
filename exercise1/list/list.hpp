@@ -92,7 +92,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  // ~List() specifiers;
+  ~List();
 
   /* ************************************************************************ */
 
@@ -124,7 +124,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  // type Clear() specifiers; // Override ClearableContainer member
+  void Clear() noexcept override; // Override ClearableContainer member
 
   /* ************************************************************************ */
 

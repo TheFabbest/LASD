@@ -68,7 +68,21 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
 
 template <typename Data>
 List<Data>::List(const List & list) noexcept{
-  
+
+}
+
+// destructor
+template <typename Data>
+List<Data>::~List(){
+  delete head;
+}
+
+// TODO mog, why not noexcept
+template <typename Data>
+void List<Data>::Clear() noexcept{
+  delete head;
+  head = tail = nullptr;
+  size = 0;
 }
 
 /* ************************************************************************** */
