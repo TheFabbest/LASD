@@ -144,15 +144,15 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~SortableVector();
+  ~SortableVector() = default;
 
   /* ************************************************************************ */
 
    // Copy assignment
-  SortableVector& operator=(const SortableVector<Data>& other);
+  SortableVector<Data>& operator=(const SortableVector<Data>& other);
 
   // Move assignment
-  SortableVector& operator=(SortableVector<Data>&& other) noexcept;
+  SortableVector<Data>& operator=(SortableVector<Data>&& other) noexcept;
 
   // TODO reimplementa ricerca (?)
 

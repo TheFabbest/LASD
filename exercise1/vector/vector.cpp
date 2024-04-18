@@ -172,15 +172,16 @@ SortableVector<Data>::SortableVector(SortableVector<Data>&& other) noexcept : Ve
 
 // Copy assignment
 template <typename Data>
-SortableVector& SortableVector<Data>::operator=(const SortableVector<Data>& other){
+SortableVector<Data>& SortableVector<Data>::operator=(const SortableVector<Data>& other){
   Vector<Data>::operator=(other);
 }
 
 // Move assignment
 template <typename Data>
-SortableVector& SortableVector<Data>::operator=(SortableVector<Data>&& other) noexcept{
+SortableVector<Data>& SortableVector<Data>::operator=(SortableVector<Data>&& other) noexcept{
   Vector<Data>::operator=(std::move(other));
 }
+
 
 /* ************************************************************************** */
 
