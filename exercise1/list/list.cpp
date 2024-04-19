@@ -34,14 +34,15 @@ List<Data>::Node::Node(Data && data){
 
 // TODO mog ma why swap
 template <typename Data>
-List<Data>::Node::Node(const struct Node & node) noexcept{
+List<Data>::Node::Node(const Node & node) noexcept{
   data = node.data;
-  std::swap(next, node.next);
+  //std::swap(next, node.next); // TODO se faccio cosi ovviamente non funziona perche const ma mi pare mog
+  next = node.next;
 }
 
 // TODO mog ma why swap
 template <typename Data>
-List<Data>::Node::Node(struct Node && node) noexcept{
+List<Data>::Node::Node(Node && node) noexcept{
   std::swap(data, node.data);
   std::swap(next, node.next);
 }
@@ -83,22 +84,41 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
 // TODO mog what??
 // copy constructor
 template <typename Data>
-List<Data>::List(const List & list) noexcept{
-  if (list.tail != nullptr)
+List<Data>::List(const List & other) noexcept{
+  if (other.tail != nullptr)
   {
-    tail = new Node(*list.tail);
-    head = list.head->Clone(tail);
-    size = list.size;
+    tail = new Node(*other.tail);
+    head = other.head->Clone(tail);
+    size = other.size;
   }
 }
 
 // TODO mog
 // move constructor
 template <typename Data>
-List<Data>::List(List && list) noexcept{
-  std::swap(head, list.head);
-  std::swap(tail, list.tail);
-  std::swap(size, list.size);
+List<Data>::List(List && other) noexcept{
+  std::swap(head, other.head);
+  std::swap(tail, other.tail);
+  std::swap(size, other.size);
+}
+
+template <typename Data>
+List<Data>& List<Data>::operator=(const List<Data>& other) {
+  if (other.tail != nullptr)
+  {
+    tail = new Node(*other.tail);
+    head = other.head->Clone(tail);
+    size = other.size;
+  }
+  return *this;
+}
+
+template <typename Data>
+List<Data>& List<Data>::operator=(List<Data>&& other) {
+  std::swap(head, other.head);
+  std::swap(tail, other.tail);
+  std::swap(size, other.size);
+  return *this;
 }
 
 // TODO mog
@@ -270,8 +290,22 @@ Data& List<Data>::operator[](const unsigned long index) {
   return curr->data;
 }
 
+template <typename Data>
+bool List<Data>::operator==(const List<Data>& other) const noexcept{
+  bool are_equal = true;
+  unsigned long counter = 0;
+  other.Traverse([&are_equal, this, &counter](const Data& curr){
+    are_equal &= curr == this->operator[](counter++);
+  });
+  return are_equal;
+}
+
+template <typename Data>
+inline bool List<Data>::operator!=(const List<Data>& other) const noexcept{
+  return !this->operator==(other);
+}
+
 // front non mutable
-// WHY THE FUCK "does not override" ???
 template <typename Data>
 const Data& List<Data>::Front() const{
   if (head == nullptr) throw std::length_error("List is empty");

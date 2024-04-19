@@ -32,10 +32,9 @@ inline void LinearContainer<Data>::Traverse(TraverseFun function) const{
     this->PreOrderTraverse(function);
 }
 
-// TODO vedi se va bene
 template <typename Data>
 inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun function) const{
-    //this->PreOrderMap(function);
+    // TODO this->PreOrderMap(function);
     unsigned long i;
     for (i = 0; i < this->size; ++i)
     {
@@ -43,13 +42,12 @@ inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun function) const{
     }
 }
 
-// TODO vedi se va bene
 template <typename Data>
-inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun function) const{
-  unsigned long i;
-  for (i = this->size-1; i >= 0; --i)
+void LinearContainer<Data>::PostOrderTraverse(TraverseFun function) const{
+  unsigned long i = this->size;
+  while (i > 0)
   {
-    function(operator[](i));
+    function(operator[](--i));
   }
 }
 
@@ -69,10 +67,10 @@ void LinearContainer<Data>::PreOrderMap(MapFun function){
 
 template <typename Data>
 void LinearContainer<Data>::PostOrderMap(MapFun function){
-  unsigned long i;
-  for (i = this->size-1; i >= 0; --i)
+  unsigned long i = this->size;
+  while (i > 0)
   {
-    function(operator[](i));
+    function(operator[](--i));
   }
 }
 

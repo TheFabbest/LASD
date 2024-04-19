@@ -60,8 +60,7 @@ QueueVec<Data>::QueueVec(const QueueVec<Data>& other) : Vector<Data>(other){
 // Move constructor
 // TODO vedi
 template <typename Data>
-QueueVec<Data>::QueueVec(QueueVec<Data>&& other){
-    Vector<Data>::Vector(std::move(other));
+QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
     std::swap(head, other.head);
     std::swap(tail, other.tail);
 }
@@ -74,6 +73,7 @@ QueueVec<Data>& QueueVec<Data>::operator=(const QueueVec& other){
     Vector<Data>();
     head = other.head;
     tail = other.tail;
+    return *this;
 }
 
 // Move assignment
@@ -82,6 +82,7 @@ QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
     Vector<Data>(std::move(other));
     std::swap(head, other.head);
     std::swap(tail, other.tail);
+    return *this;
 }
 
 template <typename Data>
@@ -199,15 +200,16 @@ void QueueVec<Data>::Clear() noexcept{
 // auxiliary
 template <typename Data>
 void QueueVec<Data>::AdjustSizeBeforeEnqueue(){
-    if (size > MIN_SIZE && Size() == size){
+    if (Size() == size){
         Resize(size*2);
     }
 }
 
 template <typename Data>
 void QueueVec<Data>::AdjustSizeAfterDequeue(){
-    if (size > MIN_SIZE && Size() == size/2){
-        Resize(size/2);
+    if (Size() == size/2){
+        if (size > MIN_SIZE) Resize(size/2);
+        else Resize(MIN_SIZE);
     }
 }
 

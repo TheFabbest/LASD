@@ -9,7 +9,7 @@
 using namespace std;
 
 /* ************************************************************************** */
-/*
+
 void lasdtest() {
   cout << endl << "~*~#~*~ Welcome to the LASD Test Suite ~*~#~*~ " << endl;
 
@@ -38,4 +38,3 @@ void lasdtest() {
 
   cout << endl << "Goodbye!" << endl;
 }
-*/

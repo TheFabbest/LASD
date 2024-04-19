@@ -6,27 +6,21 @@ namespace lasd {
 
 // traversable
 template <typename Data>
-QueueLst<Data>::QueueLst(const TraversableContainer<Data>& traversable){
-    List<Data>::List(traversable);
-}
+QueueLst<Data>::QueueLst(const TraversableContainer<Data>& traversable) : List<Data>::List(traversable){}
 
 // mappable
 template <typename Data>
-QueueLst<Data>::QueueLst(MappableContainer<Data>&& mappable){
-    List<Data>::List(mappable);
-}
+QueueLst<Data>::QueueLst(MappableContainer<Data>&& mappable) : List<Data>::List(mappable){}
 
 // copy
 template <typename Data>
-QueueLst<Data>::QueueLst(const QueueLst& other){
-    List<Data>::List(other);
+QueueLst<Data>::QueueLst(const QueueLst& other) : List<Data>::List(other){
+    ;
 }
 
 // move
 template <typename Data>
-QueueLst<Data>::QueueLst(QueueLst&& other){
-    List<Data>::List(other);
-}
+QueueLst<Data>::QueueLst(QueueLst&& other) : List<Data>::List(other){}
 
 
 // destructor

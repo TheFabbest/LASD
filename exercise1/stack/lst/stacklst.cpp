@@ -7,34 +7,20 @@ namespace lasd {
 
 // traversable
 template <typename Data>
-StackLst<Data>::StackLst(const TraversableContainer<Data>& traversable){
-    List<Data>::List(traversable);
-}
+StackLst<Data>::StackLst(const TraversableContainer<Data>& traversable) : List<Data>::List(traversable){}
 
 // mappable
 template <typename Data>
-StackLst<Data>::StackLst(MappableContainer<Data>&& mappable){
-    List<Data>::List(mappable);
-}
+StackLst<Data>::StackLst(MappableContainer<Data>&& mappable) : List<Data>::List(mappable){}
 
 // copy
 template <typename Data>
-StackLst<Data>::StackLst(const StackLst& other){
-    List<Data>::List(other);
-}
+StackLst<Data>::StackLst(const StackLst& other) : List<Data>::List(other){}
 
 // move
 template <typename Data>
-StackLst<Data>::StackLst(StackLst&& other){
-    List<Data>::List(other);
-}
+StackLst<Data>::StackLst(StackLst&& other) : List<Data>::List(other){}
 
-
-// destructor
-template <typename Data>
-StackLst<Data>::~StackLst(){
-    //TODO
-}
 
 template <typename Data>
 bool StackLst<Data>::operator==(const StackLst& other) const noexcept{
@@ -45,6 +31,21 @@ template <typename Data>
 bool StackLst<Data>::operator!=(const StackLst& other) const noexcept{
   return !operator==(other);
 }
+
+// Copy assignment
+template <typename Data>
+StackLst<Data>& StackLst<Data>::operator=(const StackLst<Data>& other) noexcept{
+    List<Data>::operator=(other);
+    return *this;
+}
+
+// Move assignment
+template <typename Data>
+StackLst<Data>& StackLst<Data>::operator=(StackLst<Data>&& other) noexcept{
+    List<Data>::operator=(std::move(other));
+    return *this;
+}
+
 
 // stack operations
 template <typename Data>

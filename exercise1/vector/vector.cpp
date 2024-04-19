@@ -69,7 +69,12 @@ Vector<Data>& Vector<Data>::operator=(const Vector<Data> & other){
   return *this;
 }
 
-
+template <typename Data>
+Vector<Data>& Vector<Data>::operator=(Vector<Data> && other) noexcept{
+  std::swap(Elements, other.Elements);
+  std::swap(size, other.size);
+  return *this;
+}
 
 // direct access operators
 template <typename Data>
@@ -162,19 +167,13 @@ void Vector<Data>::Resize(const unsigned long newsize){
 
 // SortableVector
 template <typename Data>
-SortableVector<Data>::SortableVector(const unsigned long size){
-  Vector<Data>::Vector(size);
-}
+SortableVector<Data>::SortableVector(const unsigned long size) : Vector<Data>::Vector(size){};
 
 template <typename Data>
-SortableVector<Data>::SortableVector(const TraversableContainer<Data>& traversable){
-  Vector<Data>::Vector(traversable);
-}
+SortableVector<Data>::SortableVector(const TraversableContainer<Data>& traversable) : Vector<Data>::Vector(traversable){}
 
 template <typename Data>
-SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable){
-  Vector<Data>::Vector(mappable);
-}
+SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable) : Vector<Data>::Vector(mappable){}
 
 
 // TODO mog le prox 4
@@ -190,12 +189,14 @@ SortableVector<Data>::SortableVector(SortableVector<Data>&& other) noexcept : Ve
 template <typename Data>
 SortableVector<Data>& SortableVector<Data>::operator=(const SortableVector<Data>& other){
   Vector<Data>::operator=(other);
+  return *this;
 }
 
 // Move assignment
 template <typename Data>
 SortableVector<Data>& SortableVector<Data>::operator=(SortableVector<Data>&& other) noexcept{
   Vector<Data>::operator=(std::move(other));
+  return *this;
 }
 
 

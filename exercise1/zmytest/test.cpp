@@ -192,7 +192,7 @@ void TestQueueVec(){
 
 void PrintResults()
 {
-  cout << endl << "Results: " << num_of_errors << "/" << num_of_tests << " errors" << endl;
+  cout << endl << "Errors: " << num_of_errors << "/" << num_of_tests << endl;
 }
 
 void mytest() {

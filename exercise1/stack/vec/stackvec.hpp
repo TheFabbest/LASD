@@ -85,7 +85,7 @@ public:
 
   // Specific member functions (inherited from Container)
 
-  // type Empty() specifiers; // Override Container member
+  inline bool Empty() const noexcept; // Override Container member
 
   inline unsigned long Size() const noexcept; // Override Container member
 
@@ -93,12 +93,15 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  // type Clear() specifiers; // Override ClearableContainer member
+  void Clear() noexcept; // Override ClearableContainer member
 
 protected:
 
   // Auxiliary functions, if necessary!
+  void AdjustSizeBeforePush();
+  void AdjustSizeAfterPop();
 
+  void Resize(const unsigned long newsize);
 };
 
 /* ************************************************************************** */

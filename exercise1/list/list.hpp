@@ -41,10 +41,10 @@ protected:
 
     // TODO
     // Copy constructor
-    Node(const struct Node & node) noexcept;
+    Node(const Node & node) noexcept;
 
     // Move constructor
-    Node(struct Node && node) noexcept;
+    Node(Node && node) noexcept;
 
     /* ********************************************************************** */
 
@@ -61,13 +61,12 @@ protected:
 
     // Specific member functions
 
-    // TODO mog why virtual
+    // TODO mog
     Node * Clone(Node*);
-
   };
 
-  struct Node *head;
-  struct Node *tail;
+  Node *head;
+  Node *tail;
 
 public:
 
@@ -105,7 +104,7 @@ public:
 
   // Comparison operators
   bool operator==(const List&) const noexcept;
-  bool operator!=(const List&) const noexcept;
+  inline bool operator!=(const List&) const noexcept;
 
   /* ************************************************************************ */
 

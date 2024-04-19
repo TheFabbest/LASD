@@ -58,8 +58,7 @@ StackVec<Data>::StackVec(const StackVec<Data>& other) : Vector<Data>(other){
 
 // Move constructor
 template <typename Data>
-StackVec<Data>::StackVec(StackVec<Data>&& other){
-    Vector<Data>::Vector(std::move(other));
+StackVec<Data>::StackVec(StackVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
     std::swap(top, other.top);
 }
 
@@ -70,6 +69,7 @@ template <typename Data>
 StackVec<Data>& StackVec<Data>::operator=(const StackVec& other){
     Vector<Data>();
     top = other.top;
+    return *this;
 }
 
 // Move assignment
@@ -77,6 +77,7 @@ template <typename Data>
 StackVec<Data>& StackVec<Data>::operator=(StackVec&& other) noexcept{
     Vector<Data>(std::move(other));
     std::swap(top, other.top);
+    return *this;
 }
 
 template <typename Data>
@@ -96,51 +97,84 @@ bool StackVec<Data>::operator==(const StackVec& other) const noexcept
 template <typename Data>
 inline bool StackVec<Data>::operator!=(const StackVec& other) const noexcept
 {
-    return !(this == other);
+    return !(this->operator==(other));
 }
 
 // stack operations
 template <typename Data>
-const Data& StackLst<Data>::Top() const {
+const Data& StackVec<Data>::Top() const {
     if (top == 0) throw std::length_error("Stack is empty");
     return this->operator[](top);
 }
 
 template <typename Data>
-Data& StackLst<Data>::Top() {
+Data& StackVec<Data>::Top() {
     if (top == 0) throw std::length_error("Stack is empty");
     return this->operator[](top);
 }
 
 template <typename Data>
-void StackLst<Data>::Pop() {
+void StackVec<Data>::Pop() {
     if (top == 0) throw std::length_error("Stack is empty");
     top--;
-    //TODO Resize
+    AdjustSizeAfterPop();
 }
 
 template <typename Data>
-Data& StackLst<Data>::TopNPop() {
+Data& StackVec<Data>::TopNPop() {
     Data &ret = Top();
     Pop();
     return ret;
 }
 
 template <typename Data>
-void StackLst<Data>::Push(const Data& data){
-    // TODO resize
+void StackVec<Data>::Push(const Data& data){
+    AdjustSizeBeforePush();
     this->operator[](++top) = data;
 }
 
 template <typename Data>
-void StackLst<Data>::Push(Data&& data){
-    // TODO resize
+void StackVec<Data>::Push(Data&& data){
+    AdjustSizeBeforePush();
     this->operator[](++top) = std::move(data);
 }
 
 template <typename Data>
 inline unsigned long StackVec<Data>::Size() const noexcept{
     return top;
+}
+
+template <typename Data>
+inline bool StackVec<Data>::Empty() const noexcept{
+    return top == 0;
+}
+
+template <typename Data>
+void StackVec<Data>::Clear() noexcept{
+    Vector<Data>::Clear();
+    top = 0;
+}
+
+// auxiliary
+template <typename Data>
+void StackVec<Data>::AdjustSizeBeforePush(){
+    if (Size() >= size){
+        Resize(size*2);
+    }
+}
+
+template <typename Data>
+void StackVec<Data>::AdjustSizeAfterPop(){
+    if (Size() == size/2){
+        if (size > MIN_SIZE) Resize(size/2);
+        else Resize(MIN_SIZE);
+    }
+}
+
+template <typename Data>
+void StackVec<Data>::Resize(const unsigned long newsize) {
+    Vector<Data>::Resize(newsize);
+    if (top >= newsize) top = newsize-1;
 }
 
 /* ************************************************************************** */

@@ -15,7 +15,7 @@ private:
 
 protected:
 
-  unsigned long size;
+  unsigned long size = 0;
 
   /* ************************************************************************ */
 

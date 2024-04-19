@@ -21,7 +21,7 @@ inline void InOrderMappableContainer<Data>::Map(MapFun function) {
     this->InOrderMap(function);
 }
 
-// PostOrderMappableContainer
+// BreadthMappableContainer
 template <typename Data>
 inline void BreadthMappableContainer<Data>::Map(MapFun function) {
     this->BreadthMap(function);
