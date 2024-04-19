@@ -65,8 +65,8 @@ protected:
     Node * Clone(Node*);
   };
 
-  Node *head;
-  Node *tail;
+  Node *head = nullptr;
+  Node *tail = nullptr;
 
 public:
 

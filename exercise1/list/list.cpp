@@ -1,4 +1,4 @@
-
+#include <iostream>
 namespace lasd {
 
 /* ************************************************************************** */
@@ -68,17 +68,23 @@ typename List<Data>::Node * List<Data>::Node::Clone(Node* tail){
 }
 
 // List
-// constructors TODO controlla
+// constructors
 template <typename Data>
 inline List<Data>::List(const TraversableContainer<Data>& traversable)
 {
-  this->InsertAll(traversable);
+  traversable.Traverse(
+    [this] (const Data& data){
+      this->Insert(data);
+  });
 }
 
 template <typename Data>
 inline List<Data>::List(MappableContainer<Data>&& mappable)
 {
-  this->InsertAll(mappable);
+  mappable.Map(
+    [this] (const Data& data){
+      this->Insert(data);
+  });
 }
 
 // TODO mog what??
@@ -146,7 +152,8 @@ bool List<Data>::Insert(const Data& data){
   }
   if (curr == nullptr) {
     Node *newnode = new Node(data);
-    curr->next = newnode;
+    newnode->next = head;
+    head = newnode;
   }
   return curr==nullptr;
 }
@@ -160,7 +167,8 @@ bool List<Data>::Insert(Data&& data){
   }
   if (curr == nullptr) {
     Node *newnode = new Node(data);
-    curr->next = newnode;
+    newnode->next = head;
+    head = newnode;
   }
   return curr==nullptr;
 }
@@ -336,12 +344,14 @@ Data& List<Data>::Back() {
 // traverse
 template <typename Data>
 inline void List<Data>::Traverse(TraverseFun function) const {
+    std::cout << "sss????" << std::endl;
   PreOrderTraverse(function);
 }
 
 template <typename Data>
 void List<Data>::PreOrderTraverse(TraverseFun function) const {
-  struct Node *curr = head;
+    std::cout << "sss????" << std::endl;
+  Node *curr = head;
   while (curr != nullptr)
   {
     function(curr->data);
@@ -372,7 +382,7 @@ inline void List<Data>::Map(MapFun function){
 
 template <typename Data>
 void List<Data>::PreOrderMap(MapFun function){
-  struct Node *curr = head;
+  Node *curr = head;
   while (curr != nullptr)
   {
     function(curr->data);

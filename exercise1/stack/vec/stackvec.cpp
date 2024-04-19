@@ -130,13 +130,13 @@ Data& StackVec<Data>::TopNPop() {
 template <typename Data>
 void StackVec<Data>::Push(const Data& data){
     AdjustSizeBeforePush();
-    this->operator[](++top) = data;
+    this->operator[](top++) = data;
 }
 
 template <typename Data>
 void StackVec<Data>::Push(Data&& data){
     AdjustSizeBeforePush();
-    this->operator[](++top) = std::move(data);
+    this->operator[](top++) = std::move(data);
 }
 
 template <typename Data>

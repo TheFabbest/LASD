@@ -184,7 +184,7 @@ void stestListInt(uint & testnum, uint & testerr) {
 
     GetFront(loctestnum, loctesterr, lst, false, 0);
     GetBack(loctestnum, loctesterr, lst, false, 0);
-
+    
     Exists(loctestnum, loctesterr, lst, false, 0);
 
     TraversePreOrder(loctestnum, loctesterr, lst, true, &TraversePrint<int>);

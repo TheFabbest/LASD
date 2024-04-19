@@ -1,4 +1,4 @@
-
+#include <iostream>
 namespace lasd {
  
 /* ************************************************************************** */
@@ -11,6 +11,7 @@ bool TraversableContainer<Data>::Exists(const Data& data) const noexcept {
     Traverse (
         [data, &exists] (const Data &current){
             exists |= (data == current);
+            std::cout << data << " " << current << std::endl;
         }
     );
     return exists;
