@@ -35,6 +35,20 @@ QueueLst<Data>::~QueueLst(){
     //TODO
 }
 
+// operators
+// TODO mog prossimi 5
+template <typename Data>
+inline QueueLst<Data> &QueueLst<Data>::operator=(const QueueLst& other){
+    List<Data>::operator=(other);
+    return *this;
+}
+
+template <typename Data>
+inline QueueLst<Data> &QueueLst<Data>::operator=(QueueLst&& other) noexcept{
+    List<Data>::operator=(std::move(other)); // TODO controlla operator = se e di move o copy
+    return *this;
+}
+
 template <typename Data>
 bool QueueLst<Data>::operator==(const QueueLst& other) const noexcept{
     return List<Data>::operator==(other);
@@ -42,7 +56,7 @@ bool QueueLst<Data>::operator==(const QueueLst& other) const noexcept{
 
 template <typename Data>
 bool QueueLst<Data>::operator!=(const QueueLst& other) const noexcept{
-  return !operator==(other);
+  return List<Data>::operator!=(other);
 }
 
 // operations on queue
@@ -53,38 +67,29 @@ inline const Data& QueueLst<Data>::Head() const {
 }
 
 template <typename Data>
-Data& QueueLst<Data>::Head() {
-    if (tail == nullptr) throw std::length_error("Queue is empty");
-    return head->data;
+inline Data& QueueLst<Data>::Head(){
+    return List<Data>::Front();
 }
 
 template <typename Data>
-void QueueLst<Data>::Dequeue() {
-    if (tail == nullptr) throw std::length_error("Queue is empty");
-    struct Node* tmp = head;
-    head = tmp->next;
-    tmp->next = nullptr;
-    delete[] tmp;
+inline void QueueLst<Data>::Dequeue(){
+    List<Data>::RemoveFromFront();
 }
 
 template <typename Data>
-Data& QueueLst<Data>::HeadNDequeue() {
-    if (tail == nullptr) throw std::length_error("Queue is empty");
-    struct Node* tmp = head;
-    head = tmp->next;
-    Data &ret = tmp->data;
-    tmp->next = nullptr;
-    delete[] tmp;
-    return ret;
+inline Data& QueueLst<Data>::HeadNDequeue(){
+    return List<Data>::FrontNRemove();
 }
 
 template <typename Data>
-void QueueLst<Data>::Enqueue(const Data& data) {
-    struct Node* newnode = new struct Node(data);
-    newnode->next = tail;
-    tail = newnode;
+inline void QueueLst<Data>::Enqueue(const Data &data){
+    List<Data>::InsertAtBack(data);
 }
 
+template <typename Data>
+inline void QueueLst<Data>::Enqueue(Data &&data){
+    List<Data>::InsertAtBack(std::move(data));
+}
 
 
 /* ************************************************************************** */

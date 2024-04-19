@@ -24,47 +24,52 @@ private:
 
 protected:
 
-  // using Vector<Data>::???;
+  unsigned long head = 0;
+  unsigned long tail = 0;
 
-  // ...
+  static const unsigned long MIN_SIZE = 4; 
+
+  using Vector<Data>::size;
+  using Vector<Data>::Elements;
 
 public:
 
   // Default constructor
-  // StackVec() specifier;
+  StackVec();
 
   /* ************************************************************************ */
 
   // Specific constructor
-  // StackVec(argument) specifiers; // A stack obtained from a TraversableContainer
-  // StackVec(argument) specifiers; // A stack obtained from a MappableContainer
+
+  StackVec(const TraversableContainer<Data>& traversable); // A stack obtained from a TraversableContainer
+  StackVec(MappableContainer<Data>&& mappable); // A stack obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // StackVec(argument);
+  StackVec(const StackVec<Data>&);
 
   // Move constructor
-  // StackVec(argument);
+  StackVec(StackVec<Data>&&);
 
   /* ************************************************************************ */
 
   // Destructor
-  // ~StackVec() specifier;
+  ~StackVec() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument);
+  StackVec<Data>& operator=(const StackVec& other);
 
   // Move assignment
-  // type operator=(argument);
+  StackVec& operator=(StackVec&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  bool operator==(const StackVec&) const noexcept;
+  bool operator!=(const StackVec&) const noexcept;
 
   /* ************************************************************************ */
 

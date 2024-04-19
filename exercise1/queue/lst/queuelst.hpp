@@ -24,8 +24,10 @@ private:
 
 protected:
 
-  // TODO
-  // using List<Data>::???;
+  using typename List<Data>::Node;
+  using List<Data>::head;
+  using List<Data>::tail;
+  using List<Data>::Insert;
 
   // ...
 
@@ -57,10 +59,10 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  QueueLst& operator=(const QueueLst& other) noexcept;
+  inline QueueLst<Data>& operator=(const QueueLst& other);
 
   // Move assignment
-  QueueLst& operator=(QueueLst&& other) noexcept;
+  inline QueueLst& operator=(QueueLst&& other) noexcept;
 
   /* ************************************************************************ */
 
@@ -75,10 +77,10 @@ public:
 
   inline const Data& Head() const override; // Override Queue member (non-mutable version; concrete function must throw std::length_error when empty)
   inline Data& Head() override; // Override Queue member (mutable version; concrete function must throw std::length_error when empty)
-  void Dequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
-  Data& HeadNDequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
-  void Enqueue(const Data& data) override; // Override Queue member (copy of the value)
-  void Enqueue(Data&& data) override; // Override Queue member (move of the value)
+  inline void Dequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
+  inline Data& HeadNDequeue() override; // Override Queue member (concrete function must throw std::length_error when empty)
+  inline void Enqueue(const Data& data) override; // Override Queue member (copy of the value)
+  inline void Enqueue(Data&& data) override; // Override Queue member (move of the value)
 
   /* ************************************************************************ */
 

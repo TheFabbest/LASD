@@ -1,14 +1,15 @@
 #include <stdexcept>
+#include <iostream>
 namespace lasd {
 
 /* ************************************************************************** */
 // Vector
 // constructors
-// TODO chiedi se va bene
 template<typename Data>
 Vector<Data>::Vector(const unsigned long size)
 {
-  Resize(size);
+  Elements = new Data[size]();
+  this->size = size;
 }
 
 // copy constructor
@@ -25,7 +26,7 @@ Vector<Data>::Vector(const Vector<Data>& other)
 template<typename Data>
 Vector<Data>::Vector(Vector<Data>&& other) noexcept
 {
-  std::swap(Elements, other.size);
+  std::swap(Elements, other.Elements);
   std::swap(size, other.size);
 }
 
@@ -56,6 +57,7 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
 template <typename Data>
 Vector<Data>::~Vector(){
   delete[] Elements;
+  std::cout << "distr called" << std::endl;
 }
 
 // operator=
@@ -67,12 +69,7 @@ Vector<Data>& Vector<Data>::operator=(const Vector<Data> & other){
   return *this;
 }
 
-// TODO override
-template <typename Data>
-const Data& Vector<Data>::Back() const{
-  if (Empty()) throw std::length_error("Empty vector");
-  return Elements[size-1];
-}
+
 
 // direct access operators
 template <typename Data>
@@ -89,11 +86,30 @@ const Data& Vector<Data>::operator[](const unsigned long index) const
   throw std::out_of_range("Index " + std::to_string(index) + " is incorrect for vector of size " + std::to_string(size));
 }
 
-//
+// Front and Back
+// TODO override
+template <typename Data>
+const Data& Vector<Data>::Back() const{
+  if (Empty()) throw std::length_error("Empty vector");
+  return Elements[size-1];
+}
+
 template <typename Data>
 Data& Vector<Data>::Back(){
   if (Empty()) throw std::length_error("Empty vector");
   return Elements[size-1];
+}
+
+template <typename Data>
+const Data& Vector<Data>::Front() const{
+  if (Empty()) throw std::length_error("Empty vector");
+  return Elements[0];
+}
+
+template <typename Data>
+Data& Vector<Data>::Front(){
+  if (Empty()) throw std::length_error("Empty vector");
+  return Elements[0];
 }
 
 // comparators

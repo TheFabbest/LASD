@@ -117,6 +117,58 @@ void List<Data>::Clear() noexcept{
 }
 
 // insert and remove
+template <typename Data>
+bool List<Data>::Insert(const Data& data){
+  Node *curr = head;
+  while (curr != nullptr && curr->data != data)
+  {
+    curr = curr->next;
+  }
+  if (curr == nullptr) {
+    Node *newnode = new Node(data);
+    curr->next = newnode;
+  }
+  return curr==nullptr;
+}
+
+template <typename Data>
+bool List<Data>::Insert(Data&& data){
+  Node *curr = head;
+  while (curr != nullptr && curr->data != data)
+  {
+    curr = curr->next;
+  }
+  if (curr == nullptr) {
+    Node *newnode = new Node(data);
+    curr->next = newnode;
+  }
+  return curr==nullptr;
+}
+
+template <typename Data>
+bool List<Data>::Remove(const Data& data) noexcept{
+  Node *curr = head;
+  Node *prec = nullptr;
+  while (curr != nullptr && curr->data != data)
+  {
+    prec = curr;
+    curr = curr->next;
+  }
+  if (curr != nullptr) {
+    if (prec == nullptr)
+    {
+      RemoveFromFront();
+    }
+    else
+    {
+      prec->next = curr->next;
+      curr->next = nullptr;
+      delete curr;
+    }
+    return true;
+  }
+  return false;
+}
 
 // copy
 template <typename Data>
@@ -155,6 +207,13 @@ void List<Data>::RemoveFromFront()
   head = head->next;
   tmp->next = nullptr;
   delete tmp;
+}
+
+template <typename Data>
+Data& List<Data>::FrontNRemove(){
+  Data& ret = Front();
+  RemoveFromFront();
+  return ret;
 }
 
 // insert at back copy

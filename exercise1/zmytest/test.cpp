@@ -11,6 +11,9 @@
 #include "../stack/stack.hpp"
 #include "../stack/lst/stacklst.hpp"
 #include "../stack/vec/stackvec.hpp"
+#include "../queue/queue.hpp"
+#include "../queue/lst/queuelst.hpp"
+#include "../queue/vec/queuevec.hpp"
 
 /* ************************************************************************** */
 
@@ -34,10 +37,9 @@ void TellTest(const char *name)
   cout << endl << endl << "Starting test " << name << endl; 
 }
 
-void TestEmptySortableVector()
+void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
 {
   bool error = false;
-  lasd::SortableVector<int> sortablevec = lasd::SortableVector<int>();
 
   cout << "Testing empty SortableVector" << endl;
 
@@ -77,20 +79,125 @@ void TestEmptySortableVector()
     FoundError("Front", "SortableVector");
   }
 
-  sortablevec.Clear();
-  // todo test fold and traverse
+  // todo test fold and traverse and sort
+}
+
+void TestEmptyQueueVec(lasd::QueueVec<int> queuevec){
+  bool error = false;
+  
+  num_of_tests++;
+  if (!queuevec.Empty())
+  {
+    FoundError("Exists", "QueueVec");
+  }
+
+  num_of_tests++;
+  if (queuevec.Size() != 0)
+  {
+    FoundError("Size", "QueueVec");
+  }
+
+
+  num_of_tests++;
+  try{
+    queuevec.Dequeue();
+  }
+  catch(length_error &err){
+    error = true;
+  }
+  if (!error)
+  {
+    FoundError("Dequeue", "QueueVec");
+  }
+
+  num_of_tests++;
+  try{
+    queuevec.Head();
+  }
+  catch(length_error &err){
+    error = true;
+  }
+  if (!error)
+  {
+    FoundError("Head", "QueueVec");
+  }
+
+  num_of_tests++;
+  try{
+    queuevec.HeadNDequeue();
+  }
+  catch(length_error &err){
+    error = true;
+  }
+  if (!error)
+  {
+    FoundError("HeadNDequeue", "QueueVec");
+  }
+
+  queuevec.Enqueue(12);
+
+  num_of_tests++;
+  if (queuevec.Head() != 12)
+  {
+    FoundError("Head", "QueueVec");
+  }
+
+  num_of_tests++;
+  if (queuevec.Size() != 1)
+  {
+    FoundError("Size", "QueueVec");
+  }
+
+  num_of_tests++;
+  if (queuevec.HeadNDequeue() != 12)
+  {
+    FoundError("HeadNDequeue", "QueueVec");
+  }
+  cout << num_of_errors << endl;
+
+  num_of_tests++;
+  if (queuevec.Size() != 0)
+  {
+    FoundError("Size", "QueueVec");
+  }
+
+  num_of_tests++;
+  try{
+    queuevec.Head();
+  }
+  catch(length_error &err){
+    error = true;
+  }
+  if (!error)
+  {
+    FoundError("Head", "QueueVec");
+  }
+
 }
 
 void TestSortableVector()
 {
   TellTest("SortableVector");
+  lasd::SortableVector<int> sortablevec = lasd::SortableVector<int>();
+  TestEmptySortableVector(sortablevec);
+  sortablevec.Clear();
+  TestEmptySortableVector(sortablevec);
+}
 
-  TestEmptySortableVector();
+void TestQueueVec(){
+  TellTest("QueueVec");
+  lasd::QueueVec<int> queuevec = lasd::QueueVec<int>();
+  TestEmptyQueueVec(queuevec);
+}
 
-
-
+void PrintResults()
+{
+  cout << endl << "Results: " << num_of_errors << "/" << num_of_tests << " errors" << endl;
 }
 
 void mytest() {
-  printf("END\n");
+  TestSortableVector();
+  TestQueueVec();
+  PrintResults();
+  cout << "END" << endl;
 }

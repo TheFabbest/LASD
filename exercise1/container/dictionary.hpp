@@ -48,9 +48,9 @@ public:
 
   // Specific member functions
 
-  virtual bool Insert(const Data& data); // Copy of the value
-  virtual bool Insert(Data&& data); // Move of the value
-  virtual bool Remove(const Data& data) noexcept;
+  virtual bool Insert(const Data& data) = 0; // Copy of the value
+  virtual bool Insert(Data&& data) = 0; // Move of the value
+  virtual bool Remove(const Data& data) noexcept = 0;
 
   inline bool InsertAll(const TraversableContainer<Data> &container); // Copy of the value; From TraversableContainer; True if all are inserted
   inline bool InsertAll(MappableContainer<Data> &&container); // Move of the value; From MappableContainer; True if all are inserted

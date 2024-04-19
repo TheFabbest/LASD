@@ -27,7 +27,7 @@ protected:
 public:
 
   // Destructor
-  ~Queue();
+  virtual ~Queue() = default;
 
   /* ************************************************************************ */
 
@@ -47,12 +47,12 @@ public:
 
   // Specific member functions
 
-  virtual const Data& Head() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  virtual Data& Head(); // (mutable version; concrete function must throw std::length_error when empty)
-  virtual void Dequeue(); // (concrete function must throw std::length_error when empty)
-  virtual Data& HeadNDequeue(); // (concrete function must throw std::length_error when empty)
-  virtual void Enqueue(const Data& data); // Copy of the value
-  virtual void Enqueue(Data&& data); // Move of the value
+  virtual const Data& Head() const = 0; // (non-mutable version; concrete function must throw std::length_error when empty)
+  virtual Data& Head() = 0; // (mutable version; concrete function must throw std::length_error when empty)
+  virtual void Dequeue() = 0; // (concrete function must throw std::length_error when empty)
+  virtual Data& HeadNDequeue() = 0; // (concrete function must throw std::length_error when empty)
+  virtual void Enqueue(const Data& data) = 0; // Copy of the value
+  virtual void Enqueue(Data&& data) = 0; // Move of the value
 
 };
 
