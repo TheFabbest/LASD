@@ -83,7 +83,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  using List<Data>::Clear;
+  void Clear() noexcept override;
 
 protected:
 

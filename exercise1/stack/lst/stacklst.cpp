@@ -93,6 +93,13 @@ void StackLst<Data>::Push(Data&& data){
     head->next = tmp;
 }
 
+template <typename Data>
+void StackLst<Data>::Clear() noexcept{
+    List<Data>::Clear();
+    tail = 0;
+    head = 0;
+}
+
 /* ************************************************************************** */
 
 }

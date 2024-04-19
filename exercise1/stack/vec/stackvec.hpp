@@ -24,8 +24,7 @@ private:
 
 protected:
 
-  unsigned long head = 0;
-  unsigned long tail = 0;
+  unsigned long top = 0;
 
   static const unsigned long MIN_SIZE = 4; 
 
@@ -69,18 +68,18 @@ public:
 
   // Comparison operators
   bool operator==(const StackVec&) const noexcept;
-  bool operator!=(const StackVec&) const noexcept;
+  inline bool operator!=(const StackVec&) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from Stack)
 
-  // type Top() specifiers; // Override Stack member (non-mutable version; must throw std::length_error when empty)
-  // type Top() specifiers; // Override Stack member (non-mutable version; must throw std::length_error when empty)
-  // type Pop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type TopNPop() specifiers; // Override Stack member (must throw std::length_error when empty)
-  // type Push(argument) specifiers; // Override Stack member (copy of the value)
-  // type Push(argument) specifiers; // Override Stack member (move of the value)
+  const Data& Top() const override; // Override Stack member (non-mutable version; concrete function must throw std::length_error when empty)
+  Data& Top() override; // Override Stack member (mutable version; concrete function must throw std::length_error when empty)
+  void Pop() override; // Override Stack member (concrete function must throw std::length_error when empty)
+  Data& TopNPop() override; // Override Stack member (concrete function must throw std::length_error when empty)
+  void Push(const Data& data) override; // Override Stack member Copy of the value
+  void Push(Data&& data) override; // Override Stack member Move of the value  
 
   /* ************************************************************************ */
 
@@ -88,7 +87,7 @@ public:
 
   // type Empty() specifiers; // Override Container member
 
-  // type Size() specifiers; // Override Container member
+  inline unsigned long Size() const noexcept; // Override Container member
 
   /* ************************************************************************ */
 
