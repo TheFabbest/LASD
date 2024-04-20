@@ -155,6 +155,7 @@ bool List<Data>::Insert(const Data& data){
     newnode->next = head;
     head = newnode;
   }
+  ++size;
   return curr==nullptr;
 }
 
@@ -170,6 +171,7 @@ bool List<Data>::Insert(Data&& data){
     newnode->next = head;
     head = newnode;
   }
+  ++size;
   return curr==nullptr;
 }
 
@@ -192,7 +194,9 @@ bool List<Data>::Remove(const Data& data) noexcept{
       prec->next = curr->next;
       curr->next = nullptr;
       delete curr;
+      if (prec->next == nullptr) tail = prec;
     }
+    --size;
     return true;
   }
   return false;
@@ -234,6 +238,7 @@ void List<Data>::RemoveFromFront()
   Node *tmp = head;
   head = head->next;
   tmp->next = nullptr;
+  --size;
   delete tmp;
 }
 
@@ -257,6 +262,7 @@ void List<Data>::InsertAtBack (const Data& data){
     tail = tmp;
     head = tail;
   }
+  ++size;
 }
 
 // insert at back move
@@ -272,12 +278,14 @@ void List<Data>::InsertAtBack (Data&& data){
     tail = tmp;
     head = tail;
   }
+  ++size;
 }
 
 
 // TODO posso chiamare l'altro operatore?
 template <typename Data>
 const Data& List<Data>::operator[](const unsigned long index) const{
+  if (index >= size) throw std::out_of_range("index out of range for this list");
   unsigned long i;
   Node *curr = head;
   for (i = 0; i < index; ++i)
@@ -289,6 +297,7 @@ const Data& List<Data>::operator[](const unsigned long index) const{
 
 template <typename Data>
 Data& List<Data>::operator[](const unsigned long index) {
+  if (index >= size) throw std::out_of_range("index out of range for this list");
   unsigned long i;
   Node *curr = head;
   for (i = 0; i < index; ++i)
@@ -344,13 +353,11 @@ Data& List<Data>::Back() {
 // traverse
 template <typename Data>
 inline void List<Data>::Traverse(TraverseFun function) const {
-    std::cout << "sss????" << std::endl;
   PreOrderTraverse(function);
 }
 
 template <typename Data>
 void List<Data>::PreOrderTraverse(TraverseFun function) const {
-    std::cout << "sss????" << std::endl;
   Node *curr = head;
   while (curr != nullptr)
   {
