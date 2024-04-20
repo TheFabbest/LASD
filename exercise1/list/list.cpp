@@ -243,8 +243,8 @@ void List<Data>::RemoveFromFront()
 }
 
 template <typename Data>
-Data& List<Data>::FrontNRemove(){
-  Data& ret = Front();
+Data List<Data>::FrontNRemove(){
+  Data ret = Front();
   RemoveFromFront();
   return ret;
 }

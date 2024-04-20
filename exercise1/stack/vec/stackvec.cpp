@@ -121,8 +121,8 @@ void StackVec<Data>::Pop() {
 }
 
 template <typename Data>
-Data& StackVec<Data>::TopNPop() {
-    Data &ret = Top();
+Data StackVec<Data>::TopNPop() {
+    Data ret = Top();
     Pop();
     return ret;
 }

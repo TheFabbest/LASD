@@ -70,11 +70,11 @@ void StackLst<Data>::Pop() {
 }
 
 template <typename Data>
-Data& StackLst<Data>::TopNPop() {
+Data StackLst<Data>::TopNPop() {
     if (tail == nullptr) throw std::length_error("Stack is empty");
     Node* tmp = head;
     head = head->next;
-    Data &ret = tmp->data;
+    Data ret = tmp->data;
     tmp->next = nullptr;
     delete[] tmp;
     return ret;

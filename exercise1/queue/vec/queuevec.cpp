@@ -138,8 +138,8 @@ void QueueVec<Data>::Dequeue(){
 }
 
 template <typename Data>
-Data& QueueVec<Data>::HeadNDequeue(){
-    Data &ret = Head();
+Data QueueVec<Data>::HeadNDequeue(){
+    Data ret = Head();
     Dequeue();
     return ret;
 }

@@ -54,7 +54,6 @@ bool QueueLst<Data>::operator!=(const QueueLst& other) const noexcept{
 }
 
 // operations on queue
-// TODO chiedi quale delle due e meglio (poi const e non sono uguali)
 template <typename Data>
 inline const Data& QueueLst<Data>::Head() const {
     return List<Data>::Front();
@@ -71,7 +70,7 @@ inline void QueueLst<Data>::Dequeue(){
 }
 
 template <typename Data>
-inline Data& QueueLst<Data>::HeadNDequeue(){
+inline Data QueueLst<Data>::HeadNDequeue(){
     return List<Data>::FrontNRemove();
 }
 

@@ -76,7 +76,7 @@ public:
   const Data& Head() const; // Override Queue member (non-mutable version; concrete function must throw std::length_error when empty)
   Data& Head(); // Override Queue member (mutable version; concrete function must throw std::length_error when empty)
   void Dequeue(); // Override Queue member (concrete function must throw std::length_error when empty)
-  Data& HeadNDequeue(); // Override Queue member (concrete function must throw std::length_error when empty)
+  Data HeadNDequeue(); // Override Queue member (concrete function must throw std::length_error when empty)
   void Enqueue(const Data& data); // Override Queue member (copy of the value)
   void Enqueue(Data&& data); // Override Queue member (move of the value)
 

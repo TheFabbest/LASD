@@ -75,7 +75,7 @@ public:
   const Data& Top() const override; // Override Stack member (non-mutable version; concrete function must throw std::length_error when empty)
   Data& Top() override; // Override Stack member (mutable version; concrete function must throw std::length_error when empty)
   void Pop() override; // Override Stack member (concrete function must throw std::length_error when empty)
-  Data& TopNPop() override; // Override Stack member (concrete function must throw std::length_error when empty)
+  Data TopNPop() override; // Override Stack member (concrete function must throw std::length_error when empty)
   void Push(const Data& data) override; // Override Stack member Copy of the value
   void Push(Data&& data) override; // Override Stack member Move of the value  
 
