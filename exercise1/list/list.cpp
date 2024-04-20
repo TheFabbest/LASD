@@ -1,4 +1,5 @@
 #include <iostream>
+using namespace std; //todo remove
 namespace lasd {
 
 /* ************************************************************************** */
@@ -40,7 +41,7 @@ List<Data>::Node::Node(const Node & node) noexcept{
   next = node.next;
 }
 
-// TODO mog ma why swap
+// TODO mog
 template <typename Data>
 List<Data>::Node::Node(Node && node) noexcept{
   std::swap(data, node.data);
@@ -134,7 +135,7 @@ List<Data>::~List(){
   delete head;
 }
 
-// TODO mog, why not noexcept
+// TODO mog
 template <typename Data>
 void List<Data>::Clear() noexcept{
   delete head;
@@ -151,11 +152,8 @@ bool List<Data>::Insert(const Data& data){
     curr = curr->next;
   }
   if (curr == nullptr) {
-    Node *newnode = new Node(data);
-    newnode->next = head;
-    head = newnode;
+    InsertAtFront(data);
   }
-  ++size;
   return curr==nullptr;
 }
 
@@ -167,11 +165,8 @@ bool List<Data>::Insert(Data&& data){
     curr = curr->next;
   }
   if (curr == nullptr) {
-    Node *newnode = new Node(data);
-    newnode->next = head;
-    head = newnode;
+    InsertAtFront(data);
   }
-  ++size;
   return curr==nullptr;
 }
 
@@ -195,8 +190,8 @@ bool List<Data>::Remove(const Data& data) noexcept{
       curr->next = nullptr;
       delete curr;
       if (prec->next == nullptr) tail = prec;
+      --size;
     }
-    --size;
     return true;
   }
   return false;
@@ -238,6 +233,7 @@ void List<Data>::RemoveFromFront()
   Node *tmp = head;
   head = head->next;
   tmp->next = nullptr;
+  if (head == nullptr) tail = nullptr;
   --size;
   delete tmp;
 }
@@ -259,9 +255,9 @@ void List<Data>::InsertAtBack (const Data& data){
   }
   else
   {
-    tail = tmp;
-    head = tail;
+    head = tmp;
   }
+  tail = tmp;
   ++size;
 }
 
@@ -275,9 +271,9 @@ void List<Data>::InsertAtBack (Data&& data){
   }
   else
   {
-    tail = tmp;
-    head = tail;
+    head = tmp;
   }
+  tail = tmp;
   ++size;
 }
 
@@ -309,10 +305,11 @@ Data& List<Data>::operator[](const unsigned long index) {
 
 template <typename Data>
 bool List<Data>::operator==(const List<Data>& other) const noexcept{
+  if (other.size != size) return false;
   bool are_equal = true;
   unsigned long counter = 0;
-  other.Traverse([&are_equal, this, &counter](const Data& curr){
-    are_equal &= curr == this->operator[](counter++);
+  this->Traverse([&are_equal, &other, &counter](const Data& curr){
+    are_equal &= (curr == other[counter++]);
   });
   return are_equal;
 }

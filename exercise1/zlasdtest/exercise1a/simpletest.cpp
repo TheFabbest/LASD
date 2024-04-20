@@ -201,8 +201,11 @@ void stestListInt(uint & testnum, uint & testerr) {
     InsertAtBack(loctestnum, loctesterr, lst, true, 2);
     InsertAtFront(loctestnum, loctesterr, lst, true, 1);
 
+    cout<<"yay"<<endl;
     GetFront(loctestnum, loctesterr, lst, true, 1);
+    cout<<"yay"<<endl;
     GetBack(loctestnum, loctesterr, lst, true, 2);
+    cout<<"yay"<<endl;
     SetFront(loctestnum, loctesterr, lst, true, 2);
     SetBack(loctestnum, loctesterr, lst, true, 6);
 

@@ -25,7 +25,7 @@ QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
     // end
 
     head = 0;
-    tail = new_size;
+    tail = new_size-1;
     size = new_size;
 }
 
@@ -45,7 +45,7 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
     );
 
     head = 0;
-    tail = new_size;
+    tail = new_size-1;
     size = new_size;
 }
 

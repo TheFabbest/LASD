@@ -85,6 +85,53 @@ void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
   // todo test fold and traverse and sort
 }
 
+void TestList()
+{
+  List<int> lista = List<int>();
+  lista.Remove(100);
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() > 0) FoundError("Remove or Size", "List");
+
+  lista.Remove(100);
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() > 0) FoundError("Remove or Size", "List");
+
+  lista.InsertAtBack(15);
+  if (lista.Empty()) FoundError("InsertAtBack or Empty", "List");
+  if (lista.Size() != 1) FoundError("InsertAtBack or Size", "List");
+
+  List<int> lista2 = lista;
+
+  lista.InsertAtFront(15);
+  if (lista.Empty()) FoundError("InsertAtBack or Empty", "List");
+  if (lista.Size() != 1) FoundError("InsertAtBack or Size", "List");
+  
+  lista.InsertAtFront(12);
+  if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
+  if (lista.Size() != 2) FoundError("InsertAtFront or Size", "List");
+
+  lista.Remove(12);
+  if (lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 1) FoundError("Remove or Size", "List");
+
+  lista.Remove(12);
+  if (lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 1) FoundError("Remove or Size", "List");
+
+  lista.Remove(15);
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 0) FoundError("Remove or Size", "List");
+
+  lista.InsertAtFront(15);
+  if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
+  if (lista.Size() != 1) FoundError("InsertAtFront or Size", "List");
+  if (lista != lista2) FoundError("InsertAtFront or Comparison", "List");
+
+  lista.Clear();
+  if (lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 1) FoundError("Remove or Size", "List");
+}
+
 void TestEmptyQueueVec(lasd::QueueVec<int> queuevec){
   bool error = false;
   
@@ -201,6 +248,7 @@ void PrintResults()
 void TestMiscellaneus()
 {
   cout << "Starting TestMiscellaneus" << endl;
+
   auto seed = random_device{}();
   cout << "Initializing random generator with seed " << seed << " for miscellaneus test." << endl;
   default_random_engine genx(seed);

@@ -24,7 +24,7 @@ StackVec<Data>::StackVec(const TraversableContainer<Data>& traversable){
     );
     // end
 
-    top = new_size;
+    top = new_size-1;
     size = new_size;
 }
 
@@ -46,7 +46,7 @@ StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
     );
     // end
 
-    top = new_size;
+    top = new_size-1;
     size = new_size;
 }
 
