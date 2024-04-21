@@ -30,6 +30,7 @@ Vector<Data>::Vector(Vector<Data>&& other) noexcept
   std::swap(size, other.size);
 }
 
+// TODO mog
 template<typename Data>
 Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(traversable.Size())
 {
@@ -41,6 +42,7 @@ Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(tra
   );
 }
 
+// TODO mog
 template<typename Data>
 Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size())
 {
@@ -57,7 +59,7 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
 template <typename Data>
 Vector<Data>::~Vector(){
   delete[] Elements;
-  std::cout << "distr called" << std::endl;
+  std::cout << "Vector distr called" << std::endl;
 }
 
 // operator=

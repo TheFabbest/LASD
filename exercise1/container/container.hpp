@@ -46,7 +46,7 @@ public:
 
   // Specific member functions
 
-  bool Empty() const noexcept // (concrete function should not throw exceptions)
+  inline bool Empty() const noexcept // (concrete function should not throw exceptions)
   {
     return size == 0;
   }

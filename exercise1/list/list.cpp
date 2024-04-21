@@ -1,5 +1,7 @@
 #include <iostream>
 using namespace std; //todo remove
+
+//TODO controlla inserimenti con ripetizioni per i metodi di dictionary
 namespace lasd {
 
 /* ************************************************************************** */
@@ -75,7 +77,7 @@ inline List<Data>::List(const TraversableContainer<Data>& traversable)
 {
   traversable.Traverse(
     [this] (const Data& data){
-      this->Insert(data);
+      this->InsertAtBack(data);
   });
 }
 
@@ -84,7 +86,7 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
 {
   mappable.Map(
     [this] (const Data& data){
-      this->Insert(data);
+      this->InsertAtBack(data);
   });
 }
 
@@ -146,28 +148,16 @@ void List<Data>::Clear() noexcept{
 // insert and remove
 template <typename Data>
 bool List<Data>::Insert(const Data& data){
-  Node *curr = head;
-  while (curr != nullptr && curr->data != data)
-  {
-    curr = curr->next;
-  }
-  if (curr == nullptr) {
-    InsertAtFront(data);
-  }
-  return curr==nullptr;
+  if (this->Exists(data)) return false;
+  InsertAtFront(data);
+  return true;
 }
 
 template <typename Data>
 bool List<Data>::Insert(Data&& data){
-  Node *curr = head;
-  while (curr != nullptr && curr->data != data)
-  {
-    curr = curr->next;
-  }
-  if (curr == nullptr) {
-    InsertAtFront(data);
-  }
-  return curr==nullptr;
+  if (this->Exists(std::move(data))) return false;
+  InsertAtFront(std::move(data));
+  return true;
 }
 
 template <typename Data>

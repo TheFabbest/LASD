@@ -23,8 +23,6 @@ private:
 
 protected:
 
-  // ...
-
 public:
 
   // Destructor

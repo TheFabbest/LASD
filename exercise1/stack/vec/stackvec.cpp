@@ -1,4 +1,4 @@
-
+#include <iostream>
 namespace lasd {
 
 /* ************************************************************************** */
@@ -146,6 +146,7 @@ inline unsigned long StackVec<Data>::Size() const noexcept{
 
 template <typename Data>
 inline bool StackVec<Data>::Empty() const noexcept{
+    std::cout << top;
     return top == 0;
 }
 
