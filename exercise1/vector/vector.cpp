@@ -8,7 +8,7 @@ namespace lasd {
 template<typename Data>
 Vector<Data>::Vector(const unsigned long size)
 {
-  Elements = new Data[size]();
+  Elements = new Data[size];
   this->size = size;
 }
 

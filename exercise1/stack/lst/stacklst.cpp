@@ -66,17 +66,16 @@ void StackLst<Data>::Pop() {
     Node* tmp = head;
     head = head->next;
     tmp->next = nullptr;
-    delete[] tmp;
+    if (head == nullptr) tail = nullptr;
+    delete tmp;
+    --size;
 }
 
 template <typename Data>
 Data StackLst<Data>::TopNPop() {
     if (tail == nullptr) throw std::length_error("Stack is empty");
-    Node* tmp = head;
-    head = head->next;
-    Data ret = tmp->data;
-    tmp->next = nullptr;
-    delete[] tmp;
+    Data ret = Top();
+    Pop();
     return ret;
 }
 
@@ -85,6 +84,8 @@ void StackLst<Data>::Push(const Data& data){
     Node* tmp = head;
     head = new Node(data);
     head->next = tmp;
+    if (tail == nullptr) tail = head;
+    ++size;
 }
 
 template <typename Data>
@@ -92,13 +93,13 @@ void StackLst<Data>::Push(Data&& data){
     Node* tmp = head;
     head = new Node(data);
     head->next = tmp;
+    if (tail == nullptr) tail = head;
+    ++size;
 }
 
 template <typename Data>
-void StackLst<Data>::Clear() noexcept{
+inline void StackLst<Data>::Clear() noexcept{
     List<Data>::Clear();
-    tail = 0;
-    head = 0;
 }
 
 /* ************************************************************************** */

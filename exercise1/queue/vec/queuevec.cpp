@@ -70,18 +70,23 @@ QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::mov
 // Copy assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(const QueueVec& other){
-    Vector<Data>();
-    head = other.head;
-    tail = other.tail;
+    Clear();
+    unsigned long index, c, size;
+    size = other.Size();
+    for (index = 0; index < size; ++index){
+        c = (other.head+index)%size;
+        Enqueue(other[c]);
+    }
     return *this;
 }
 
 // Move assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
-    Vector<Data>(std::move(other));
     std::swap(head, other.head);
     std::swap(tail, other.tail);
+    std::swap(size, other.size);
+    std::swap(Elements, other.Elements);
     return *this;
 }
 
@@ -132,8 +137,8 @@ Data& QueueVec<Data>::Head(){
 template <typename Data>
 void QueueVec<Data>::Dequeue(){
     if (head == tail) throw std::length_error("Emtpy queue");
-    if (tail == 0) tail = size;
-    --tail;
+    ++head;
+    head %= size;
     AdjustSizeAfterDequeue();
 }
 
@@ -167,12 +172,13 @@ void QueueVec<Data>::Resize(const unsigned long newsize){
 
     Data *newElements =  new Data[newsize];
     for (index_old = head, index_new = 0; index_new < min_size; index_old = (index_old+1)%size, ++index_new){
+        cout << Elements[index_old] << endl;
         std::swap(Elements[index_old], newElements[index_new]);
     }
     head = 0;
     tail = min_size;
     size = newsize;
-
+    cout << "called with " << newsize << " now " << size << " Size()=" << Size()<<endl;
     std::swap(newElements, Elements);
     delete[] newElements;
 }
@@ -200,14 +206,14 @@ void QueueVec<Data>::Clear() noexcept{
 // auxiliary
 template <typename Data>
 void QueueVec<Data>::AdjustSizeBeforeEnqueue(){
-    if (Size() == size){
+    if (Size() == size-1){
         Resize(size*2);
     }
 }
 
 template <typename Data>
 void QueueVec<Data>::AdjustSizeAfterDequeue(){
-    if (Size() == size/2){
+    if (Size() + 1 == size/2){
         if (size > MIN_SIZE) Resize(size/2);
         else Resize(MIN_SIZE);
     }

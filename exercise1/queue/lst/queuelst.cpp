@@ -14,20 +14,11 @@ QueueLst<Data>::QueueLst(MappableContainer<Data>&& mappable) : List<Data>::List(
 
 // copy
 template <typename Data>
-QueueLst<Data>::QueueLst(const QueueLst& other) : List<Data>::List(other){
-    ;
-}
+QueueLst<Data>::QueueLst(const QueueLst& other) : List<Data>::List(other){}
 
 // move
 template <typename Data>
 QueueLst<Data>::QueueLst(QueueLst&& other) : List<Data>::List(other){}
-
-
-// destructor
-template <typename Data>
-QueueLst<Data>::~QueueLst(){
-    //TODO
-}
 
 // operators
 // TODO mog prossimi 5

@@ -1,4 +1,5 @@
 #include <iostream>
+using namespace std;
 namespace lasd {
 
 /* ************************************************************************** */
@@ -11,10 +12,9 @@ template <typename Data>
 StackVec<Data>::StackVec(const TraversableContainer<Data>& traversable){
     unsigned long argument_size = traversable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
-    ++new_size;
 
     // TODO vedi se allocare di piu, inoltre se devo togliere +1 chiama direttamente costruttore di Vector
-    Elements = new Data[new_size]();
+    Elements = new Data[new_size+1]();
     
     unsigned long i = 0;
     traversable.Traverse(
@@ -24,8 +24,8 @@ StackVec<Data>::StackVec(const TraversableContainer<Data>& traversable){
     );
     // end
 
-    top = new_size-1;
-    size = new_size;
+    top = argument_size;
+    size = new_size+1;
 }
 
 
@@ -33,10 +33,9 @@ template <typename Data>
 StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
     unsigned long argument_size = mappable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
-    ++new_size;
 
     // TODO vedi se allocare di piu, inoltre se devo togliere +1 chiama direttamente costruttore di Vector
-    Elements = new Data[new_size]();
+    Elements = new Data[new_size+1]();
     
     unsigned long i = 0;
     mappable.Map(
@@ -46,8 +45,8 @@ StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
     );
     // end
 
-    top = new_size-1;
-    size = new_size;
+    top = argument_size;
+    size = new_size+1;
 }
 
 // Copy constructor
@@ -67,27 +66,34 @@ StackVec<Data>::StackVec(StackVec<Data>&& other) : Vector<Data>::Vector(std::mov
 // Copy assignment
 template <typename Data>
 StackVec<Data>& StackVec<Data>::operator=(const StackVec& other){
-    Vector<Data>();
-    top = other.top;
+    Clear();
+
+    // TODO reimplementare traverse in StackVec? se usavo traverse mi scorreva vettore per intero
+    unsigned long index;
+    for (index = 0; index < other.top; ++index)
+    {
+        Push(other[index]);
+    }
+    
     return *this;
 }
 
 // Move assignment
 template <typename Data>
 StackVec<Data>& StackVec<Data>::operator=(StackVec&& other) noexcept{
-    Vector<Data>(std::move(other));
+    std::swap(size, other.size);
     std::swap(top, other.top);
+    std::swap(Elements, other.Elements);
     return *this;
 }
 
 template <typename Data>
 bool StackVec<Data>::operator==(const StackVec& other) const noexcept
 {
-    unsigned long num_of_elements = Size();
-    if (num_of_elements != other.Size()) return false;
+    if (top != other.Size()) return false;
     
     unsigned long index;
-    for (index = 0; index < num_of_elements; ++index){
+    for (index = 0; index < top; ++index){
         if (this->operator[](index) != other[index]) return false;
     }
 
@@ -151,7 +157,7 @@ inline bool StackVec<Data>::Empty() const noexcept{
 
 template <typename Data>
 void StackVec<Data>::Clear() noexcept{
-    Vector<Data>::Clear();
+    Resize(MIN_SIZE);
     top = 0;
 }
 
@@ -174,7 +180,7 @@ void StackVec<Data>::AdjustSizeAfterPop(){
 template <typename Data>
 void StackVec<Data>::Resize(const unsigned long newsize) {
     Vector<Data>::Resize(newsize);
-    if (top >= newsize) top = newsize;
+    if (top > newsize) top = newsize;
 }
 
 /* ************************************************************************** */

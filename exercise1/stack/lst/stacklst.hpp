@@ -27,6 +27,7 @@ protected:
   using typename List<Data>::Node;
   using List<Data>::head;
   using List<Data>::tail;
+  using List<Data>::size;
 
   // ...
 
@@ -83,7 +84,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept override;
+  inline void Clear() noexcept override;
 
 protected:
 
