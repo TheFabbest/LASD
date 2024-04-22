@@ -85,9 +85,9 @@ public:
 
   // Specific member functions (inherited from Container)
 
-  inline bool Empty() const noexcept; // Override Container member
+  inline bool Empty() const noexcept override; // Override Container member
 
-  inline unsigned long Size() const noexcept; // Override Container member
+  inline unsigned long Size() const noexcept override; // Override Container member
 
   /* ************************************************************************ */
 

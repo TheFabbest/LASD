@@ -104,13 +104,13 @@ inline bool StackVec<Data>::operator!=(const StackVec& other) const noexcept
 template <typename Data>
 const Data& StackVec<Data>::Top() const {
     if (top == 0) throw std::length_error("Stack is empty");
-    return this->operator[](top);
+    return this->operator[](top-1);
 }
 
 template <typename Data>
 Data& StackVec<Data>::Top() {
     if (top == 0) throw std::length_error("Stack is empty");
-    return this->operator[](top);
+    return this->operator[](top-1);
 }
 
 template <typename Data>
@@ -146,7 +146,6 @@ inline unsigned long StackVec<Data>::Size() const noexcept{
 
 template <typename Data>
 inline bool StackVec<Data>::Empty() const noexcept{
-    std::cout << top;
     return top == 0;
 }
 
@@ -159,14 +158,14 @@ void StackVec<Data>::Clear() noexcept{
 // auxiliary
 template <typename Data>
 void StackVec<Data>::AdjustSizeBeforePush(){
-    if (Size() >= size){
+    if (top >= size){
         Resize(size*2);
     }
 }
 
 template <typename Data>
 void StackVec<Data>::AdjustSizeAfterPop(){
-    if (Size() == size/2){
+    if (top == size/2){
         if (size > MIN_SIZE) Resize(size/2);
         else Resize(MIN_SIZE);
     }
@@ -175,7 +174,7 @@ void StackVec<Data>::AdjustSizeAfterPop(){
 template <typename Data>
 void StackVec<Data>::Resize(const unsigned long newsize) {
     Vector<Data>::Resize(newsize);
-    if (top >= newsize) top = newsize-1;
+    if (top >= newsize) top = newsize;
 }
 
 /* ************************************************************************** */
