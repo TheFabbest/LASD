@@ -113,11 +113,15 @@ List<Data>::List(List && other) noexcept{
 
 template <typename Data>
 List<Data>& List<Data>::operator=(const List<Data>& other) {
-  if (other.tail != nullptr)
+  if (this != &other)
   {
-    tail = new Node(*other.tail);
-    head = other.head->Clone(tail);
-    size = other.size;
+    Clear();
+    Node * cur = other.head;
+    while (cur != nullptr)
+    {
+      InsertAtBack(cur->data);
+      cur = cur->next;
+    }
   }
   return *this;
 }
@@ -254,7 +258,7 @@ void List<Data>::InsertAtBack (const Data& data){
 // insert at back move
 template <typename Data>
 void List<Data>::InsertAtBack (Data&& data){
-  Node *tmp = new Node(data);
+  Node *tmp = new Node(std::move(data));
   if (tail != nullptr)
   {
     tail->next = tmp;

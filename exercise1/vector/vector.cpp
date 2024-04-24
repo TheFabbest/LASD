@@ -8,8 +8,8 @@ namespace lasd {
 template<typename Data>
 Vector<Data>::Vector(const unsigned long size)
 {
-  Elements = new Data[size];
   this->size = size;
+  Elements = new Data[size]();
 }
 
 // copy constructor
@@ -49,7 +49,7 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
   unsigned long i = 0;
   mappable.Map(
     [this, &i](const Data &current){
-      this->operator[](i++) = std::move(current);
+      this->operator[](i++) = current;
     }
   );
 }
@@ -59,14 +59,13 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
 template <typename Data>
 Vector<Data>::~Vector(){
   delete[] Elements;
-  std::cout << "Vector distr called" << std::endl;
 }
 
 // operator=
 template <typename Data>
 Vector<Data>& Vector<Data>::operator=(const Vector<Data> & other){
-  Vector<Data> tmp = new Vector<Data>(other);
-  std::swap(*this, *tmp);
+  Vector<Data> *tmp = new Vector<Data>(other);
+  std::swap(*tmp, *this);
   delete tmp;
   return *this;
 }
@@ -175,7 +174,7 @@ template <typename Data>
 SortableVector<Data>::SortableVector(const TraversableContainer<Data>& traversable) : Vector<Data>::Vector(traversable){}
 
 template <typename Data>
-SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable) : Vector<Data>::Vector(mappable){}
+SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable) : Vector<Data>::Vector(std::move(mappable)){}
 
 
 // TODO mog le prox 4

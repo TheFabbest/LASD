@@ -67,7 +67,7 @@ public:
 
   // Comparison operators
   bool operator==(const QueueVec&) const noexcept;
-  bool operator!=(const QueueVec&) const noexcept;
+  inline bool operator!=(const QueueVec&) const noexcept;
 
   /* ************************************************************************ */
 

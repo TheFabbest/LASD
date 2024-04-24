@@ -24,11 +24,6 @@ private:
 
 protected:
 
-  using typename List<Data>::Node;
-  using List<Data>::head;
-  using List<Data>::tail;
-  using List<Data>::Insert;
-
   // ...
 
 public:
@@ -54,7 +49,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~QueueLst() = default; // TODO
+  virtual ~QueueLst() = default; // TODO
 
   /* ************************************************************************ */
 

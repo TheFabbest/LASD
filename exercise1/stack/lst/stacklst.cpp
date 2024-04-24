@@ -11,7 +11,7 @@ StackLst<Data>::StackLst(const TraversableContainer<Data>& traversable) : List<D
 
 // mappable
 template <typename Data>
-StackLst<Data>::StackLst(MappableContainer<Data>&& mappable) : List<Data>::List(mappable){}
+StackLst<Data>::StackLst(MappableContainer<Data>&& mappable) : List<Data>::List(std::move(mappable)){}
 
 // copy
 template <typename Data>

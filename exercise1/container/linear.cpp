@@ -3,11 +3,27 @@
 namespace lasd {
 
 /* ************************************************************************** */
+template <typename Data>
+bool LinearContainer<Data>::operator==(const LinearContainer<Data> &other) const noexcept{
+  if (this->size != other.size) return false;
+  unsigned long index;
+  for (index = 0; index < this->size; ++index)
+  {
+    if (this->operator[](index) != other[index]) return false;
+  }
+  return true;
+}
+
+template <typename Data>
+bool LinearContainer<Data>::operator!=(const LinearContainer<Data> &other) const noexcept{
+  return !(this->operator==(other));
+}
+
 // TODO controlla queste 4
 template <typename Data>
 inline const Data& LinearContainer<Data>::Front() const{
   if (this->size < 1) throw std::length_error("LinearContainer is Empty");
-  return std::move(operator[](0));
+  return operator[](0);
 }
 
 template <typename Data>
@@ -19,7 +35,7 @@ inline Data& LinearContainer<Data>::Front(){
 template <typename Data>
 inline const Data& LinearContainer<Data>::Back() const{
   if (this->size < 1) throw std::length_error("LinearContainer is Empty");
-  return std::move(operator[](this->size-1));
+  return operator[](this->size-1);
 }
 
 template <typename Data>

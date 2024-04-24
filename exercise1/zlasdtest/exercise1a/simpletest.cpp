@@ -184,7 +184,7 @@ void stestListInt(uint & testnum, uint & testerr) {
 
     GetFront(loctestnum, loctesterr, lst, false, 0);
     GetBack(loctestnum, loctesterr, lst, false, 0);
-    
+
     Exists(loctestnum, loctesterr, lst, false, 0);
 
     TraversePreOrder(loctestnum, loctesterr, lst, true, &TraversePrint<int>);
@@ -369,6 +369,8 @@ void stestVectorListInt(uint & testnum, uint & testerr) {
     InsertAtFront(loctestnum, loctesterr, lst, true, 0);
     InsertAtFront(loctestnum, loctesterr, lst, true, -1);
 
+    EqualLinear(loctestnum, loctesterr, vec, lst, true);
+
     lasd::SortableVector<int> copvec(lst);
     EqualVector(loctestnum, loctesterr, vec, copvec, true);
     lasd::SortableVector<int> copvecx(vec);
@@ -402,6 +404,8 @@ void stestVectorListDouble(uint & testnum, uint & testerr) {
     InsertAtBack(loctestnum, loctesterr, lst, true, 0.0);
     InsertAtBack(loctestnum, loctesterr, lst, true, 0.5);
 
+    EqualLinear(loctestnum, loctesterr, vec, lst, true);
+
     lasd::SortableVector<double> copvec(lst);
     EqualVector(loctestnum, loctesterr, vec, copvec, true);
     lasd::SortableVector<double> copvecx(vec);
@@ -434,6 +438,8 @@ void stestVectorListString(uint & testnum, uint & testerr) {
     InsertAtFront(loctestnum, loctesterr, lst, true, string("B"));
     InsertAtBack(loctestnum, loctesterr, lst, true, string("C"));
     InsertAtFront(loctestnum, loctesterr, lst, true, string("A"));
+
+    EqualLinear(loctestnum, loctesterr, vec, lst, true);
 
     lasd::SortableVector<string> copvec(lst);
     EqualVector(loctestnum, loctesterr, vec, copvec, true);

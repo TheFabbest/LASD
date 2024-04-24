@@ -25,7 +25,7 @@ QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
     // end
 
     head = 0;
-    tail = new_size-1;
+    tail = i;
     size = new_size;
 }
 
@@ -45,7 +45,7 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
     );
 
     head = 0;
-    tail = new_size-1;
+    tail = i;
     size = new_size;
 }
 
@@ -70,23 +70,18 @@ QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::mov
 // Copy assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(const QueueVec& other){
-    Clear();
-    unsigned long index, c, size;
-    size = other.Size();
-    for (index = 0; index < size; ++index){
-        c = (other.head+index)%size;
-        Enqueue(other[c]);
-    }
+    Vector<Data>::operator=(other);
+    head = other.head;
+    tail = other.tail;
     return *this;
 }
 
 // Move assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
+    Vector<Data>::operator=(std::move(other));
     std::swap(head, other.head);
     std::swap(tail, other.tail);
-    std::swap(size, other.size);
-    std::swap(Elements, other.Elements);
     return *this;
 }
 
@@ -94,7 +89,6 @@ template <typename Data>
 bool QueueVec<Data>::operator==(const QueueVec& other) const noexcept{
     unsigned long num_of_elements = Size();
     if (other.Size() != num_of_elements) return false;
-
     unsigned long index1, index2, i;
     for (i = 0; i < num_of_elements; ++i)
     {
@@ -106,18 +100,8 @@ bool QueueVec<Data>::operator==(const QueueVec& other) const noexcept{
 }
 
 template <typename Data>
-bool QueueVec<Data>::operator!=(const QueueVec& other) const noexcept{
-    unsigned long num_of_elements = Size();
-    if (other.Size() != num_of_elements) return true;
-
-    unsigned long index1, index2, i;
-    for (i = 0; i < num_of_elements; ++i)
-    {
-        index1 = (head + i) % size;
-        index2 = (other.head + i) % other.size;
-        if (this->operator[](index1) != other[index2]) return true;
-    }
-    return false;
+inline bool QueueVec<Data>::operator!=(const QueueVec& other) const noexcept{
+    return !(this->operator==(other));
 }
 
 
@@ -159,26 +143,25 @@ void QueueVec<Data>::Enqueue(const Data &data){
 template <typename Data>
 void QueueVec<Data>::Enqueue(Data &&data){
     AdjustSizeBeforeEnqueue();
-    Elements[tail++] = data;
+    Elements[tail++] = std::move(data);
     tail %= size;
 }
 
 // TODO controlla
 template <typename Data>
 void QueueVec<Data>::Resize(const unsigned long newsize){
+    if (size == newsize) return;
     unsigned long num_of_elements = Size();
     unsigned long min_size = (num_of_elements >= newsize) ? newsize : num_of_elements;
     unsigned long index_old, index_new;
 
     Data *newElements =  new Data[newsize];
     for (index_old = head, index_new = 0; index_new < min_size; index_old = (index_old+1)%size, ++index_new){
-        cout << Elements[index_old] << endl;
         std::swap(Elements[index_old], newElements[index_new]);
     }
     head = 0;
     tail = min_size;
     size = newsize;
-    cout << "called with " << newsize << " now " << size << " Size()=" << Size()<<endl;
     std::swap(newElements, Elements);
     delete[] newElements;
 }
@@ -213,8 +196,9 @@ void QueueVec<Data>::AdjustSizeBeforeEnqueue(){
 
 template <typename Data>
 void QueueVec<Data>::AdjustSizeAfterDequeue(){
-    if (Size() + 1 == size/2){
-        if (size > MIN_SIZE) Resize(size/2);
+    unsigned long newsize = size/2;
+    if (Size() == size/4){
+        if (newsize >= MIN_SIZE) Resize(newsize);
         else Resize(MIN_SIZE);
     }
 }

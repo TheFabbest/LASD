@@ -26,7 +26,6 @@ protected:
 
   // TODO mog
   using Container::size;
-
   Data* Elements = nullptr;
 
 public:
@@ -45,11 +44,10 @@ public:
   /* ************************************************************************ */
 
   // Copy constructor
-  // TODO perche non Vector<Data> e perche non e noexcept
-  Vector(const Vector& other);
+  Vector(const Vector<Data>& other);
 
   // Move constructor
-  Vector(Vector&& other) noexcept;
+  Vector(Vector<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
@@ -114,13 +112,14 @@ private:
 
 protected:
 
-  // TODO mog
+  // TODO mog TODO CONTROLLA!
   using Container::size;
-  using LinearContainer<Data>::operator[];
 
   // ...
 
 public:
+
+  using LinearContainer<Data>::operator[]; // TODO CONTROLLA
 
   // Default constructor
   SortableVector() = default;
@@ -135,7 +134,6 @@ public:
   /* ************************************************************************ */
 
   // Copy constructor
-  // TODO perche non Vector<Data> e perche non e noexcept
   SortableVector(const SortableVector<Data>& other);
 
   // Move constructor
@@ -144,7 +142,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~SortableVector() = default;
+  ~SortableVector() = default; // TODO virtual?
 
   /* ************************************************************************ */
 
@@ -153,9 +151,6 @@ public:
 
   // Move assignment
   SortableVector<Data>& operator=(SortableVector<Data>&& other) noexcept;
-
-  // TODO reimplementa ricerca (?)
-
 
 protected:
 

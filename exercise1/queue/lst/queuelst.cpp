@@ -10,7 +10,7 @@ QueueLst<Data>::QueueLst(const TraversableContainer<Data>& traversable) : List<D
 
 // mappable
 template <typename Data>
-QueueLst<Data>::QueueLst(MappableContainer<Data>&& mappable) : List<Data>::List(mappable){}
+QueueLst<Data>::QueueLst(MappableContainer<Data>&& mappable) : List<Data>::List(std::move(mappable)){}
 
 // copy
 template <typename Data>
@@ -18,7 +18,7 @@ QueueLst<Data>::QueueLst(const QueueLst& other) : List<Data>::List(other){}
 
 // move
 template <typename Data>
-QueueLst<Data>::QueueLst(QueueLst&& other) : List<Data>::List(other){}
+QueueLst<Data>::QueueLst(QueueLst&& other) : List<Data>::List(std::move(other)){}
 
 // operators
 // TODO mog prossimi 5

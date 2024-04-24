@@ -179,6 +179,7 @@ void StackVec<Data>::AdjustSizeAfterPop(){
 
 template <typename Data>
 void StackVec<Data>::Resize(const unsigned long newsize) {
+    if (size == newsize) return;
     Vector<Data>::Resize(newsize);
     if (top > newsize) top = newsize;
 }

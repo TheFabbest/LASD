@@ -39,8 +39,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const LinearContainer&) const noexcept = delete; // Comparison of abstract types is not possible.
-  bool operator!=(const LinearContainer&) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator==(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is not possible.
+  bool operator!=(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is not possible.
 
   /* ************************************************************************ */
 
