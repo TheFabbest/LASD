@@ -82,10 +82,10 @@ public:
   /* ************************************************************************ */
 
   // Copy constructor
-  List(const List & list) noexcept;
+  List(const List<Data> & list) noexcept;
 
   // Move constructor
-  List(List && list) noexcept;
+  List(List<Data> && list) noexcept;
 
   /* ************************************************************************ */
 

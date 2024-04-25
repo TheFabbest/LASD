@@ -451,13 +451,17 @@ void stestVectorListString(uint & testnum, uint & testerr) {
     lasd::List<string> coplstx(lst);
     EqualList(loctestnum, loctesterr, coplstx, coplst, true);
 
+    vec.Traverse([](const string& dat){cout << dat << endl;});
+    copvec.Traverse([](const string& dat){cout << dat << endl;});
     lasd::List<string> coplsty(move(vec));
+    vec.Traverse([](const string& dat){cout << dat << endl;});
+    copvec.Traverse([](const string& dat){cout << dat << endl;});
     EqualList(loctestnum, loctesterr, coplst, coplsty, true);
-    EqualVector(loctestnum, loctesterr, vec, copvec, false);
+    EqualVector(loctestnum, loctesterr, vec, copvec, false); // errore
 
     lasd::SortableVector<string> copvecy(move(lst));
     EqualVector(loctestnum, loctesterr, copvec, copvecy, true);
-    EqualList(loctestnum, loctesterr, lst, coplst, false);
+    EqualList(loctestnum, loctesterr, lst, coplst, false); // errore
   }
   catch (...) {
     loctestnum++; loctesterr++;

@@ -80,9 +80,7 @@ void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
   // todo test fold and traverse and sort
 }
 
-void TestList()
-{
-  TellTest("List");
+void TestListInt(){
   List<int> lista = List<int>();
   lista.Remove(100);
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
@@ -130,6 +128,79 @@ void TestList()
 
   List<int> lista3(lista2);
   if (lista2 != lista3) FoundError("Comparison", "List");
+
+  lista3.Insert(123);
+  List<int> lista4(std::move(lista3));
+  if (lista4 == lista3) FoundError("Move", "List");
+  if (lista3.Size() > 0) FoundError("Move", "List");
+}
+
+void TestListString()
+{
+  List<string> lista = List<string>();
+  lista.Remove("Albero");
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() > 0) FoundError("Remove or Size", "List");
+
+  lista.Remove("Albero");
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() > 0) FoundError("Remove or Size", "List");
+
+  lista.InsertAtBack("C");
+  if (lista.Empty()) FoundError("InsertAtBack or Empty", "List");
+  if (lista.Size() != 1) FoundError("InsertAtBack or Size", "List");
+
+  List<string> lista2 = lista;
+  if (lista2 != lista) FoundError("Comparison", "List");
+
+  lista.Insert("C");
+  if (lista.Empty()) FoundError("Insert or Empty", "List");
+  if (lista.Size() != 1) FoundError("Insert or Size", "List");
+  
+  lista.InsertAtFront("B");
+  if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
+  if (lista.Size() != 2) FoundError("InsertAtFront or Size", "List");
+
+  lista.Remove("B");
+  if (lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 1) FoundError("Remove or Size", "List");
+
+  lista.Remove("B");
+  if (lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 1) FoundError("Remove or Size", "List");
+
+  lista.Remove("C");
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 0) FoundError("Remove or Size", "List");
+
+  lista.InsertAtFront("C");
+  if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
+  if (lista.Size() != 1) FoundError("InsertAtFront or Size", "List");
+  if (lista != lista2) FoundError("InsertAtFront or Comparison", "List");
+
+  lista.Clear();
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() != 0) FoundError("Remove or Size", "List");
+
+  List<string> lista3(lista2);
+  if (lista2 != lista3) FoundError("Comparison", "List");
+
+  lista3.Insert("ABC");
+  List<string> lista4(std::move(lista3));
+  if (lista4 == lista3) FoundError("Move", "List");
+  if (lista3.Size() > 0) FoundError("Move", "List");
+
+  std::swap(lista4, lista3);
+  if (lista4.Size() > 0 || lista3.Size() == 0) FoundError("swap", "List");
+}
+
+void TestList()
+{
+  TellTest("List");
+  cout << "Test on List<int>" << endl;
+  TestListInt();
+  cout << "Deeper test on List<string>" << endl;
+  TestListString();
 }
 
 void TestEmptyQueueVec(lasd::QueueVec<int> queuevec){

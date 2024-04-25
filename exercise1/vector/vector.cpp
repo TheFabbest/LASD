@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <iostream>
+using namespace std;
 namespace lasd {
 
 /* ************************************************************************** */
@@ -8,6 +9,8 @@ namespace lasd {
 template<typename Data>
 Vector<Data>::Vector(const unsigned long size)
 {
+
+  cout << "size constr vec" << endl;
   this->size = size;
   Elements = new Data[size]();
 }
@@ -17,6 +20,8 @@ Vector<Data>::Vector(const unsigned long size)
 template<typename Data>
 Vector<Data>::Vector(const Vector<Data>& other)
 {
+
+  cout << "cop constr vec" << endl;
   size = other.size;
   Elements = new Data[size];
   std::copy(other.Elements, other.Elements + size, Elements);
@@ -26,6 +31,7 @@ Vector<Data>::Vector(const Vector<Data>& other)
 template<typename Data>
 Vector<Data>::Vector(Vector<Data>&& other) noexcept
 {
+  cout << "move constr vec" << endl;
   std::swap(Elements, other.Elements);
   std::swap(size, other.size);
 }
@@ -34,6 +40,8 @@ Vector<Data>::Vector(Vector<Data>&& other) noexcept
 template<typename Data>
 Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(traversable.Size())
 {
+
+  cout << "travers vec" << endl;
   unsigned long i = 0;
   traversable.Traverse(
     [this, &i](const Data &current){
@@ -46,6 +54,7 @@ Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(tra
 template<typename Data>
 Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size())
 {
+  cout << "map vec" << endl;
   unsigned long i = 0;
   mappable.Map(
     [this, &i](const Data &current){
@@ -58,12 +67,14 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
 // TODO mog
 template <typename Data>
 Vector<Data>::~Vector(){
+  cout << "vec distr" << endl;
   delete[] Elements;
 }
 
 // operator=
 template <typename Data>
 Vector<Data>& Vector<Data>::operator=(const Vector<Data> & other){
+  cout << "cop= vec" << endl;
   Vector<Data> *tmp = new Vector<Data>(other);
   std::swap(*tmp, *this);
   delete tmp;
@@ -72,6 +83,7 @@ Vector<Data>& Vector<Data>::operator=(const Vector<Data> & other){
 
 template <typename Data>
 Vector<Data>& Vector<Data>::operator=(Vector<Data> && other) noexcept{
+  cout << "mov= vec" << endl;
   std::swap(Elements, other.Elements);
   std::swap(size, other.size);
   return *this;
