@@ -24,20 +24,21 @@ bool List<Data>::Node::operator!=(const struct Node& other) const noexcept
 
 
 // constructors
-// TODO noexcept?
+// TODO togli?
 template <typename Data>
 List<Data>::Node::Node(const Data & data) {
   this->data = data;
 }
 
 template <typename Data>
-List<Data>::Node::Node(Data && data){
+List<Data>::Node::Node(Data && data) noexcept{
   std::swap(this->data, data);
 }
 
 // TODO mog ma why swap
+// TODO togli?
 template <typename Data>
-List<Data>::Node::Node(const Node & node) noexcept{
+List<Data>::Node::Node(const Node & node) {
   data = node.data;
   //std::swap(next, node.next); // TODO se faccio cosi ovviamente non funziona perche const ma mi pare mog
   next = node.next;
@@ -95,7 +96,7 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
 // TODO mog what??
 // copy constructor
 template <typename Data>
-List<Data>::List(const List<Data> & other) noexcept{
+List<Data>::List(const List<Data> & other) {
   cout << "copy constr" << endl;
   if (other.tail != nullptr)
   {
@@ -132,7 +133,7 @@ List<Data>& List<Data>::operator=(const List<Data>& other) {
 }
 
 template <typename Data>
-List<Data>& List<Data>::operator=(List<Data>&& other) {
+List<Data>& List<Data>::operator=(List<Data>&& other) noexcept {
   std::swap(head, other.head);
   std::swap(tail, other.tail);
   std::swap(size, other.size);
@@ -149,7 +150,7 @@ List<Data>::~List(){
 
 // TODO mog
 template <typename Data>
-void List<Data>::Clear() noexcept{
+void List<Data>::Clear() {
   delete head;
   head = tail = nullptr;
   size = 0;
@@ -171,7 +172,7 @@ bool List<Data>::Insert(Data&& data){
 }
 
 template <typename Data>
-bool List<Data>::Remove(const Data& data) noexcept{
+bool List<Data>::Remove(const Data& data) {
   Node *curr = head;
   Node *prec = nullptr;
   while (curr != nullptr && curr->data != data)

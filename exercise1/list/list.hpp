@@ -35,13 +35,13 @@ protected:
 
     // Specific constructors
     Node(const Data& data);
-    Node(Data&& data);
+    Node(Data&& data) noexcept;
     
     /* ********************************************************************** */
 
     // TODO
     // Copy constructor
-    Node(const Node & node) noexcept;
+    Node(const Node & node);
 
     // Move constructor
     Node(Node && node) noexcept;
@@ -49,7 +49,7 @@ protected:
     /* ********************************************************************** */
 
     // Destructor
-    ~Node();
+    virtual ~Node();
 
     /* ********************************************************************** */
 
@@ -62,7 +62,7 @@ protected:
     // Specific member functions
 
     // TODO mog
-    Node * Clone(Node*);
+    virtual Node * Clone(Node*);
   };
 
   Node *head = nullptr;
@@ -82,7 +82,7 @@ public:
   /* ************************************************************************ */
 
   // Copy constructor
-  List(const List<Data> & list) noexcept;
+  List(const List<Data> & list);
 
   // Move constructor
   List(List<Data> && list) noexcept;
@@ -90,7 +90,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~List();
+  virtual ~List();
 
   /* ************************************************************************ */
 
@@ -98,7 +98,7 @@ public:
   List& operator=(const List&);
 
   // Move assignment
-  List& operator=(List&&);
+  List& operator=(List&&) noexcept;
 
   /* ************************************************************************ */
 
@@ -122,7 +122,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept override; // Override ClearableContainer member
+  void Clear() override; // Override ClearableContainer member
 
   /* ************************************************************************ */
 
@@ -130,7 +130,7 @@ public:
 
   bool Insert(const Data& data); // Copy of the value
   bool Insert(Data&& data); // Move of the value
-  bool Remove(const Data& data) noexcept;
+  bool Remove(const Data& data);
 
   /* ************************************************************************ */
 

@@ -35,7 +35,7 @@ public:
   Stack& operator=(const Stack&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  Stack& operator=(Stack&&) = delete; // Move assignment of abstract types is not possible.
+  Stack& operator=(Stack&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 

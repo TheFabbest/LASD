@@ -29,6 +29,7 @@ protected:
   
   using Vector<Data>::size;
   using Vector<Data>::Elements;
+  using Vector<Data>::Resize; // TODO control
 
 public:
 
@@ -52,7 +53,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~QueueVec() = default;
+  virtual ~QueueVec() = default;
 
   /* ************************************************************************ */
 
@@ -92,7 +93,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept override; // Override ClearableContainer member
+  void Clear() override; // Override ClearableContainer member
 
 protected:
 

@@ -153,7 +153,7 @@ inline bool Vector<Data>::operator!=(const Vector<Data>& other) const noexcept
 
 // TODO mog
 template <typename Data>
-void Vector<Data>::Clear() noexcept
+void Vector<Data>::Clear()
 {
   delete []Elements;
   Elements = nullptr;

@@ -342,10 +342,13 @@ void TestQueueVecString(QueueVec<string> &queuevec)
   
   cout << "Testing constructors" << endl;
   QueueVec<string> copy_constr(queuevec);
-  Vector<string> vec(3); 
-  vec[1] = seconda;
-  vec[0] = prima;
-  vec[2] = terza;
+  Vector<string> vec(queuevec.Size());
+  for (unsigned long i = 0; i < curr_size; i++)
+  {
+    vec[i] = queuevec.Head();
+    queuevec.Enqueue(queuevec.HeadNDequeue());
+  }
+
 
   cout << "trav" << endl;
   QueueVec<string> trav_constr(vec);
@@ -394,9 +397,10 @@ void TestQueueVec(){
   cout << "MOVE CONSTR!!!!!!!!!!!!!!!" << endl;
   QueueVec<string> move_constr(std::move(queuevecstring));
   TestQueueVecString(move_constr);
-  /*cout << "MOVE ASSIGN!!!!!!!!!!!!!!!" << endl;
+  
+  cout << "MOVE ASSIGN!!!!!!!!!!!!!!!" << endl;
   QueueVec<string> move_assign = std::move(move_constr);
-  TestQueueVecString(move_assign);*/
+  TestQueueVecString(move_assign);
 }
 
 void PrintResults()

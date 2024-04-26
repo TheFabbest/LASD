@@ -49,12 +49,12 @@ public:
   StackVec(const StackVec<Data>&);
 
   // Move constructor
-  StackVec(StackVec<Data>&&);
+  StackVec(StackVec<Data>&&) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  ~StackVec() = default;
+  virtual ~StackVec() = default;
 
   /* ************************************************************************ */
 
@@ -93,7 +93,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept; // Override ClearableContainer member
+  void Clear(); // Override ClearableContainer member
 
 protected:
 

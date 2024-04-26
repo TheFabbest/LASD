@@ -25,6 +25,8 @@ private:
 protected:
 
   using typename List<Data>::Node;
+
+  // TODO mari non usa
   using List<Data>::head;
   using List<Data>::tail;
   using List<Data>::size;
@@ -48,17 +50,17 @@ public:
   StackLst(const StackLst& other);
 
   // Move constructor
-  StackLst(StackLst&& other);
+  StackLst(StackLst&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  ~StackLst() = default;
+  virtual ~StackLst() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  StackLst& operator=(const StackLst& other) noexcept;
+  StackLst& operator=(const StackLst& other);
 
   // Move assignment
   StackLst& operator=(StackLst&& other) noexcept;
@@ -84,7 +86,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  inline void Clear() noexcept override;
+  inline void Clear() override;
 
 protected:
 

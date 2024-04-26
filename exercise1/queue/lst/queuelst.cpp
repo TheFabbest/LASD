@@ -18,7 +18,7 @@ QueueLst<Data>::QueueLst(const QueueLst& other) : List<Data>::List(other){}
 
 // move
 template <typename Data>
-QueueLst<Data>::QueueLst(QueueLst&& other) : List<Data>::List(std::move(other)){}
+QueueLst<Data>::QueueLst(QueueLst&& other) noexcept : List<Data>::List(std::move(other)){}
 
 // operators
 // TODO mog prossimi 5

@@ -19,7 +19,7 @@ StackLst<Data>::StackLst(const StackLst& other) : List<Data>::List(other){}
 
 // move
 template <typename Data>
-StackLst<Data>::StackLst(StackLst&& other) : List<Data>::List(other){}
+StackLst<Data>::StackLst(StackLst&& other) noexcept : List<Data>::List(std::move(other)){}
 
 
 template <typename Data>
@@ -34,7 +34,7 @@ bool StackLst<Data>::operator!=(const StackLst& other) const noexcept{
 
 // Copy assignment
 template <typename Data>
-StackLst<Data>& StackLst<Data>::operator=(const StackLst<Data>& other) noexcept{
+StackLst<Data>& StackLst<Data>::operator=(const StackLst<Data>& other){
     List<Data>::operator=(other);
     return *this;
 }
@@ -98,7 +98,7 @@ void StackLst<Data>::Push(Data&& data){
 }
 
 template <typename Data>
-inline void StackLst<Data>::Clear() noexcept{
+inline void StackLst<Data>::Clear(){
     List<Data>::Clear();
 }
 

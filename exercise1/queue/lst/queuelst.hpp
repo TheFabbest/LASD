@@ -44,12 +44,12 @@ public:
   QueueLst(const QueueLst& other);
 
   // Move constructor
-  QueueLst(QueueLst&& other);
+  QueueLst(QueueLst&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~QueueLst() = default; // TODO
+  virtual ~QueueLst() = default;
 
   /* ************************************************************************ */
 

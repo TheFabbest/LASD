@@ -52,7 +52,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~Vector();
+  virtual ~Vector();
 
   /* ************************************************************************ */
 
@@ -72,7 +72,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept override; // Override ClearableContainer member
+  void Clear() override; // Override ClearableContainer member
 
   /* ************************************************************************ */
 
@@ -112,14 +112,9 @@ private:
 
 protected:
 
-  // TODO mog TODO CONTROLLA!
-  using Container::size;
-
-  // ...
+  using LinearContainer<Data>::operator[]; // TODO CONTROLLA
 
 public:
-
-  using LinearContainer<Data>::operator[]; // TODO CONTROLLA
 
   // Default constructor
   SortableVector() = default;
@@ -142,7 +137,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  ~SortableVector() = default; // TODO virtual?
+  virtual ~SortableVector() = default;
 
   /* ************************************************************************ */
 

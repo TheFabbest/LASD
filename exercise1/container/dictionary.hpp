@@ -36,7 +36,7 @@ public:
   DictionaryContainer& operator=(const DictionaryContainer&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  DictionaryContainer& operator=(DictionaryContainer&&) = delete; // Move assignment of abstract types is not possible.
+  DictionaryContainer& operator=(DictionaryContainer&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -50,7 +50,7 @@ public:
 
   virtual bool Insert(const Data& data) = 0; // Copy of the value
   virtual bool Insert(Data&& data) = 0; // Move of the value
-  virtual bool Remove(const Data& data) noexcept = 0;
+  virtual bool Remove(const Data& data) = 0;
 
   inline virtual bool InsertAll(const TraversableContainer<Data> &container); // Copy of the value; From TraversableContainer; True if all are inserted
   inline virtual bool InsertAll(MappableContainer<Data> &&container); // Move of the value; From MappableContainer; True if all are inserted

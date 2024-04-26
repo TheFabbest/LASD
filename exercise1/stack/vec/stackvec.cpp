@@ -57,7 +57,7 @@ StackVec<Data>::StackVec(const StackVec<Data>& other) : Vector<Data>(other){
 
 // Move constructor
 template <typename Data>
-StackVec<Data>::StackVec(StackVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
+StackVec<Data>::StackVec(StackVec<Data>&& other) noexcept: Vector<Data>::Vector(std::move(other)){
     std::swap(top, other.top);
 }
 
@@ -156,7 +156,7 @@ inline bool StackVec<Data>::Empty() const noexcept{
 }
 
 template <typename Data>
-void StackVec<Data>::Clear() noexcept{
+void StackVec<Data>::Clear(){
     Resize(MIN_SIZE);
     top = 0;
 }

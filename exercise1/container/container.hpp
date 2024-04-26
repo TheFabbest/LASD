@@ -81,7 +81,7 @@ public:
   ClearableContainer& operator=(const ClearableContainer&) = delete; // Copy assignment of abstract types is not possible.
   
   // Move assignment
-  ClearableContainer& operator=(ClearableContainer&&) = delete; // Move assignment of abstract types is not possible.
+  ClearableContainer& operator=(ClearableContainer&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -93,7 +93,7 @@ public:
 
   // Specific member functions
 
-  virtual void Clear() noexcept = 0;
+  virtual void Clear() = 0;
 
 };
 
@@ -139,7 +139,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  void Clear() noexcept override // Override ClearableContainer member
+  void Clear() override // Override ClearableContainer member
   {
     Resize(0);
   }

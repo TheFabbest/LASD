@@ -43,7 +43,6 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
     mappable.Map(
         [this, &i](const Data& curr){
             this->Elements[i++] = curr;
-            cout << i-1 << "<-" << curr << endl;
         }
     );
 
@@ -67,9 +66,7 @@ template <typename Data>
 QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
     cout << "Calling move constructor queuevec" << endl;
     std::swap(head, other.head);
-    cout << "Err..." << endl;
     std::swap(tail, other.tail);
-    cout << "uh..." << endl;
 }
 
 // operators
@@ -97,14 +94,12 @@ QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
 template <typename Data>
 bool QueueVec<Data>::operator==(const QueueVec& other) const noexcept{
     unsigned long num_of_elements = Size();
-        cout << num_of_elements << " vs " << other.Size() << endl;
     if (other.Size() != num_of_elements) return false;
     unsigned long index1, index2, i;
     for (i = 0; i < num_of_elements; ++i)
     {
         index1 = (head + i) % size;
         index2 = (other.head + i) % other.size;
-        cout << this->operator[](index1) << "==" << other[index2] << endl;
         if (this->operator[](index1) != other[index2]) return false;
     }
     return true;
@@ -190,7 +185,7 @@ inline unsigned long QueueVec<Data>::Size() const noexcept{
 }
 
 template <typename Data>
-void QueueVec<Data>::Clear() noexcept{
+void QueueVec<Data>::Clear() {
     Resize(MIN_SIZE);
     tail = 0;
     head = 0;

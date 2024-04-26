@@ -23,6 +23,8 @@ private:
 
 protected:
 
+  using Container::size;
+
 public:
 
   // Destructor
@@ -34,7 +36,7 @@ public:
   LinearContainer& operator=(const LinearContainer&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  LinearContainer& operator=(LinearContainer&&) = delete; // Move assignment of abstract types is not possible.
+  LinearContainer& operator=(LinearContainer&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
@@ -49,11 +51,11 @@ public:
   inline virtual const Data& operator[](const unsigned long index) const = 0; // (non-mutable version; concrete function must throw std::out_of_range when out of range)
   inline virtual Data& operator[](const unsigned long index) = 0; // (mutable version; concrete function must throw std::out_of_range when out of range)
 
-  inline const Data& Front() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  inline Data& Front(); // (mutable version; concrete function must throw std::length_error when empty)
+  inline virtual const Data& Front() const; // (non-mutable version; concrete function must throw std::length_error when empty)
+  inline virtual Data& Front(); // (mutable version; concrete function must throw std::length_error when empty)
 
-  inline const Data& Back() const; // (non-mutable version; concrete function must throw std::length_error when empty)
-  inline Data& Back(); // (mutable version; concrete function must throw std::length_error when empty)
+  inline virtual const Data& Back() const; // (non-mutable version; concrete function must throw std::length_error when empty)
+  inline virtual Data& Back(); // (mutable version; concrete function must throw std::length_error when empty)
 
   /* ************************************************************************ */
 
@@ -109,7 +111,8 @@ private:
 
 protected:
 
-  // ...
+  using Container::size;
+  using LinearContainer<Data>::operator[];
 
 public:
 
@@ -127,14 +130,14 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const SortableLinearContainer&) const noexcept = delete; // Comparison of abstract types is not possible.
-  bool operator!=(const SortableLinearContainer&) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator==(const SortableLinearContainer&) const noexcept = default;
+  bool operator!=(const SortableLinearContainer&) const noexcept = default;
 
   /* ************************************************************************ */
 
   // Specific member function
 
-  void Sort() noexcept;
+  virtual void Sort() noexcept;
 
 protected:
 

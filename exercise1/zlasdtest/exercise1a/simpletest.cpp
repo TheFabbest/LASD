@@ -453,11 +453,11 @@ void stestVectorListString(uint & testnum, uint & testerr) {
 
     lasd::List<string> coplsty(move(vec));
     EqualList(loctestnum, loctesterr, coplst, coplsty, true);
-    EqualVector(loctestnum, loctesterr, vec, copvec, false);
+    EqualVector(loctestnum, loctesterr, vec, copvec, false); // ERROR
 
     lasd::SortableVector<string> copvecy(move(lst));
     EqualVector(loctestnum, loctesterr, copvec, copvecy, true);
-    EqualList(loctestnum, loctesterr, lst, coplst, false);
+    EqualList(loctestnum, loctesterr, lst, coplst, false); // ERROR
   }
   catch (...) {
     loctestnum++; loctesterr++;
