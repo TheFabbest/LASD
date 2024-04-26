@@ -15,6 +15,8 @@
 #include "../queue/lst/queuelst.hpp"
 #include "../queue/vec/queuevec.hpp"
 
+#include "../zlasdtest/container/traversable.hpp"
+
 #include <random>
 
 /* ************************************************************************** */
@@ -36,7 +38,7 @@ void FoundError(const char *message, const char *testTitle)
 
 void TellTest(const char *name)
 {
-  cout << endl << endl << "Starting test " << name << endl; 
+  cout << endl << endl << "---STARTING TEST " << name << "---" << endl; 
 }
 
 void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
@@ -77,7 +79,25 @@ void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
     FoundError("Front", "SortableVector");
   }
 
-  // todo test fold and traverse and sort
+  sortablevec.Sort();
+
+  int tot = 100;
+  sortablevec.Fold(std::function(FoldParity), tot);
+  if (tot != 100) FoundError("Fold", "SortableVector");
+
+  sortablevec.Traverse(
+    [](const int& dat) {
+      std::cout << "ERROR: READING " << dat << endl;
+      FoundError("Traverse", "SortableVector");
+    }
+  );
+
+  sortablevec.Map(
+    [](const int& dat) {
+      cout << "ERROR: READING " << dat << endl;
+      FoundError("Map", "SortableVector");
+    }
+  );
 }
 
 void TestListInt(){
@@ -138,7 +158,9 @@ void TestListInt(){
 void TestListString()
 {
   List<string> lista = List<string>();
-  lista.Remove("Albero");
+
+  cout << "Removing on empty" << endl;
+  lista.Remove(string());
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() > 0) FoundError("Remove or Size", "List");
 
@@ -146,13 +168,21 @@ void TestListString()
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() > 0) FoundError("Remove or Size", "List");
 
+  lista.Remove("Albero");
+  if (!lista.Empty()) FoundError("Remove or Empty", "List");
+  if (lista.Size() > 0) FoundError("Remove or Size", "List");
+
+  cout << "InsertAtBack(\"C\")" << endl;
   lista.InsertAtBack("C");
   if (lista.Empty()) FoundError("InsertAtBack or Empty", "List");
   if (lista.Size() != 1) FoundError("InsertAtBack or Size", "List");
 
-  List<string> lista2 = lista;
+  cout << "Copy Assignment" << endl;
+  List<string> lista2;
+  lista2 = lista;
   if (lista2 != lista) FoundError("Comparison", "List");
 
+  cout << "Insert and Remove" << endl;
   lista.Insert("C");
   if (lista.Empty()) FoundError("Insert or Empty", "List");
   if (lista.Size() != 1) FoundError("Insert or Size", "List");
@@ -160,14 +190,17 @@ void TestListString()
   lista.InsertAtFront("B");
   if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
   if (lista.Size() != 2) FoundError("InsertAtFront or Size", "List");
+  if (lista.Front() != "B" || lista.Back() != "C") FoundError("Front or Back", "List");
 
   lista.Remove("B");
   if (lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() != 1) FoundError("Remove or Size", "List");
+  if (lista.Front() != "C" || lista.Back() != "C") FoundError("Front or Back", "List");
 
   lista.Remove("B");
   if (lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() != 1) FoundError("Remove or Size", "List");
+  if (lista.Front() != "C" || lista.Back() != "C") FoundError("Front or Back", "List");
 
   lista.Remove("C");
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
@@ -182,13 +215,16 @@ void TestListString()
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() != 0) FoundError("Remove or Size", "List");
 
+  cout << "Copy Constructor" << endl;
   List<string> lista3(lista2);
   if (lista2 != lista3) FoundError("Comparison", "List");
 
   lista3.Insert("ABC");
+
+  cout << "Move Constructor" << endl;
   List<string> lista4(std::move(lista3));
   if (lista4 == lista3) FoundError("Move", "List");
-  if (lista3.Size() > 0) FoundError("Move", "List");
+  if (lista3.Size() > 0 || !lista3.Empty()) FoundError("Move", "List");
 
   std::swap(lista4, lista3);
   if (lista4.Size() > 0 || lista3.Size() == 0) FoundError("swap", "List");
@@ -282,7 +318,61 @@ void TestEmptyQueueVec(lasd::QueueVec<int> queuevec){
   {
     FoundError("Head", "QueueVec");
   }
+}
 
+void TestQueueVecString(QueueVec<string> &queuevec)
+{
+  string prima = "Stringa di Prova", seconda = "Seconda Stringa", terza = "Terza";
+
+  unsigned long curr_size = queuevec.Size();
+  cout << "Size is " << curr_size << endl;
+
+  cout << "Populating" << endl;
+  queuevec.Enqueue(prima);
+  curr_size++;
+  if (queuevec.Size() != curr_size) FoundError("Enqueue or Size", "QueueVec");
+
+  queuevec.Enqueue(seconda);
+  curr_size++;
+  if (queuevec.Size() != curr_size) FoundError("Enqueue or Size", "QueueVec");
+
+  queuevec.Enqueue(terza);
+  curr_size++;
+  if (queuevec.Size() != curr_size) FoundError("Enqueue or Size", "QueueVec");
+  
+  cout << "Testing constructors" << endl;
+  QueueVec<string> copy_constr(queuevec);
+  Vector<string> vec(3); 
+  vec[1] = seconda;
+  vec[0] = prima;
+  vec[2] = terza;
+
+  cout << "trav" << endl;
+  QueueVec<string> trav_constr(vec);
+  cout << "map" << endl;
+  QueueVec<string> mapp_constr(std::move(vec));
+
+  cout << trav_constr.Size() << "   " << mapp_constr.Size() << endl;
+
+  cout << "Testing assignements" << endl;
+  QueueVec<string> copy_assign;
+  copy_assign = queuevec;
+  
+  cout << "Testing Enqueue and Dequeue" << endl;
+  queuevec.Dequeue();
+  string second = queuevec.Head();
+  if (second != queuevec.HeadNDequeue()) FoundError("HeadNDequeue", "QueueVec");
+
+  queuevec.Enqueue(prima);
+  queuevec.Enqueue(seconda);
+  queuevec.Enqueue(terza);
+  if (queuevec.HeadNDequeue() != terza) FoundError("HeadNDequeue", "QueueVec");
+
+  cout << "Testing comparisons" << endl;
+  if (copy_constr != queuevec) FoundError("Comparisons (copy)", "QueueVec");
+  if (trav_constr != queuevec) FoundError("Comparisons (trav)", "QueueVec");
+  if (mapp_constr != queuevec) FoundError("Comparisons (map)", "QueueVec");
+  if (copy_assign != queuevec) FoundError("Comparisons (assign)", "QueueVec");
 }
 
 void TestSortableVector()
@@ -298,6 +388,15 @@ void TestQueueVec(){
   TellTest("QueueVec");
   lasd::QueueVec<int> queuevec = lasd::QueueVec<int>();
   TestEmptyQueueVec(queuevec);
+  lasd::QueueVec<string> queuevecstring = lasd::QueueVec<string>();
+  TestQueueVecString(queuevecstring);
+
+  cout << "MOVE CONSTR!!!!!!!!!!!!!!!" << endl;
+  QueueVec<string> move_constr(std::move(queuevecstring));
+  TestQueueVecString(move_constr);
+  cout << "MOVE ASSIGN!!!!!!!!!!!!!!!" << endl;
+  QueueVec<string> move_assign = std::move(move_constr);
+  TestQueueVecString(move_assign);
 }
 
 void PrintResults()
@@ -353,10 +452,10 @@ void TestMiscellaneus()
 }
 
 void mytest() {
-  TestMiscellaneus();
-  TestSortableVector();
+  // TestMiscellaneus();
+  // TestSortableVector();
+  // TestList();
   TestQueueVec();
-  TestList();
   PrintResults();
   //PureRandomTest(); TODO
   cout << "END" << endl;

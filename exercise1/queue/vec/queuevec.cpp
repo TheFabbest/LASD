@@ -9,6 +9,7 @@ QueueVec<Data>::QueueVec() : Vector<Data>((unsigned long) MIN_SIZE){}
 
 template <typename Data>
 QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
+    cout << "traversable constructor" << endl;
     unsigned long argument_size = traversable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
     ++new_size;
@@ -31,6 +32,7 @@ QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
 
 template <typename Data>
 QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
+    cout << "mappable constructor" << endl;
     unsigned long argument_size = mappable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
     ++new_size;
@@ -41,6 +43,7 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
     mappable.Map(
         [this, &i](const Data& curr){
             this->Elements[i++] = curr;
+            cout << i-1 << "<-" << curr << endl;
         }
     );
 
@@ -53,6 +56,7 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
 // TODO vedi
 template <typename Data>
 QueueVec<Data>::QueueVec(const QueueVec<Data>& other) : Vector<Data>(other){
+    cout << "Calling copy constructor queuevec" << endl;
     head = other.head;
     tail = other.tail;
 }
@@ -61,8 +65,11 @@ QueueVec<Data>::QueueVec(const QueueVec<Data>& other) : Vector<Data>(other){
 // TODO vedi
 template <typename Data>
 QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
+    cout << "Calling move constructor queuevec" << endl;
     std::swap(head, other.head);
+    cout << "Err..." << endl;
     std::swap(tail, other.tail);
+    cout << "uh..." << endl;
 }
 
 // operators
@@ -70,6 +77,7 @@ QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::mov
 // Copy assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(const QueueVec& other){
+    cout << "Calling operator= & queuevec" << endl;
     Vector<Data>::operator=(other);
     head = other.head;
     tail = other.tail;
@@ -79,6 +87,7 @@ QueueVec<Data>& QueueVec<Data>::operator=(const QueueVec& other){
 // Move assignment
 template <typename Data>
 QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
+    cout << "Calling operator= && queuevec" << endl;
     Vector<Data>::operator=(std::move(other));
     std::swap(head, other.head);
     std::swap(tail, other.tail);
@@ -94,6 +103,7 @@ bool QueueVec<Data>::operator==(const QueueVec& other) const noexcept{
     {
         index1 = (head + i) % size;
         index2 = (other.head + i) % other.size;
+        cout << this->operator[](index1) << "==" << other[index2] << endl;
         if (this->operator[](index1) != other[index2]) return false;
     }
     return true;
