@@ -300,11 +300,13 @@ Data& List<Data>::operator[](const unsigned long index) {
 
 template <typename Data>
 bool List<Data>::operator==(const List<Data>& other) const noexcept{
+  //cout << other.size << "  " << size << endl;
   if (other.size != size) return false;
   bool are_equal = true;
   unsigned long counter = 0;
   this->Traverse([&are_equal, &other, &counter](const Data& curr){
     are_equal &= (curr == other[counter++]);
+    //cout << curr << "  " << other[counter-1] << endl;
   });
   return are_equal;
 }
