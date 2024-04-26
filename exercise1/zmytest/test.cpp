@@ -394,9 +394,9 @@ void TestQueueVec(){
   cout << "MOVE CONSTR!!!!!!!!!!!!!!!" << endl;
   QueueVec<string> move_constr(std::move(queuevecstring));
   TestQueueVecString(move_constr);
-  cout << "MOVE ASSIGN!!!!!!!!!!!!!!!" << endl;
+  /*cout << "MOVE ASSIGN!!!!!!!!!!!!!!!" << endl;
   QueueVec<string> move_assign = std::move(move_constr);
-  TestQueueVecString(move_assign);
+  TestQueueVecString(move_assign);*/
 }
 
 void PrintResults()

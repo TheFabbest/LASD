@@ -97,6 +97,7 @@ QueueVec<Data>& QueueVec<Data>::operator=(QueueVec&& other) noexcept{
 template <typename Data>
 bool QueueVec<Data>::operator==(const QueueVec& other) const noexcept{
     unsigned long num_of_elements = Size();
+        cout << num_of_elements << " vs " << other.Size() << endl;
     if (other.Size() != num_of_elements) return false;
     unsigned long index1, index2, i;
     for (i = 0; i < num_of_elements; ++i)
