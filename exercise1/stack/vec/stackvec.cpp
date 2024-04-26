@@ -39,8 +39,8 @@ StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
     
     unsigned long i = 0;
     mappable.Map(
-        [this, &i](const Data& curr){
-            this->Elements[i++] = curr;
+        [this, &i](Data& curr){
+            this->Elements[i++] = std::move(curr);
         }
     );
     // end

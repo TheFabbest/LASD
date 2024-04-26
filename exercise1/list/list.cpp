@@ -76,7 +76,6 @@ typename List<Data>::Node * List<Data>::Node::Clone(Node* tail){
 template <typename Data>
 inline List<Data>::List(const TraversableContainer<Data>& traversable)
 {
-  cout <<"travers" << endl;
   traversable.Traverse(
     [this] (const Data& data){
       this->InsertAtBack(data);
@@ -86,10 +85,9 @@ inline List<Data>::List(const TraversableContainer<Data>& traversable)
 template <typename Data>
 inline List<Data>::List(MappableContainer<Data>&& mappable)
 {
-  cout << "mappable" << endl;
   mappable.Map(
-    [this] (const Data& data){
-      this->InsertAtBack(data);
+    [this] (Data& data){
+      this->InsertAtBack(std::move(data));
   });
 }
 
@@ -97,7 +95,6 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
 // copy constructor
 template <typename Data>
 List<Data>::List(const List<Data> & other) {
-  cout << "copy constr" << endl;
   if (other.tail != nullptr)
   {
     tail = new Node(*other.tail);
@@ -110,7 +107,6 @@ List<Data>::List(const List<Data> & other) {
 // move constructor
 template <typename Data>
 List<Data>::List(List<Data> && other) noexcept{
-  cout << "mov constr" << endl;
   std::swap(head, other.head);
   std::swap(tail, other.tail);
   std::swap(size, other.size);
@@ -128,7 +124,6 @@ List<Data>& List<Data>::operator=(const List<Data>& other) {
       cur = cur->next;
     }
   }
-  cout << "copy=" << endl;
   return *this;
 }
 
@@ -137,7 +132,6 @@ List<Data>& List<Data>::operator=(List<Data>&& other) noexcept {
   std::swap(head, other.head);
   std::swap(tail, other.tail);
   std::swap(size, other.size);
-  cout << "swap=" << endl;
   return *this;
 }
 

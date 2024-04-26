@@ -19,7 +19,6 @@ bool LinearContainer<Data>::operator!=(const LinearContainer<Data> &other) const
   return !(this->operator==(other));
 }
 
-// TODO controlla queste 4
 template <typename Data>
 inline const Data& LinearContainer<Data>::Front() const{
   if (this->size < 1) throw std::length_error("LinearContainer is Empty");
@@ -51,7 +50,6 @@ inline void LinearContainer<Data>::Traverse(TraverseFun function) const{
 
 template <typename Data>
 inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun function) const{
-    // TODO this->PreOrderMap(function);
     unsigned long i;
     for (i = 0; i < this->size; ++i)
     {

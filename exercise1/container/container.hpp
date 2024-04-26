@@ -20,7 +20,6 @@ protected:
   /* ************************************************************************ */
 
   // Default constructor
-  // todo note: protected per non renderlo istanziabile
   Container() = default;
 
 public:
