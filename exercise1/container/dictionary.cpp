@@ -3,7 +3,6 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertAll(const TraversableContainer<Data> &container){
     bool inserted = true;
@@ -15,7 +14,6 @@ inline bool DictionaryContainer<Data>::InsertAll(const TraversableContainer<Data
     return inserted;
 }
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertAll(MappableContainer<Data> &&container){
     bool inserted = true;
@@ -27,7 +25,6 @@ inline bool DictionaryContainer<Data>::InsertAll(MappableContainer<Data> &&conta
     return inserted;
 }
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::RemoveAll(const TraversableContainer<Data> &container){
     bool removed = true;

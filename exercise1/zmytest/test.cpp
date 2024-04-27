@@ -43,12 +43,61 @@ void TellTest(const char *name)
   cout << endl << endl << "---STARTING TEST " << name << "---" << endl; 
 }
 
+// CONTAINER
+void TestEmptyContainer(lasd::Container &container)
+{
+  const char *TEST_TITLE = "Empty Container";
+  if (container.Empty() == false || container.Size() != 0) FoundError("Emtpy or Size", TEST_TITLE);
+}
+void TestFullContainer(lasd::Container &container)
+{
+  const char *TEST_TITLE = "Full Container";
+  if (container.Empty() == true || container.Size() == 0) FoundError("Emtpy or Size", TEST_TITLE);
+}
+
+// RESIZABLE CONTAINER
+void TestResizableContainer(lasd::ResizableContainer &resizable, unsigned int newsize)
+{
+  const char *TEST_TITLE = "Resizable Container";
+  resizable.Resize(newsize);
+  if (resizable.Size() != newsize) FoundError("Resize or Size", TEST_TITLE);
+}
+
+// CLEARABLE CONTAINER
+void TestClearableContainer(lasd::ClearableContainer &clearable)
+{
+  const char *TEST_TITLE = "Clearable Container";
+  clearable.Clear();
+  if (clearable.Size() != 0) FoundError("Clear or Size", TEST_TITLE);
+  if (clearable.Empty() == false) FoundError("Empty or Size", TEST_TITLE);
+}
+
+// DICTIONARY
+void TestDictionary(lasd::DictionaryContainer<int> &dictionary)
+{
+  const char *TEST_TITLE = "Dictionary";
+  if (!dictionary.Exists(9999))
+  {
+    unsigned long curr_size = dictionary.Size();
+    dictionary.Remove(9999);
+    if (dictionary.Size() != curr_size) FoundError("Remove", TEST_TITLE);
+    dictionary.Insert(9999);
+    ++curr_size;
+    if (dictionary.Size() != curr_size) FoundError("Insert", TEST_TITLE);
+    dictionary.Remove(9999);
+    --curr_size;
+    if (dictionary.Size() != curr_size) FoundError("Remove", TEST_TITLE);
+  }
+}
+
+// TODO MAPPABLE, TRAVERSABLE, TESTABLE
+// void TestMappable(lasd::)
+
 // SORTABLE VECTOR
 void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
 {
   bool error = false;
-
-  cout << "Testing empty SortableVector" << endl;
+  TestEmptyContainer(sortablevec);
 
   if (sortablevec.Exists(2))
   {
@@ -103,18 +152,68 @@ void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
   );
 }
 
+void TestMiscellaneusUsageOfSortableVector()
+{
+  auto seed = random_device{}();
+  cout << "Initializing random generator with seed " << seed << " for miscellaneus test." << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned int> distx(0, 10);
+
+  cout << "init list of random size and stack with random numbers" << endl;
+  lasd::List<int> list = lasd::List<int>();
+  unsigned int size = distx(genx);
+  Vector<int> vec(size);
+  cout << "Size is " << size << endl;
+  
+  for(unsigned int i = 0; i < size; i++) {
+    unsigned int num = distx(genx);
+    cout << "Pushing " << num << endl;
+    list.InsertAtBack(num);
+    vec[i] = num;
+  }
+
+  cout << "convert to sortable vector to test costructors" << endl;
+  lasd::SortableVector<int> sortablevec = lasd::SortableVector<int>(list);
+  lasd::SortableVector<int> othersortable = lasd::SortableVector<int>(std::move(vec));
+
+  if (sortablevec != othersortable) FoundError("Comparison or Constructors", "Miscellaneus");
+
+  cout << "convert it back to List to test costructors" << endl;
+  List<int> lst = List<int>(sortablevec);
+
+  cout << "sort the vector" << endl;
+  sortablevec.Sort();
+
+  cout << "traverse the vector to check correctness" << endl;
+  unsigned int last = 0;
+  sortablevec.Traverse([lst, &last](const unsigned int&n){
+    if (!lst.Exists(n)) cout << "ERROR (Exists)" << n << endl; // checking presence
+    if (n < last) cout << "ERROR (order)" << endl; // checking order
+    last = n;
+  });
+
+  cout << endl;
+}
+
 void TestSortableVector()
 {
   TellTest("SortableVector");
+  cout << "Testing empty SortableVector" << endl;
   lasd::SortableVector<int> emptysortablevec = lasd::SortableVector<int>();
   TestEmptySortableVector(emptysortablevec);
   emptysortablevec.Clear();
   TestEmptySortableVector(emptysortablevec);
+  TestMiscellaneusUsageOfSortableVector();
 }
 
 // LIST
 void TestListInt(){
   List<int> lista = List<int>();
+
+  TestEmptyContainer(lista);
+  TestDictionary(lista);
+
+  cout << "Remove on empty" << endl;
   lista.Remove(100);
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() > 0) FoundError("Remove or Size", "List");
@@ -123,13 +222,17 @@ void TestListInt(){
   if (!lista.Empty()) FoundError("Remove or Empty", "List");
   if (lista.Size() > 0) FoundError("Remove or Size", "List");
 
+
+  cout << "InsertAtBack" << endl;
   lista.InsertAtBack(15);
   if (lista.Empty()) FoundError("InsertAtBack or Empty", "List");
   if (lista.Size() != 1) FoundError("InsertAtBack or Size", "List");
 
+  cout << "Copy Assignment" << endl;
   List<int> lista2 = lista;
-  if (lista2 != lista) FoundError("Comparison", "List");
+  if (lista2 != lista) FoundError("Comparison or Assignment", "List");
 
+  cout << "Insert and Remove" << endl;
   lista.Insert(15);
   if (lista.Empty()) FoundError("Insert or Empty", "List");
   if (lista.Size() != 1) FoundError("Insert or Size", "List");
@@ -137,6 +240,8 @@ void TestListInt(){
   lista.InsertAtFront(12);
   if (lista.Empty()) FoundError("InsertAtFront or Empty", "List");
   if (lista.Size() != 2) FoundError("InsertAtFront or Size", "List");
+
+  TestFullContainer(lista);
 
   lista.Remove(12);
   if (lista.Empty()) FoundError("Remove or Empty", "List");
@@ -155,10 +260,10 @@ void TestListInt(){
   if (lista.Size() != 1) FoundError("InsertAtFront or Size", "List");
   if (lista != lista2) FoundError("InsertAtFront or Comparison", "List");
 
-  lista.Clear();
-  if (!lista.Empty()) FoundError("Remove or Empty", "List");
-  if (lista.Size() != 0) FoundError("Remove or Size", "List");
+  cout << "Clearing" << endl;
+  TestClearableContainer(lista);
 
+  cout << "Testing Constructors and Comparisons" << endl;
   List<int> lista3(lista2);
   if (lista2 != lista3) FoundError("Comparison", "List");
 
@@ -166,10 +271,28 @@ void TestListInt(){
   List<int> lista4(std::move(lista3));
   if (lista4 == lista3) FoundError("Move", "List");
   if (lista3.Size() > 0) FoundError("Move", "List");
+
+  cout << "Testing InsertAll and InsertSome" << endl;
+  lista4.Insert(1);
+  lista4.Insert(2);
+  lista4.Insert(3);
+  lista4.Insert(4);
+  if (lista4.InsertSome(lista4)) FoundError("InsertSome", "List");
+  if (lista4.InsertAll(lista4)) FoundError("InsertAll", "List");
+
+  cout << "Testing Traverse" << endl;
+  cout << "List of size " << lista4.Size() << " is: ";
+  lista4.Traverse([](const int &dat){cout << dat << ", " << endl;});
+
+  cout << "Testing Map" << endl;
+  lista4.Map([](int &dat){++dat;});
+  cout << "List of size " << lista4.Size() << " is: ";
+  lista4.Traverse([](const int &dat){cout << dat << ", " << endl;});
 }
 
 void TestList()
 {
+  TellTest("List");
   TestListInt();
 }
 
@@ -178,6 +301,7 @@ void TestEmptyQueueLst(lasd::QueueLst<int> queuelist)
 {
   const char *TEST_TITLE = "QueueLst";
   bool error = false;
+  TestEmptyContainer(queuelist);
   
   if (!queuelist.Empty())
   {
@@ -280,13 +404,13 @@ void TestQueueLstString(QueueLst<string> &queuelist)
   cout << "Testing constructors" << endl;
   QueueLst<string> copy_constr(queuelist);
   Vector<string> vec(queuelist.Size());
+  List<string> lst = List<string>();
   for (unsigned long i = 0; i < curr_size; i++)
   {
     vec[i] = queuelist.Head();
     queuelist.Enqueue(queuelist.HeadNDequeue());
   }
 
-  List<string> lst = List<string>();
   for (unsigned long i = 0; i < curr_size; i++)
   {
     lst.InsertAtBack(queuelist.Head());
@@ -442,16 +566,11 @@ void TestQueueVecString(QueueVec<string> &queuevec)
   cout << "Testing constructors" << endl;
   QueueVec<string> copy_constr(queuevec);
   Vector<string> vec(queuevec.Size());
-  for (unsigned long i = 0; i < curr_size; i++)
-  {
-    vec[i] = queuevec.Head();
-    queuevec.Enqueue(queuevec.HeadNDequeue());
-  }
-
   List<string> lst = List<string>();
   for (unsigned long i = 0; i < curr_size; i++)
   {
-    lst.InsertAtBack(queuevec.Head());
+    vec[i] = queuevec.Head();
+    lst.InsertAtBack(vec[i]);
     queuevec.Enqueue(queuevec.HeadNDequeue());
   }
 
@@ -496,23 +615,40 @@ void TestQueueVecString(QueueVec<string> &queuevec)
   if (queue.HeadNDequeue() != "1") FoundError("HeadNDequeue", TEST_TITLE);
   if(queue.Size() != 0) FoundError("Size", TEST_TITLE);
 
-  for (unsigned long i = 0; i < 50; i++)
+  auto seed = random_device{}();
+  cout << "Initializing random generator with seed " << seed << " for QueueVec population." << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned int> distx(10, 30);
+
+  cout << "Populating" << endl;
+  List<string> inserted;
+  unsigned long curr_s = 0;
+  for (unsigned long i = 0; i < 500; i++)
   {
-    queue.Enqueue("1");
-    if(queue.Size() != i+1) FoundError("Enqueue", TEST_TITLE);
+    unsigned int num = distx(genx);
+    if (num < 20)
+    {
+      queue.Enqueue(to_string(num));
+      inserted.InsertAtBack(to_string(num));
+      ++curr_s;
+      if(queue.Size() != curr_s) FoundError("Enqueue", TEST_TITLE);
+    }
+    else
+    {
+      try{
+        queue.Dequeue();
+        inserted.RemoveFromFront();
+        --curr_s;
+      }
+      catch(length_error &e)
+      {
+        if (curr_s != 0) FoundError("Enqueue or Dequeue", TEST_TITLE);
+      }
+    }
   }
-  for (unsigned long i = 1; i <= 37; i++)
-  {
-    queue.Dequeue();
-    if(queue.Size() != 50 - i) FoundError("Dequeue", TEST_TITLE);
-  }
-  for (unsigned long i = 13; i < 51; i++)
-  {
-    queue.Enqueue("1");
-    if(queue.Size() != i+1) FoundError("Enqueue", TEST_TITLE);
-  }
-  queue.Clear();
-  if (queue.Size() != 0) FoundError("Clear", TEST_TITLE);
+  if (queue != QueueVec<string>(inserted)) FoundError("Enqueue or Dequeue", TEST_TITLE);
+  cout << "Clearing" << endl;
+  TestClearableContainer(queue);
 }
 
 void TestQueueVec(){
@@ -601,6 +737,11 @@ void TestStack()
   if(stacklst != StackLst<string>(list)) FoundError("Comparison or Constructor", TEST_TITLE);
   if(stackvec != StackVec<string>(vec)) FoundError("Comparison or Constructor", TEST_TITLE);
   if(stacklst != StackLst<string>(vec)) FoundError("Comparison or Constructor", TEST_TITLE);
+  
+  TestEmptyContainer(stackvec);
+  TestEmptyContainer(stacklst);
+  TestEmptyContainer(list);
+  TestEmptyContainer(vec);
 
 
   cout << "Comparison between empty and full structures" << endl;
@@ -650,6 +791,7 @@ void TestStackVecString(StackVec<string> stackvec)
 
   unsigned long curr_size = stackvec.Size();
   cout << "Size is " << curr_size << endl;
+  if (curr_size == 0) TestEmptyContainer(stackvec);
 
   cout << "Populating" << endl;
   stackvec.Push(prima);
@@ -668,12 +810,12 @@ void TestStackVecString(StackVec<string> stackvec)
   StackVec<string> copy_constr(stackvec);
   Vector<string> vec(stackvec.Size());
   List<string> lst = List<string>();
-  StackLst<string> support;
-  for (unsigned long i = 0; i < curr_size; i++)
+  StackLst<string> support = StackLst<string>();
+  for (unsigned long i = curr_size; i >= 1; --i)
   {
-    vec[i] = stackvec.Top();
-    lst.InsertAtBack(vec[i]);
-    support.Push(stackvec.TopNPop());
+    vec[i-1] = stackvec.TopNPop();
+    lst.InsertAtFront(vec[i-1]);
+    support.Push(vec[i-1]);
   }
 
   for (unsigned long i = 0; i < curr_size; i++)
@@ -693,56 +835,71 @@ void TestStackVecString(StackVec<string> stackvec)
   stackvec.Pop();
   string second = stackvec.Top();
   if (second != stackvec.TopNPop()) FoundError("TopNPop", TEST_TITLE);
+  if (stackvec.TopNPop() != prima) FoundError("TopNPop", TEST_TITLE);
 
   stackvec.Push(prima);
   stackvec.Push(seconda);
   stackvec.Push(terza);
-  if (stackvec.TopNPop() != terza) FoundError("TopNPop", TEST_TITLE);
 
   cout << "Testing comparisons" << endl;
   if (copy_constr != stackvec) FoundError("Comparisons (copy)", TEST_TITLE);
-  if (trav_vec_constr != stackvec) FoundError("Comparisons (trav)", TEST_TITLE);
-  if (trav_lst_constr != stackvec) FoundError("Comparisons (trav)", TEST_TITLE);
+  if (trav_vec_constr != stackvec) FoundError("Comparisons (trav vec)", TEST_TITLE);
+  if (trav_lst_constr != stackvec) FoundError("Comparisons (trav lst)", TEST_TITLE);
   if (mapp_constr != stackvec) FoundError("Comparisons (map)", TEST_TITLE);
   if (copy_assign != stackvec) FoundError("Comparisons (assign)", TEST_TITLE);
 
   cout << "Testing correctness of size" << endl;
-  StackVec<string> queue;
+  StackVec<string> stack;
   bool error = false;
   try{
-    queue.Pop();
+    stack.Pop();
   } catch (length_error &e){
     error = true;
   }
   if (!error) FoundError("Pop on empty", TEST_TITLE);
 
-  if(queue.Size() != 0) FoundError("Size", TEST_TITLE);
-  queue.Push("1");
-  if(queue.Size() != 1) FoundError("Size", TEST_TITLE);
-  if (queue.TopNPop() != "1") FoundError("TopNPop", TEST_TITLE);
-  if(queue.Size() != 0) FoundError("Size", TEST_TITLE);
+  if(stack.Size() != 0) FoundError("Size", TEST_TITLE);
+  stack.Push("1");
+  if(stack.Size() != 1) FoundError("Size", TEST_TITLE);
+  if (stack.TopNPop() != "1") FoundError("TopNPop", TEST_TITLE);
+  if(stack.Size() != 0) FoundError("Size", TEST_TITLE);
 
-  for (unsigned long i = 0; i < 50; i++)
+
+  auto seed = random_device{}();
+  cout << "Initializing random generator with seed " << seed << " for StackVec population." << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned int> distx(0, 20);
+
+  cout << "Populating" << endl;
+  unsigned long curr_s = 0;
+  for (unsigned long i = 0; i < 500; i++)
   {
-    queue.Push("1");
-    if(queue.Size() != i+1) FoundError("Push", TEST_TITLE);
+    unsigned int num = distx(genx);
+    if (num < 10)
+    {
+      stack.Push(to_string(num));
+      ++curr_s;
+      if(stack.Size() != curr_s) FoundError("Push", TEST_TITLE);
+    }
+    else
+    {
+      try{
+        stack.Pop();
+        --curr_s;
+      }
+      catch(length_error &e)
+      {
+        if (curr_s != 0) FoundError("Pop or Push", TEST_TITLE);
+      }
+    }
   }
-  for (unsigned long i = 1; i <= 37; i++)
-  {
-    queue.Pop();
-    if(queue.Size() != 50 - i) FoundError("Pop", TEST_TITLE);
-  }
-  for (unsigned long i = 13; i < 51; i++)
-  {
-    queue.Push("1");
-    if(queue.Size() != i+1) FoundError("Push", TEST_TITLE);
-  }
-  queue.Clear();
-  if (queue.Size() != 0) FoundError("Clear", TEST_TITLE);
+  cout << "Clearing" << endl;
+  TestClearableContainer(stack);
 }
 
 void TestStackVec()
 {
+  TellTest("StackVec");
   StackVec<string> stackvec;
   TestStackVecString(stackvec);
 }
@@ -750,60 +907,10 @@ void TestStackVec()
 // results
 void PrintResults()
 {
-  cout << endl << "Errors: " << num_of_errors << endl;
-}
-
-void TestMiscellaneus()
-{
-  cout << "Starting TestMiscellaneus" << endl;
-
-  auto seed = random_device{}();
-  cout << "Initializing random generator with seed " << seed << " for miscellaneus test." << endl;
-  default_random_engine genx(seed);
-  uniform_int_distribution<unsigned int> distx(0, 10);
-
-  cout << "init list of random size and stack with random numbers" << endl;
-  lasd::List<int> list = lasd::List<int>();
-  StackVec<int> stack;
-  unsigned int size = distx(genx);
-  cout << "Size is " << size << endl;
-  
-  for(unsigned int i = 0; i < size; i++) {
-    unsigned int num = distx(genx);
-    cout << "Pushing " << num << endl;
-    list.InsertAtBack(num);
-    stack.Push(num);
-  }
-
-  cout << "convert to sortable vector to test costructors" << endl;
-  lasd::SortableVector<int> sortablevec = lasd::SortableVector<int>(list);
-
-  cout << "convert it back to List to test costructors" << endl;
-  List<int> lst = List<int>(sortablevec);
-
-  cout << "sort the vector" << endl;
-  sortablevec.Sort();
-
-  cout << "traverse the vector to check correctness" << endl;
-  unsigned int last = 0;
-  sortablevec.Traverse([lst, &last](const unsigned int&n){
-    if (!lst.Exists(n)) cout << "ERROR (Exists)" << n << endl; // checking presence
-    if (n < last) cout << "ERROR (order)" << endl; // checking order
-    last = n;
-  });
-
-  cout << "convert list to stack" << endl;
-  StackVec<int> second_stack = StackVec<int>(list);
-  if (stack != second_stack){
-    cout << "ERROR" << endl;
-  }
-  second_stack.Clear();
-
-  cout << endl;
+  cout << endl << "END" << endl << "Errors: " << num_of_errors << endl;
 }
 
 void mytest() {
-  TestMiscellaneus();
   TestSortableVector();
   TestList();
   TestQueueVec();
@@ -812,6 +919,4 @@ void mytest() {
   TestStack();
   TestStackVec();
   PrintResults();
-  //PureRandomTest(); TODO
-  cout << "END" << endl;
 }

@@ -2,8 +2,6 @@
 #ifndef MAPPABLE_HPP
 #define MAPPABLE_HPP
 
-// TODO rivedi tutto mappable perche fatto di fretta
-
 /* ************************************************************************** */
 
 #include <functional>

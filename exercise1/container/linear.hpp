@@ -41,8 +41,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is not possible.
-  bool operator!=(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is not possible.
+  bool operator==(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is possible.
+  bool operator!=(const LinearContainer<Data>&) const noexcept; // Comparison of abstract types is possible.
 
   /* ************************************************************************ */
 
@@ -130,8 +130,8 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const SortableLinearContainer&) const noexcept = default;
-  bool operator!=(const SortableLinearContainer&) const noexcept = default;
+  inline bool operator==(const SortableLinearContainer&) const noexcept;
+  inline bool operator!=(const SortableLinearContainer&) const noexcept;
 
   /* ************************************************************************ */
 

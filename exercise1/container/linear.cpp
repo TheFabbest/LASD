@@ -91,6 +91,16 @@ void LinearContainer<Data>::PostOrderMap(MapFun function){
 
 // SortableLinearContainer
 template <typename Data>
+inline bool SortableLinearContainer<Data>::operator==(const SortableLinearContainer& other) const noexcept{
+  return LinearContainer<Data>::operator==(other);
+}
+
+template <typename Data>
+inline bool SortableLinearContainer<Data>::operator!=(const SortableLinearContainer& other) const noexcept{
+  return LinearContainer<Data>::operator!=(other);
+}
+
+template <typename Data>
 void SortableLinearContainer<Data>::Sort() noexcept {
   if (this->size <= 1) return;
   this->QuickSort(0, this->size-1);

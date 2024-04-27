@@ -112,9 +112,10 @@ private:
 
 protected:
 
-  using LinearContainer<Data>::operator[]; // TODO CONTROLLA
-
 public:
+  using Vector<Data>::operator[];
+  using Vector<Data>::operator==;
+  using Vector<Data>::operator!=;
 
   // Default constructor
   SortableVector() = default;

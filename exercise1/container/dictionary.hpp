@@ -12,7 +12,6 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// TODO mog
 template <typename Data>
 class DictionaryContainer : virtual public TestableContainer<Data> {
   // Must extend TestableContainer<Data>

@@ -29,7 +29,6 @@ protected:
 public:
 
   // Default constructor
-  //TODO
   QueueLst() = default;
 
   /* ************************************************************************ */
