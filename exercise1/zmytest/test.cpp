@@ -1,3 +1,5 @@
+#include <iostream>
+#include <random>
 #include "../container/container.hpp"
 #include "../container/testable.hpp"
 #include "../container/dictionary.hpp"
@@ -17,11 +19,7 @@
 
 #include "../zlasdtest/container/traversable.hpp"
 
-#include <random>
-
 /* ************************************************************************** */
-
-#include <iostream>
 
 using namespace std;
 using namespace lasd;
@@ -34,7 +32,7 @@ unsigned long num_of_errors = 0;
 // AUXILIARY FUNCTIONS
 void FoundError(const char *message, const char *testTitle)
 {
-  cout << "Error when trying method: " << message << " in " << testTitle << endl;
+  cout << "ERROR CALLING : " << message << " IN TEST " << testTitle << endl;
   num_of_errors++;
 }
 
@@ -72,6 +70,17 @@ void TestClearableContainer(lasd::ClearableContainer &clearable)
   if (clearable.Empty() == false) FoundError("Empty or Size", TEST_TITLE);
 }
 
+// TESTABLE
+void TestTestable(TestableContainer<int> &testable, bool empty, unsigned long size, int num_in_container)
+{
+  const char *TEST_TITLE = "Testable";
+  if (testable.Empty() != empty) FoundError("Empty", TEST_TITLE);
+  if (testable.Size() != size) FoundError("Size", TEST_TITLE);
+  if (!testable.Empty()){
+    if (!testable.Exists(num_in_container)) FoundError("Exists", TEST_TITLE);
+  }
+}
+
 // DICTIONARY
 void TestDictionary(lasd::DictionaryContainer<int> &dictionary)
 {
@@ -90,8 +99,58 @@ void TestDictionary(lasd::DictionaryContainer<int> &dictionary)
   }
 }
 
-// TODO MAPPABLE, TRAVERSABLE, TESTABLE
-// void TestMappable(lasd::)
+// TRAVERSABLE
+void TestTraversable(lasd::TraversableContainer<int> &traversable, string expected_concat)
+{
+  const char *TEST_TITLE = "Traversable";
+  string tot = "";
+  traversable.Traverse([&tot](const int &curr) {tot = tot + to_string(curr);});
+  string tot2 = "";
+  tot2 = traversable.Fold(std::function([](const int &curr, const string &acc) {return acc+to_string(curr);}), string());
+  if (tot != expected_concat) FoundError("Traverse", TEST_TITLE);
+  if (tot2 != expected_concat) FoundError("Fold", TEST_TITLE);
+}
+
+// MAPPABLE
+void TestMappable(lasd::MappableContainer<int> &mappable, string expected_concat)
+{
+  TestTraversable(mappable, expected_concat);
+  mappable.Map([](int &curr) {curr++;});
+}
+
+// LINEAR
+void TestLinear(lasd::LinearContainer<int> &linear, unsigned long size, int tot, int front, int back){
+  const char *TEST_TITLE = "Linear";
+  if (linear.Size() != size) FoundError("Size", TEST_TITLE);
+  if (linear.Size() > 0)
+  {
+    if (linear.Front() != front) FoundError("Front", TEST_TITLE);
+    if (linear.Back() != back) FoundError("Back", TEST_TITLE);
+  }
+  else
+  {
+    bool err = false;
+    try{
+      linear.Front();
+    }
+    catch (std::length_error &e){
+      err = true;
+    }
+    if (err == false) FoundError("Front (when empty)", TEST_TITLE);
+    err = false;
+    try{
+      linear.Back();
+    }
+    catch (std::length_error &e){
+      err = true;
+    }
+    if (err == false) FoundError("Back (when empty)", TEST_TITLE);
+  }
+  
+  int acc = 0;
+  acc = linear.Fold(std::function([](const int &curr, const int &tot) {return tot+curr;}), acc);
+  if (acc != tot) FoundError("Fold", TEST_TITLE);
+}
 
 // SORTABLE VECTOR
 void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
@@ -133,20 +192,19 @@ void TestEmptySortableVector(lasd::SortableVector<int> &sortablevec)
 
   sortablevec.Sort();
 
+  cout << "Testing Fold, Traverse and Map" << endl;
   int tot = 100;
-  sortablevec.Fold(std::function(FoldParity), tot);
-  if (tot != 100) FoundError("Fold", "SortableVector");
+  int res = sortablevec.Fold(std::function(FoldParity), tot);
+  if (res != 100) FoundError("Fold", "SortableVector");
 
   sortablevec.Traverse(
     [](const int& dat) {
-      std::cout << "ERROR: READING " << dat << endl;
       FoundError("Traverse", "SortableVector");
     }
   );
 
   sortablevec.Map(
     [](int& dat) {
-      cout << "ERROR: READING " << dat << endl;
       FoundError("Map", "SortableVector");
     }
   );
@@ -187,11 +245,10 @@ void TestMiscellaneusUsageOfSortableVector()
   cout << "traverse the vector to check correctness" << endl;
   unsigned int last = 0;
   sortablevec.Traverse([lst, &last](const unsigned int&n){
-    if (!lst.Exists(n)) cout << "ERROR (Exists)" << n << endl; // checking presence
-    if (n < last) cout << "ERROR (order)" << endl; // checking order
+    if (!lst.Exists(n)) FoundError("Exists", "Miscellaneus"); // checking presence
+    if (n < last) FoundError("Checking Order", "Miscellaneus"); // checking order
     last = n;
   });
-
   cout << endl;
 }
 
@@ -262,6 +319,7 @@ void TestListInt(){
 
   cout << "Clearing" << endl;
   TestClearableContainer(lista);
+  TestTestable(lista, true, 0, 0);
 
   cout << "Testing Constructors and Comparisons" << endl;
   List<int> lista3(lista2);
@@ -279,21 +337,24 @@ void TestListInt(){
   lista4.Insert(4);
   if (lista4.InsertSome(lista4)) FoundError("InsertSome", "List");
   if (lista4.InsertAll(lista4)) FoundError("InsertAll", "List");
-
-  cout << "Testing Traverse" << endl;
-  cout << "List of size " << lista4.Size() << " is: ";
-  lista4.Traverse([](const int &dat){cout << dat << ", " << endl;});
-
-  cout << "Testing Map" << endl;
-  lista4.Map([](int &dat){++dat;});
-  cout << "List of size " << lista4.Size() << " is: ";
-  lista4.Traverse([](const int &dat){cout << dat << ", " << endl;});
+  TestTestable(lista4, false, 6, 15);
+  TestMappable(lista4, "432112315");
 }
 
 void TestList()
 {
   TellTest("List");
   TestListInt();
+
+  cout << "Testing List (mappable, traversable, linear)" << endl;
+  List<int> lista = List<int>();
+  lista.Insert(1);
+  lista.Insert(2);
+  lista.Insert(3);
+  lista.Insert(4);
+  TestMappable(lista, "4321"); // increments by one
+  TestTraversable(lista, "5432");
+  TestLinear(lista, 4, 14, 5, 2);
 }
 
 // QUEUE LIST
@@ -386,7 +447,6 @@ void TestQueueLstString(QueueLst<string> &queuelist)
   string prima = "Stringa di Prova", seconda = "Seconda Stringa", terza = "Terza";
 
   unsigned long curr_size = queuelist.Size();
-  cout << "Size is " << curr_size << endl;
 
   cout << "Populating" << endl;
   queuelist.Enqueue(prima);
@@ -548,7 +608,6 @@ void TestQueueVecString(QueueVec<string> &queuevec)
   string prima = "Stringa di Prova", seconda = "Seconda Stringa", terza = "Terza";
 
   unsigned long curr_size = queuevec.Size();
-  cout << "Size is " << curr_size << endl;
 
   cout << "Populating" << endl;
   queuevec.Enqueue(prima);
@@ -790,7 +849,6 @@ void TestStackVecString(StackVec<string> stackvec)
   string prima = "Stringa di Prova", seconda = "Seconda Stringa", terza = "Terza";
 
   unsigned long curr_size = stackvec.Size();
-  cout << "Size is " << curr_size << endl;
   if (curr_size == 0) TestEmptyContainer(stackvec);
 
   cout << "Populating" << endl;

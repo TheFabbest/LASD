@@ -1,5 +1,3 @@
-#include <iostream>
-using namespace std;
 namespace lasd {
 
 /* ************************************************************************** */
@@ -13,7 +11,6 @@ StackVec<Data>::StackVec(const TraversableContainer<Data>& traversable){
     unsigned long argument_size = traversable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
 
-    // TODO vedi se allocare di piu, inoltre se devo togliere +1 chiama direttamente costruttore di Vector
     Elements = new Data[new_size+1]();
     
     unsigned long i = 0;
@@ -34,7 +31,6 @@ StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
     unsigned long argument_size = mappable.Size();
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
 
-    // TODO vedi se allocare di piu, inoltre se devo togliere +1 chiama direttamente costruttore di Vector
     Elements = new Data[new_size+1]();
     
     unsigned long i = 0;
@@ -43,7 +39,6 @@ StackVec<Data>::StackVec(MappableContainer<Data>&& mappable){
             this->Elements[i++] = std::move(curr);
         }
     );
-    // end
 
     top = argument_size;
     size = new_size+1;
@@ -68,7 +63,6 @@ template <typename Data>
 StackVec<Data>& StackVec<Data>::operator=(const StackVec& other){
     Clear();
 
-    // TODO reimplementare traverse in StackVec? se usavo traverse mi scorreva vettore per intero
     unsigned long index;
     for (index = 0; index < other.top; ++index)
     {

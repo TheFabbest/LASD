@@ -13,7 +13,6 @@ QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
     ++new_size;
 
-    // TODO vedi se allocare di piu, inoltre se devo togliere +1 chiama direttamente costruttore di Vector
     Elements = new Data[new_size]();
     
     unsigned long i = 0;
@@ -22,7 +21,6 @@ QueueVec<Data>::QueueVec(const TraversableContainer<Data>& traversable){
             this->Elements[i++] = curr;
         }
     );
-    // end
 
     head = 0;
     tail = i;
@@ -35,7 +33,7 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
     unsigned long new_size = (argument_size > MIN_SIZE) ? argument_size : MIN_SIZE;
     ++new_size;
 
-    Elements = new Data[new_size](); // TODO vedi se allocare di piu
+    Elements = new Data[new_size]();
     
     unsigned long i = 0;
     mappable.Map(
@@ -50,7 +48,6 @@ QueueVec<Data>::QueueVec(MappableContainer<Data>&& mappable){
 }
 
 // Copy constructor
-// TODO vedi
 template <typename Data>
 QueueVec<Data>::QueueVec(const QueueVec<Data>& other) : Vector<Data>(other){
     head = other.head;
@@ -58,7 +55,6 @@ QueueVec<Data>::QueueVec(const QueueVec<Data>& other) : Vector<Data>(other){
 }
 
 // Move constructor
-// TODO vedi
 template <typename Data>
 QueueVec<Data>::QueueVec(QueueVec<Data>&& other) : Vector<Data>::Vector(std::move(other)){
     std::swap(head, other.head);
@@ -147,7 +143,6 @@ void QueueVec<Data>::Enqueue(Data &&data){
     tail %= size;
 }
 
-// TODO controlla
 template <typename Data>
 void QueueVec<Data>::Resize(const unsigned long newsize){
     if (size == newsize) return;

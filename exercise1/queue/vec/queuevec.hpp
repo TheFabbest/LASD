@@ -29,7 +29,7 @@ protected:
   
   using Vector<Data>::size;
   using Vector<Data>::Elements;
-  using Vector<Data>::Resize; // TODO control
+  using Vector<Data>::Resize;
 
 public:
 
@@ -102,7 +102,7 @@ protected:
   void AdjustSizeAfterDequeue();
   inline unsigned long AllocatedSize();
 
-  void Resize(const unsigned long newsize) override; // TODO vedi
+  void Resize(const unsigned long newsize) override;
 
 };
 

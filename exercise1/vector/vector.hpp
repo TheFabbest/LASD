@@ -24,7 +24,6 @@ private:
 
 protected:
 
-  // TODO mog
   using Container::size;
   Data* Elements = nullptr;
 
@@ -36,7 +35,6 @@ public:
   /* ************************************************************************ */
 
   // Specific constructors
-  // TODO perche mappable &&
   Vector(const unsigned long size); // A vector with a given initial dimension
   Vector(const TraversableContainer<Data>& traversable); // A vector obtained from a TraversableContainer
   Vector(MappableContainer<Data>&& mappable); // A vector obtained from a MappableContainer

@@ -1,13 +1,7 @@
-#include <iostream>
-using namespace std; //todo remove
-
-//TODO controlla inserimenti con ripetizioni per i metodi di dictionary
 namespace lasd {
 
 /* ************************************************************************** */
 // Node
-
-//TODO mog chiedi
 // operators
 template <typename Data>
 bool List<Data>::Node::operator==(const struct Node& other) const noexcept
@@ -24,7 +18,6 @@ bool List<Data>::Node::operator!=(const struct Node& other) const noexcept
 
 
 // constructors
-// TODO togli?
 template <typename Data>
 List<Data>::Node::Node(const Data & data) {
   this->data = data;
@@ -35,16 +28,12 @@ List<Data>::Node::Node(Data && data) noexcept{
   std::swap(this->data, data);
 }
 
-// TODO mog ma why swap
-// TODO togli?
 template <typename Data>
 List<Data>::Node::Node(const Node & node) {
   data = node.data;
-  //std::swap(next, node.next); // TODO se faccio cosi ovviamente non funziona perche const ma mi pare mog
   next = node.next;
 }
 
-// TODO mog
 template <typename Data>
 List<Data>::Node::Node(Node && node) noexcept{
   std::swap(data, node.data);
@@ -57,16 +46,16 @@ List<Data>::Node::~Node(){
   delete next;
 }
 
-
-// TODO mog what??
 template <typename Data>
 typename List<Data>::Node * List<Data>::Node::Clone(Node* tail){
   if (next == nullptr)
   {
     return tail;
-  } else {
-    Node * node = new Node(data);
-    node->next = next->Clone(tail);
+  }
+  else
+  {
+    Node * node = new Node(data); // new node with data of the current node
+    node->next = next->Clone(tail); // recursive call
     return node;
   }
 }
@@ -91,19 +80,17 @@ inline List<Data>::List(MappableContainer<Data>&& mappable)
   });
 }
 
-// TODO mog what??
 // copy constructor
 template <typename Data>
 List<Data>::List(const List<Data> & other) {
   if (other.tail != nullptr)
   {
-    tail = new Node(*other.tail);
-    head = other.head->Clone(tail);
+    tail = new Node(*other.tail); // copy tail
+    head = other.head->Clone(tail); // clone
     size = other.size;
   }
 }
 
-// TODO mog
 // move constructor
 template <typename Data>
 List<Data>::List(List<Data> && other) noexcept{
@@ -135,14 +122,12 @@ List<Data>& List<Data>::operator=(List<Data>&& other) noexcept {
   return *this;
 }
 
-// TODO mog
 // destructor
 template <typename Data>
 List<Data>::~List(){
   delete head;
 }
 
-// TODO mog
 template <typename Data>
 void List<Data>::Clear() {
   delete head;
@@ -273,7 +258,6 @@ void List<Data>::InsertAtBack (Data&& data){
 }
 
 
-// TODO posso chiamare l'altro operatore?
 template <typename Data>
 const Data& List<Data>::operator[](const unsigned long index) const{
   if (index >= size) throw std::out_of_range("index out of range for this list");
@@ -300,13 +284,11 @@ Data& List<Data>::operator[](const unsigned long index) {
 
 template <typename Data>
 bool List<Data>::operator==(const List<Data>& other) const noexcept{
-  //cout << other.size << "  " << size << endl;
   if (other.size != size) return false;
   bool are_equal = true;
   unsigned long counter = 0;
   this->Traverse([&are_equal, &other, &counter](const Data& curr){
     are_equal &= (curr == other[counter++]);
-    //cout << curr << "  " << other[counter-1] << endl;
   });
   return are_equal;
 }

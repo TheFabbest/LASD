@@ -15,7 +15,7 @@
 namespace lasd {
 
 /* ************************************************************************** */
-//todo mog
+
 template <typename Data>
 class TraversableContainer : virtual public TestableContainer<Data> {
   // Must extend TestableContainer<Data>
@@ -98,7 +98,6 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  // TODO might
   bool operator==(const PreOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
   bool operator!=(const PreOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
 
@@ -111,7 +110,7 @@ public:
   virtual void PreOrderTraverse(TraverseFun function) const = 0;
 
   template <typename Accumulator>
-  using FoldFun = typename TraversableContainer<Data>::FoldFun<Accumulator>; // TODO perche
+  using FoldFun = typename TraversableContainer<Data>::FoldFun<Accumulator>;
 
   template <typename Accumulator>
   Accumulator PreOrderFold(FoldFun<Accumulator> function, Accumulator accumulator) const;
@@ -154,7 +153,6 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  // TODO might
   bool operator==(const PostOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
   bool operator!=(const PostOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
 
@@ -210,7 +208,6 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  // TODO might
   bool operator==(const InOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
   bool operator!=(const InOrderTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
 
@@ -266,7 +263,6 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  // TODO might
   bool operator==(const BreadthTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
   bool operator!=(const BreadthTraversableContainer&) const noexcept = delete; // Comparison of abstract types might be possible.
 

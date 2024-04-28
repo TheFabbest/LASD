@@ -36,7 +36,6 @@ inline bool DictionaryContainer<Data>::RemoveAll(const TraversableContainer<Data
     return removed;
 }
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Data> &container){
     bool inserted = false;
@@ -48,7 +47,6 @@ inline bool DictionaryContainer<Data>::InsertSome(const TraversableContainer<Dat
     return inserted;
 }
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::InsertSome(MappableContainer<Data> &&container){
     bool inserted = false;
@@ -60,7 +58,6 @@ inline bool DictionaryContainer<Data>::InsertSome(MappableContainer<Data> &&cont
     return inserted;
 }
 
-// TODO mog
 template <typename Data>
 inline bool DictionaryContainer<Data>::RemoveSome(const TraversableContainer<Data> &container){
     bool removed = false;

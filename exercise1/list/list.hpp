@@ -39,7 +39,6 @@ protected:
     
     /* ********************************************************************** */
 
-    // TODO
     // Copy constructor
     Node(const Node & node);
 
@@ -61,7 +60,6 @@ protected:
 
     // Specific member functions
 
-    // TODO mog
     virtual Node * Clone(Node*);
   };
 
@@ -140,7 +138,6 @@ public:
   Data& operator[](const unsigned long index) override; // Override (Mutable) LinearContainer member (must throw std::out_of_range when out of range)
 
 
-  // TODO non ci va override perche i metodi non sono virtual, stessa cosa in vector
   const Data& Front() const; // Override (NonMutable) LinearContainer member (must throw std::length_error when empty)
   Data& Front(); // Override (Mutable) LinearContainer member (must throw std::length_error when empty)
 
@@ -190,7 +187,6 @@ public:
 
 protected:
 
-  //TODO Posso usare PostOrderMap invece di reimplementare?
   void PostOrderTraverse(TraverseFun function, Node *curr) const;  
   void PostOrderMap(MapFun function, Node *curr);
 

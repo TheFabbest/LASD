@@ -12,8 +12,6 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// todo mog
-
 template <typename Data>
 class TestableContainer : virtual public Container{
   // Must extend Container
@@ -48,7 +46,6 @@ public:
   /* ************************************************************************ */
 
   // Specific member function
-  // todo perche' commento "concrete function..." quando questo metodo e' virtual
   virtual bool Exists(const Data& data) const noexcept = 0; // (concrete function should not throw exceptions)
 
 };

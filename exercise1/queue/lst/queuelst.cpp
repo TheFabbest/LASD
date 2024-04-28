@@ -21,7 +21,6 @@ template <typename Data>
 QueueLst<Data>::QueueLst(QueueLst&& other) noexcept : List<Data>::List(std::move(other)){}
 
 // operators
-// TODO mog prossimi 5
 template <typename Data>
 inline QueueLst<Data> &QueueLst<Data>::operator=(const QueueLst& other){
     List<Data>::operator=(other);
@@ -30,7 +29,7 @@ inline QueueLst<Data> &QueueLst<Data>::operator=(const QueueLst& other){
 
 template <typename Data>
 inline QueueLst<Data> &QueueLst<Data>::operator=(QueueLst&& other) noexcept{
-    List<Data>::operator=(std::move(other)); // TODO controlla operator = se e di move o copy
+    List<Data>::operator=(std::move(other));
     return *this;
 }
 

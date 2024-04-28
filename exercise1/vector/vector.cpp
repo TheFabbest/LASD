@@ -14,7 +14,6 @@ Vector<Data>::Vector(const unsigned long size)
 }
 
 // copy constructor
-// TODO mog
 template<typename Data>
 Vector<Data>::Vector(const Vector<Data>& other)
 {
@@ -23,7 +22,6 @@ Vector<Data>::Vector(const Vector<Data>& other)
   std::copy(other.Elements, other.Elements + size, Elements);
 }
 
-// TODO mog
 template<typename Data>
 Vector<Data>::Vector(Vector<Data>&& other) noexcept
 {
@@ -31,7 +29,6 @@ Vector<Data>::Vector(Vector<Data>&& other) noexcept
   std::swap(size, other.size);
 }
 
-// TODO mog
 template<typename Data>
 Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(traversable.Size())
 {
@@ -43,7 +40,6 @@ Vector<Data>::Vector(const TraversableContainer<Data>& traversable) : Vector(tra
   );
 }
 
-// TODO mog
 template<typename Data>
 Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size())
 {
@@ -56,7 +52,6 @@ Vector<Data>::Vector(MappableContainer<Data>&& mappable) : Vector(mappable.Size(
 }
 
 // destructor
-// TODO mog
 template <typename Data>
 Vector<Data>::~Vector(){
   delete[] Elements;
@@ -94,7 +89,6 @@ const Data& Vector<Data>::operator[](const unsigned long index) const
 }
 
 // Front and Back
-// TODO override
 template <typename Data>
 const Data& Vector<Data>::Back() const{
   if (Empty()) throw std::length_error("Empty vector");
@@ -120,7 +114,6 @@ Data& Vector<Data>::Front(){
 }
 
 // comparators
-// todo mog
 template <typename Data>
 bool Vector<Data>::operator==(const Vector<Data> &other) const noexcept{
   if (other.size != size) return false;
@@ -132,7 +125,6 @@ bool Vector<Data>::operator==(const Vector<Data> &other) const noexcept{
   return true;
 }
 
-//todo mog (simile)
 template <typename Data>
 inline bool Vector<Data>::operator!=(const Vector<Data>& other) const noexcept
 {
@@ -140,7 +132,6 @@ inline bool Vector<Data>::operator!=(const Vector<Data>& other) const noexcept
 }
 
 
-// TODO mog
 template <typename Data>
 void Vector<Data>::Clear()
 {
@@ -149,7 +140,6 @@ void Vector<Data>::Clear()
   size = 0;
 }
 
-// TODO mog
 template <typename Data>
 void Vector<Data>::Resize(const unsigned long newsize){
   if (newsize == 0) Clear();
@@ -178,7 +168,6 @@ template <typename Data>
 SortableVector<Data>::SortableVector(MappableContainer<Data>&& mappable) : Vector<Data>::Vector(std::move(mappable)){}
 
 
-// TODO mog le prox 4
 // Copy constructor
 template <typename Data>
 SortableVector<Data>::SortableVector(const SortableVector<Data>& other):Vector<Data>::Vector(other){}

@@ -63,12 +63,7 @@ Data& StackLst<Data>::Top() {
 template <typename Data>
 void StackLst<Data>::Pop() {
     if (tail == nullptr) throw std::length_error("Stack is empty");
-    Node* tmp = head;
-    head = head->next;
-    tmp->next = nullptr;
-    if (head == nullptr) tail = nullptr;
-    delete tmp;
-    --size;
+    List<Data>::RemoveFromFront();
 }
 
 template <typename Data>
@@ -81,20 +76,12 @@ Data StackLst<Data>::TopNPop() {
 
 template <typename Data>
 void StackLst<Data>::Push(const Data& data){
-    Node* tmp = head;
-    head = new Node(data);
-    head->next = tmp;
-    if (tail == nullptr) tail = head;
-    ++size;
+    List<Data>::InsertAtFront(data);
 }
 
 template <typename Data>
 void StackLst<Data>::Push(Data&& data){
-    Node* tmp = head;
-    head = new Node(data);
-    head->next = tmp;
-    if (tail == nullptr) tail = head;
-    ++size;
+    List<Data>::InsertAtFront(std::move(data));
 }
 
 template <typename Data>
