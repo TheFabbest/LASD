@@ -35,7 +35,7 @@ private:
 
 protected:
 
-  Node* root = nullptr;
+  Node* root = nullptr; //TODO private?
 
 public:
 
@@ -162,7 +162,7 @@ private:
 
 protected:
 
-  MutableNode *root = nullptr;
+  MutableNode *root = nullptr; //TODO private?
 
 public:
 
