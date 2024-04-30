@@ -22,36 +22,36 @@ protected:
 public:
 
   // Destructor
-  // ~Iterator() specifiers
+  virtual ~Iterator() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract is not possible.
+  Iterator& operator=(const Iterator&) = delete; // Copy assignment of abstract is not possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  Iterator& operator=(Iterator&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types is not possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types is not possible.
+  bool operator==(const Iterator& other) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator!=(const Iterator& other) const noexcept = delete; // Comparison of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Specific member functions
 
-  // type operator*() specifiers; // (non-mutable version; concrete function must throw std::out_of_range when terminated)
+  const Data& operator*() const; // (non-mutable version; concrete function must throw std::out_of_range when terminated)
 
-  // type Terminated() specifiers; // (concrete function should not throw exceptions)
+  bool Terminated() const noexcept; // (concrete function should not throw exceptions)
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class MutableIterator {
+class MutableIterator : virtual public Iterator<Data>{
   // Must extend Iterator<Data>
 
 private:
@@ -65,27 +65,27 @@ protected:
 public:
 
   // Destructor
-  // ~MutableIterator() specifiers
+  ~MutableIterator() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+  MutableIterator& operator=(const MutableIterator&) = delete; // Copy assignment of abstract is not possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  MutableIterator& operator=(MutableIterator&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types is not possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types is not possible.
+  bool operator==(const MutableIterator& other) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator!=(const MutableIterator& other) const noexcept = delete; // Comparison of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Specific member functions
 
-  // type operator*() specifiers; // (mutable version; concrete function must throw std::out_of_range when terminated)
+  Data& operator*(); // (mutable version; concrete function must throw std::out_of_range when terminated)
 
 };
 
