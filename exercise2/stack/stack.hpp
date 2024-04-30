@@ -13,7 +13,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class Stack {
+class Stack : virtual public ClearableContainer{
   // Must extend ClearableContainer
 
 private:
@@ -27,33 +27,33 @@ protected:
 public:
 
   // Destructor
-  // ~Stack() specifiers
+  virtual ~Stack() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+  Stack& operator=(const Stack&) = delete; // Copy assignment of abstract types is not possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  Stack& operator=(Stack&&) noexcept = delete; // Move assignment of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types is not possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types is not possible.
+  bool operator==(const Stack&) const noexcept = delete; // Comparison of abstract types is not possible.
+  bool operator!=(const Stack&) const noexcept = delete; // Comparison of abstract types is not possible.
 
   /* ************************************************************************ */
 
   // Specific member functions
 
-  // type Top() specifiers; // (non-mutable version; concrete function must throw std::length_error when empty)
-  // type Top() specifiers; // (mutable version; concrete function must throw std::length_error when empty)
-  // type Pop() specifiers; // (concrete function must throw std::length_error when empty)
-  // type TopNPop() specifiers; // (concrete function must throw std::length_error when empty)
-  // type Push(argument) specifiers; // Copy of the value
-  // type Push(argument) specifiers; // Move of the value
-
+  virtual const Data& Top() const = 0; // (non-mutable version; concrete function must throw std::length_error when empty)
+  virtual Data& Top() = 0; // (mutable version; concrete function must throw std::length_error when empty)
+  virtual void Pop() = 0; // (concrete function must throw std::length_error when empty)
+  virtual Data TopNPop() = 0; // (concrete function must throw std::length_error when empty)
+  virtual void Push(const Data& data) = 0; // Copy of the value
+  virtual void Push(Data&& data) = 0; // Move of the value
+  
 };
 
 /* ************************************************************************** */
