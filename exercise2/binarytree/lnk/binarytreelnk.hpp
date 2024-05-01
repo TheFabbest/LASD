@@ -13,7 +13,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class BinaryTreeLnk {
+class BinaryTreeLnk : virtual public MutableBinaryTree<Data>{
   // Must extend MutableBinaryTree<Data>
 
 private:
@@ -22,11 +22,11 @@ private:
 
 protected:
 
-  // using BinaryTree<Data>::???;
+  //using BinaryTree<Data>::; TODO
 
   // ...
 
-  struct NodeLnk { // Must extend MutableNode
+  struct NodeLnk : virtual public MutableNode { // Must extend MutableNode
 
   private:
 
@@ -34,7 +34,7 @@ protected:
 
   protected:
 
-    // ...
+    NodeLnk *next = nullptr;
 
   public:
 
@@ -45,40 +45,40 @@ protected:
 public:
 
   // Default constructor
-  // BinaryTreeLnk() specifiers;
+  BinaryTreeLnk() = default;
 
   /* ************************************************************************ */
 
   // Specific constructors
-  // BinaryTreeLnk(argument) specifiers; // A binary tree obtained from a TraversableContainer
-  // BinaryTreeLnk(argument) specifiers; // A binary tree obtained from a MappableContainer
+  BinaryTreeLnk(const TraversableContainer<Data>& traversable); // A binary tree obtained from a TraversableContainer
+  BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept; // A binary tree obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // BinaryTreeLnk(argument) specifiers;
+  BinaryTreeLnk(const BinaryTreeLnk<Data>& other);
 
   // Move constructor
-  // BinaryTreeLnk(argument) specifiers;
+  BinaryTreeLnk(BinaryTreeLnk<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  // ~BinaryTreeLnk() specifiers;
+  virtual ~BinaryTreeLnk();
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  BinaryTreeLnk& operator=(const BinaryTreeLnk<Data>& other);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  BinaryTreeLnk& operator=(BinaryTreeLnk<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  bool operator==(const BinaryTreeLnk<Data>& other) const noexcept;
+  inline bool operator!=(const BinaryTreeLnk<Data>& other) const noexcept;
 
   /* ************************************************************************ */
 
