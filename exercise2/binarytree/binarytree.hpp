@@ -117,19 +117,19 @@ public:
 
   // Specific member function (inherited from PreOrderTraversableContainer)
 
-  void PreOrderTraverse(TraverseFun function) const override; // Override PreOrderTraversableContainer member
+  inline void PreOrderTraverse(TraverseFun function) const override; // Override PreOrderTraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
 
-  void PostOrderTraverse(TraverseFun function) const override; // Override PostOrderTraversableContainer member
+  inline void PostOrderTraverse(TraverseFun function) const override; // Override PostOrderTraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from InOrderTraversableContainer)
 
-  void InOrderTraverse(TraverseFun function) const override; // Override InOrderTraversableContainer member
+  inline void InOrderTraverse(TraverseFun function) const override; // Override InOrderTraversableContainer member
 
   /* ************************************************************************ */
 
@@ -139,7 +139,13 @@ public:
 
 protected:
 
-  // Auxiliary functions, if necessary!
+  void PreOrderTraverse(TraverseFun function, Node& curr) const;
+
+  void PostOrderTraverse(TraverseFun function, Node& curr) const;
+
+  void InOrderTraverse(TraverseFun function, Node& curr) const;
+
+  void BreadthTraverse(TraverseFun function, Node& curr) const;
 
 };
 
@@ -226,29 +232,37 @@ public:
 
   // Specific member function (inherited from PreOrderMappableContainer)
 
-  void PreOrderMap(MapFun function) override; // Override PreOrderMappableContainer member
+  inline void PreOrderMap(MapFun function) override; // Override PreOrderMappableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderMappableContainer)
 
-  void PostOrderMap(MapFun function) override; // Override PostOrderMappableContainer member
+  inline void PostOrderMap(MapFun function) override; // Override PostOrderMappableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from InOrderMappableContainer)
 
-  void InOrderMap(MapFun function) override; // Override InOrderMappableContainer member
+  inline void InOrderMap(MapFun function) override; // Override InOrderMappableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from BreadthMappableContainer)
 
+  // TODO + inline
   void BreadthMap(MapFun function) override; // Override BreadthMappableContainer member
 
 protected:
+  
+  void PreOrderMap(MapFun function, Node& curr) const;
 
-  // Auxiliary functions, if necessary!
+  void PostOrderMap(MapFun function, Node& curr) const;
+
+  void InOrderMap(MapFun function, Node& curr) const;
+
+  // TODO
+  //void BreadthTraverse(TraverseFun function, Node& curr) const;
 
 };
 

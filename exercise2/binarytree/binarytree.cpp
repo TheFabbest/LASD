@@ -48,24 +48,57 @@ inline void BinaryTree<Data>::Traverse(TraverseFun function) const{
 }
 
 template <typename Data>
-void BinaryTree<Data>::PreOrderTraverse(TraverseFun function) const{
-    // TODO iter?
+inline void BinaryTree<Data>::PreOrderTraverse(TraverseFun function) const{
+    if (size == 0) return;
+    PreOrderTraverse(function, Root());
 }
 
 template <typename Data>
-void BinaryTree<Data>::PostOrderTraverse(TraverseFun function) const{
-    // TODO iter?
+inline void BinaryTree<Data>::PostOrderTraverse(TraverseFun function) const{
+    if (size == 0) return;
+    PostOrderTraverse(function, Root());
 }
 
 template <typename Data>
-void BinaryTree<Data>::InOrderTraverse(TraverseFun function) const{
-    // TODO iter?
+inline void BinaryTree<Data>::InOrderTraverse(TraverseFun function) const{
+    if (size == 0) return;
+    InOrderTraverse(function, Root());
+}
+
+// TODO
+// template <typename Data>
+// void BinaryTree<Data>::BreadthTraverse(TraverseFun function) const{
+//     if (size == 0) return;
+//     BreadthTraverse(function, Root());
+// }
+
+template <typename Data>
+void BinaryTree<Data>::PreOrderTraverse(TraverseFun function, Node& curr) const{
+    function(curr);
+    if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
+    if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
 }
 
 template <typename Data>
-void BinaryTree<Data>::BreadthTraverse(TraverseFun function) const{
-    // TODO iter?
+void BinaryTree<Data>::PostOrderTraverse(TraverseFun function, Node& curr) const{
+    if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
+    if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
+    function(curr);
 }
+
+template <typename Data>
+void BinaryTree<Data>::InOrderTraverse(TraverseFun function, Node& curr) const{
+    if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
+    function(curr);
+    if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
+}
+
+// template <typename Data>
+// void BinaryTree<Data>::BreadthTraverse(TraverseFun function, Node& curr) const{
+//     function(curr);
+//     if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
+//     if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
+// }
 
 // MutableNode
 template <typename Data>
@@ -92,23 +125,45 @@ inline void MutableBinaryTree<Data>::Map(MapFun function) {
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::PreOrderMap(MapFun function) {
-    // TODO iter?
+inline void MutableBinaryTree<Data>::PreOrderMap(MapFun function) {
+    PreOrderMap(function, Root());
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::PostOrderMap(MapFun function) {
-    // TODO iter?
+inline void MutableBinaryTree<Data>::PostOrderMap(MapFun function) {
+    PostOrderMap(function, Root());
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::InOrderMap(MapFun function) {
-    // TODO iter?
+inline void MutableBinaryTree<Data>::InOrderMap(MapFun function) {
+    InOrderMap(function, Root());
+}
+
+// TODO
+// template <typename Data>
+// void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
+//     BreadthMap(function, Root());
+// }
+
+template <typename Data>
+void MutableBinaryTree<Data>::PreOrderMap(MapFun function, Node& curr) const{
+    function(curr);
+    if (curr.HasLeftChild()) PreOrderMap(function, curr.LeftChild());
+    if (curr.HasRightChild()) PreOrderMap(function, curr.RightChild());
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
-    // TODO iter?
+void MutableBinaryTree<Data>::PostOrderMap(MapFun function, Node& curr) const{
+    if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
+    if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
+    function(curr);
+}
+
+template <typename Data>
+void MutableBinaryTree<Data>::InOrderMap(MapFun function, Node& curr) const{
+    if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
+    function(curr);
+    if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
 
 /* ************************************************************************** */
