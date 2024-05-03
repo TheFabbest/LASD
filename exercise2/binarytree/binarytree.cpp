@@ -5,7 +5,7 @@ namespace lasd {
 
 // Node
 
-// TODO chiedi se altri hanno fatto cosi + chiedi se uguaglianza controlla solo presenza o anche posizione (perche questo controlla anche posizione)
+// TODO chiedi se uguaglianza controlla solo presenza o anche posizione (perche questo controlla anche posizione)
 template <typename Data>
 bool BinaryTree<Data>::Node::operator==(const Node& other) const noexcept{
     return data == other.data &&
@@ -24,24 +24,24 @@ const Data& BinaryTree<Data>::Node::Element() const noexcept {
 }
 
 template <typename Data>
-bool BinaryTree<Data>::Node::IsLeaf() const noexcept {
+inline bool BinaryTree<Data>::Node::IsLeaf() const noexcept {
     return !HasLeftChild() && !HasRightChild();
 }
 
 
 // BinaryTree
 template <typename Data>
-BinaryTree<Data>::~BinaryTree(){
-    delete root;
+bool BinaryTree<Data>::operator==(const BinaryTree<Data>& other) const noexcept{
+    if (size == 0 && other.size == 0) return true;
+    if (size == 0 || other.size == 0) return false;
+    return Root() == other.Root();
 }
 
 template <typename Data>
-const BinaryTree<Data>::Node& BinaryTree<Data>::Root() const{
-    if (root == nullptr) throw std::length_error("Binary Tree is Empty");
-    return *root;
+inline bool BinaryTree<Data>::operator!=(const BinaryTree<Data>& other) const noexcept{
+    return !(this->operator==(other));
 }
 
-// TODO check if preorder
 template <typename Data>
 inline void BinaryTree<Data>::Traverse(TraverseFun function) const{
     this->PreOrderTraverse(function);
@@ -73,28 +73,28 @@ inline void BinaryTree<Data>::InOrderTraverse(TraverseFun function) const{
 // }
 
 template <typename Data>
-void BinaryTree<Data>::PreOrderTraverse(TraverseFun function, Node& curr) const{
+void BinaryTree<Data>::PreOrderTraverse(TraverseFun function, const Node& curr) const{
     function(curr);
     if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
     if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
 }
 
 template <typename Data>
-void BinaryTree<Data>::PostOrderTraverse(TraverseFun function, Node& curr) const{
+void BinaryTree<Data>::PostOrderTraverse(TraverseFun function, const Node& curr) const{
     if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
     if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
     function(curr);
 }
 
 template <typename Data>
-void BinaryTree<Data>::InOrderTraverse(TraverseFun function, Node& curr) const{
+void BinaryTree<Data>::InOrderTraverse(TraverseFun function, const Node& curr) const{
     if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
     function(curr);
     if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
 
 // template <typename Data>
-// void BinaryTree<Data>::BreadthTraverse(TraverseFun function, Node& curr) const{
+// void BinaryTree<Data>::BreadthTraverse(TraverseFun function, const Node& curr) const{
 //     function(curr);
 //     if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
 //     if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
@@ -110,12 +110,6 @@ Data& MutableBinaryTree<Data>::MutableNode::Element() noexcept {
 template <typename Data>
 MutableBinaryTree<Data>::~MutableBinaryTree(){
     delete root;
-}
-
-template <typename Data>
-const MutableBinaryTree<Data>::MutableNode& MutableBinaryTree<Data>::Root() const{
-    if (root == nullptr) throw std::length_error("Binary Tree is Empty");
-    return *root;
 }
 
 // TODO check if preorder
@@ -166,6 +160,124 @@ void MutableBinaryTree<Data>::InOrderMap(MapFun function, Node& curr) const{
     if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
 
+// BTPreOrderIterator
+
+// constructors
+template <typename Data>
+BTPreOrderIterator<Data>::BTPreOrderIterator(const BinaryTree<Data> &binarytree){
+    this->root = binarytree.Root();
+    this->stack.Push(root);
+}
+
+// copy constructor
+template <typename Data>
+BTPreOrderIterator<Data>::BTPreOrderIterator(const BTPreOrderIterator<Data>& other) : root(other.root), stack(other.stack) {}
+
+template <typename Data>
+BTPreOrderIterator<Data>::BTPreOrderIterator(BTPreOrderIterator<Data>&& other) noexcept
+{
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+}
+
+// operator=
+template <typename Data>
+BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator=(const BTPreOrderIterator<Data>& other){
+    this->root = other.root;
+    this->stack = other.stack;
+    return this;
+}
+
+template <typename Data>
+BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator=(BTPreOrderIterator<Data>&& other) noexcept {
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+    return this;
+}
+
+// comparisons operator
+template <typename Data>
+bool BTPreOrderIterator<Data>::operator==(const BTPreOrderIterator<Data>& other) const noexcept{
+    return this->stack == other.stack && this->root == other.root; // TODO stesso PUNTATORE a radice
+}
+
+template <typename Data>
+inline bool BTPreOrderIterator<Data>::operator!=(const BTPreOrderIterator<Data>& other) const noexcept{
+    return !(this->operator==(other));
+}
+
+// inherited from Iterator
+template <typename Data>
+const Data& BTPreOrderIterator<Data>::operator*() const{
+    if (Terminated()) throw std::out_of_range("BTPreOrderIterator terminated");
+    return stack.Top()->Element();
+}
+
+template <typename Data>
+inline bool BTPreOrderIterator<Data>::Terminated() const noexcept{
+    return stack.Empty();
+}
+
+// inherited from ForwardIterator
+template <typename Data>
+BTPreOrderIterator<Data> BTPreOrderIterator<Data>::operator++() {
+    const Node* curr = stack.TopNPop();
+    if (curr.HasLeftChild()) {
+        stack.Push(curr.LeftChild());
+    }
+    if (curr.HasRightChild()) {
+        stack.Push(curr.RightChild());
+    }
+    return *this;
+}
+
+// inherited from ResettableIterator
+template <typename Data>
+void BTPreOrderIterator<Data>::Reset() noexcept{
+    stack.Clear();
+    stack.Push(root);
+}
+
+// BTPreOrderMutableIterator
+template <typename Data>
+BTPreOrderMutableIterator<Data>::BTPreOrderMutableIterator(const BinaryTree<Data> &binarytree) : BTPreOrderIterator(binarytree) {}
+
+// copy constructor
+template <typename Data>
+BTPreOrderMutableIterator<Data>::BTPreOrderMutableIterator(const BTPreOrderMutableIterator<Data>& other) : BTPreOrderIterator(other) {}
+
+template <typename Data>
+BTPreOrderMutableIterator<Data>::BTPreOrderMutableIterator(BTPreOrderMutableIterator<Data>&& other) : BTPreOrderIterator(std::move(other)) noexcept
+
+// operator=
+template <typename Data>
+inline BTPreOrderMutableIterator<Data>& BTPreOrderMutableIterator<Data>::operator=(const BTPreOrderMutableIterator<Data>& other){
+    return BTPreOrderIterator<Data>::operator=(other);
+}
+
+template <typename Data>
+inline BTPreOrderMutableIterator<Data>& BTPreOrderMutableIterator<Data>::operator=(BTPreOrderMutableIterator<Data>&& other) noexcept{
+    return BTPreOrderIterator<Data>::operator=(std::move(other));
+}
+
+// comparisons operator
+template <typename Data>
+bool BTPreOrderMutableIterator<Data>::operator==(const BTPreOrderMutableIterator<Data>& other) const noexcept{
+    return BTPreOrderIterator<Data>::operator==(other);
+}
+
+template <typename Data>
+inline bool BTPreOrderMutableIterator<Data>::operator!=(const BTPreOrderMutableIterator<Data>& other) const noexcept{
+    return !(this->operator==(other));
+}
+
+// inherited from MutableIterator
+
+template <typename Data>
+Data& BTPreOrderMutableIterator<Data>::operator*() {
+    if (Terminated()) throw std::out_of_range("BTPreOrderIterator terminated");
+    return stack.Top()->Element();
+}
 /* ************************************************************************** */
 
 }
