@@ -234,6 +234,7 @@ BTPreOrderIterator<Data> BTPreOrderIterator<Data>::operator++() {
 // inherited from ResettableIterator
 template <typename Data>
 void BTPreOrderIterator<Data>::Reset() noexcept{
+    if (root == nullptr) return;
     stack.Clear();
     stack.Push(root);
 }
@@ -278,6 +279,199 @@ Data& BTPreOrderMutableIterator<Data>::operator*() {
     if (Terminated()) throw std::out_of_range("BTPreOrderIterator terminated");
     return stack.Top()->Element();
 }
+
+// BTPostOrderIterator
+// constructors
+template <typename Data>
+BTPostOrderIterator<Data>::BTPostOrderIterator(const BinaryTree<Data> &binarytree){
+    this->root = binarytree.Root();
+    this->stack = StackLst<Node*>(binarytree); // TODO controlla ordine ma da codice ok
+}
+
+// copy constructor
+template <typename Data>
+BTPostOrderIterator<Data>::BTPostOrderIterator(const BTPostOrderIterator<Data>& other) : root(other.root), stack(other.stack) {}
+
+template <typename Data>
+BTPostOrderIterator<Data>::BTPostOrderIterator(BTPostOrderIterator<Data>&& other) noexcept
+{
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+}
+
+// operator=
+template <typename Data>
+BTPostOrderIterator<Data>& BTPostOrderIterator<Data>::operator=(const BTPostOrderIterator<Data>& other){
+    this->root = other.root;
+    this->stack = other.stack;
+    return this;
+}
+
+template <typename Data>
+BTPostOrderIterator<Data>& BTPostOrderIterator<Data>::operator=(BTPostOrderIterator<Data>&& other) noexcept {
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+    return this;
+}
+
+// comparisons operator
+template <typename Data>
+bool BTPostOrderIterator<Data>::operator==(const BTPostOrderIterator<Data>& other) const noexcept{
+    return this->stack == other.stack && this->root == other.root; // TODO stesso PUNTATORE a radice, se sono due alberi uguali ma non lo stesso albero allora gli iteratori sono diversi
+}
+
+template <typename Data>
+inline bool BTPostOrderIterator<Data>::operator!=(const BTPostOrderIterator<Data>& other) const noexcept{
+    return !(this->operator==(other));
+}
+
+// inherited from Iterator
+template <typename Data>
+const Data& BTPostOrderIterator<Data>::operator*() const{
+    if (Terminated()) throw std::out_of_range("BTPostOrderIterator terminated");
+    return stack.Top()->Element();
+}
+
+template <typename Data>
+inline bool BTPostOrderIterator<Data>::Terminated() const noexcept{
+    return stack.Empty();
+}
+
+// inherited from ForwardIterator
+template <typename Data>
+BTPostOrderIterator<Data> BTPostOrderIterator<Data>::operator++() {
+    stack.Pop();
+    return *this;
+}
+
+// inherited from ResettableIterator
+template <typename Data>
+void BTPostOrderIterator<Data>::Reset() noexcept{
+    stack.Clear();
+    //stack = tree; // TODO UUU
+}
+
+
+// BTPostOrderMutableIterator
+template <typename Data>
+BTPostOrderMutableIterator<Data>::BTPostOrderMutableIterator(const BinaryTree<Data> &binarytree) : BTPostOrderIterator(binarytree) {}
+
+// copy constructor
+template <typename Data>
+BTPostOrderMutableIterator<Data>::BTPostOrderMutableIterator(const BTPostOrderMutableIterator<Data>& other) : BTPostOrderIterator(other) {}
+
+template <typename Data>
+BTPostOrderMutableIterator<Data>::BTPostOrderMutableIterator(BTPostOrderMutableIterator<Data>&& other) : BTPostOrderIterator(std::move(other)) noexcept
+
+// operator=
+template <typename Data>
+inline BTPostOrderMutableIterator<Data>& BTPostOrderMutableIterator<Data>::operator=(const BTPostOrderMutableIterator<Data>& other){
+    return BTPostOrderIterator<Data>::operator=(other);
+}
+
+template <typename Data>
+inline BTPostOrderMutableIterator<Data>& BTPostOrderMutableIterator<Data>::operator=(BTPostOrderMutableIterator<Data>&& other) noexcept{
+    return BTPostOrderIterator<Data>::operator=(std::move(other));
+}
+
+// comparisons operator
+template <typename Data>
+bool BTPostOrderMutableIterator<Data>::operator==(const BTPostOrderMutableIterator<Data>& other) const noexcept{
+    return BTPostOrderIterator<Data>::operator==(other);
+}
+
+template <typename Data>
+inline bool BTPostOrderMutableIterator<Data>::operator!=(const BTPostOrderMutableIterator<Data>& other) const noexcept{
+    return !(this->operator==(other));
+}
+
+// inherited from MutableIterator
+
+template <typename Data>
+Data& BTPostOrderMutableIterator<Data>::operator*() {
+    if (Terminated()) throw std::out_of_range("BTPreOrderIterator terminated");
+    return stack.Top()->Element();
+}
+
+// BTInOrderIterator
+// TODO solo copiato
+// constructors
+template <typename Data>
+BTInOrderIterator<Data>::BTInOrderIterator(const BinaryTree<Data> &binarytree){
+    this->root = binarytree.Root();
+    this->stack.Push(root);
+}
+
+// copy constructor
+template <typename Data>
+BTPreOrderIterator<Data>::BTPreOrderIterator(const BTPreOrderIterator<Data>& other) : root(other.root), stack(other.stack) {}
+
+template <typename Data>
+BTPreOrderIterator<Data>::BTPreOrderIterator(BTPreOrderIterator<Data>&& other) noexcept
+{
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+}
+
+// operator=
+template <typename Data>
+BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator=(const BTPreOrderIterator<Data>& other){
+    this->root = other.root;
+    this->stack = other.stack;
+    return this;
+}
+
+template <typename Data>
+BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator=(BTPreOrderIterator<Data>&& other) noexcept {
+    std::swap(this->root, other.root);
+    std::swap(this->stack, other.stack);
+    return this;
+}
+
+// comparisons operator
+template <typename Data>
+bool BTPreOrderIterator<Data>::operator==(const BTPreOrderIterator<Data>& other) const noexcept{
+    return this->stack == other.stack && this->root == other.root; // TODO stesso PUNTATORE a radice
+}
+
+template <typename Data>
+inline bool BTPreOrderIterator<Data>::operator!=(const BTPreOrderIterator<Data>& other) const noexcept{
+    return !(this->operator==(other));
+}
+
+// inherited from Iterator
+template <typename Data>
+const Data& BTPreOrderIterator<Data>::operator*() const{
+    if (Terminated()) throw std::out_of_range("BTPreOrderIterator terminated");
+    return stack.Top()->Element();
+}
+
+template <typename Data>
+inline bool BTPreOrderIterator<Data>::Terminated() const noexcept{
+    return stack.Empty();
+}
+
+// inherited from ForwardIterator
+template <typename Data>
+BTPreOrderIterator<Data> BTPreOrderIterator<Data>::operator++() {
+    const Node* curr = stack.TopNPop();
+    if (curr.HasLeftChild()) {
+        stack.Push(curr.LeftChild());
+    }
+    if (curr.HasRightChild()) {
+        stack.Push(curr.RightChild());
+    }
+    return *this;
+}
+
+// inherited from ResettableIterator
+template <typename Data>
+void BTPreOrderIterator<Data>::Reset() noexcept{
+    if (root == nullptr) return;
+    stack.Clear();
+    stack.Push(root);
+}
+
 /* ************************************************************************** */
 
 }
