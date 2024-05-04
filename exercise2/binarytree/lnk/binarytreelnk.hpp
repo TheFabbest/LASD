@@ -23,25 +23,49 @@ private:
 protected:
 
   //using BinaryTree<Data>::; TODO
+  using typename BinaryTree<Data>::Node;
+  using typename MutableBinaryTree<Data>::MutableNode;
 
   // ...
 
-  struct NodeLnk : virtual public MutableNode { // Must extend MutableNode
-
+  struct NodeLnk : virtual MutableNode { // Must extend MutableNode
+  // TODO template was almost empty
   private:
 
     // ...
 
   protected:
-
-    NodeLnk *next = nullptr;
+    NodeLnk *left = nullptr;
+    NodeLnk *right = nullptr;
+    using MutableNode::data;
 
   public:
+    friend class BinaryTreeLnk<Data>;
+    // specific constructors
+    NodeLnk(const Data& data);
+    NodeLnk(Data&& data) noexcept;
 
-    // ...
+    // copy constructor
+    NodeLnk(const NodeLnk& other);
+    // move constructor
+    NodeLnk(NodeLnk&& other) noexcept;
+
+    // copy assignment
+    NodeLnk operator=(const NodeLnk& other);
+    // move assignment
+    NodeLnk operator=(NodeLnk&& other) noexcept;
+
+    inline bool HasLeftChild() const noexcept override;
+    inline bool HasRightChild() const noexcept override;
+
+    virtual const Node& LeftChild() const override;
+    virtual const Node& RightChild() const override;
+    virtual MutableNode& LeftChild() override;
+    virtual MutableNode& RightChild() override;
 
   };
 
+  NodeLnk *root = nullptr;
 public:
 
   // Default constructor
