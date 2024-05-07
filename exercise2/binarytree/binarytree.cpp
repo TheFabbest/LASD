@@ -340,7 +340,7 @@ template <typename Data>
 void BTPostOrderIterator<Data>::Reset() noexcept{
     if (this->tree == nullptr || this->tree->Empty()) return;
     stack.Clear();
-    FillStackFromBinaryTree(this->tree);
+    FillStackFromBinaryTree(this->tree->Root());
 }
 
 // aux functions
@@ -456,8 +456,8 @@ BTInOrderIterator<Data>& BTInOrderIterator<Data>::operator++() {
     if (stack.Empty()) throw std::out_of_range("BTInOrderIterator was empty");
     const typename BinaryTree<Data>::Node* curr = stack.TopNPop();
     while (curr->HasRightChild()) {
-        curr = curr->RightChild();
-        stack.Push(&curr);
+        curr = &curr->RightChild();
+        stack.Push(curr);
     }
     return *this;
 }
@@ -467,10 +467,10 @@ template <typename Data>
 void BTInOrderIterator<Data>::Reset() noexcept{
     if (tree == nullptr || tree->Empty()) return;
     stack.Clear();
-    const typename BinaryTree<Data>::Node* curr = tree.Root();
+    const typename BinaryTree<Data>::Node* curr = &tree->Root();
     while (curr->HasLeftChild()) {
-        curr = curr->LeftChild();
-        stack.Push(&curr);
+        curr = &curr->LeftChild();
+        stack.Push(curr);
     }
 }
 

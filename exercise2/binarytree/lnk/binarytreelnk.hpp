@@ -57,7 +57,7 @@ protected:
     inline bool HasLeftChild() const noexcept override;
     inline bool HasRightChild() const noexcept override;
 
-    virtual const Node& LeftChild() const override;
+    virtual const Node& LeftChild() const override; // TODO Node o NodeLnk
     virtual const Node& RightChild() const override;
     virtual MutableNode& LeftChild() override;
     virtual MutableNode& RightChild() override;
@@ -119,7 +119,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
-  // type Clear() specifiers; // Override ClearableContainer member
+  void Clear() override; // Override ClearableContainer member
 
 };
 

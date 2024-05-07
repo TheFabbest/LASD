@@ -111,6 +111,7 @@ public:
 
   // Specific member function (inherited from ClearableContainer)
 
+  // TODO NON DA FARE
   // type Clear(argument) specifiers; // Override ClearableContainer member
 
 protected:

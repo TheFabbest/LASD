@@ -137,6 +137,14 @@ BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root(){
     return root;
 }
 
+// from ClearableContainer
+template <typename Data>
+void BinaryTreeLnk<Data>::Clear(){
+    delete root;
+    root = nullptr;
+    size = 0;
+    
+}
 
 /* ************************************************************************** */
 
