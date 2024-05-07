@@ -29,7 +29,6 @@ protected:
   // ...
 
   struct NodeLnk : virtual MutableNode { // Must extend MutableNode
-  // TODO template was almost empty
   private:
 
     // ...
@@ -37,10 +36,10 @@ protected:
   protected:
     NodeLnk *left = nullptr;
     NodeLnk *right = nullptr;
-    using MutableNode::data;
+    Data data;
 
   public:
-    friend class BinaryTreeLnk<Data>;
+    //friend class BinaryTreeLnk<Data>;
     // specific constructors
     NodeLnk(const Data& data);
     NodeLnk(Data&& data) noexcept;
@@ -108,13 +107,13 @@ public:
 
   // Specific member functions (inherited from BinaryTree)
 
-  // type Root() specifiers; // Override BinaryTree member (throw std::length_error when empty)
+  const NodeLnk& Root() const override; // Override BinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MutableBinaryTree)
 
-  // type Root() specifiers; // Override MutableBinaryTree member (throw std::length_error when empty)
+  NodeLnk& Root() override; // Override MutableBinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 

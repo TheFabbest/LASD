@@ -75,14 +75,14 @@ const BinaryTree<Data>::Node& BinaryTreeLnk<Data>::NodeLnk::RightChild() const
 }
 
 template <typename Data>
-BinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::LeftChild()
+MutableBinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::LeftChild()
 {
     if (left == nullptr) throw std::out_of_range("NodeLnk has no left child");
     return left;
 }
 
 template <typename Data>
-BinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::RightChild()
+MutableBinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::RightChild()
 {
     if (right == nullptr) throw std::out_of_range("NodeLnk has no right child");
     return right;
@@ -122,6 +122,21 @@ template <typename Data>
 BinaryTreeLnk<Data>::~BinaryTreeLnk(){
     delete root;
 }
+
+// from BinaryTree
+template <typename Data>
+const BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root() const{
+    if (root == nullptr) throw length_error("BinaryTreeLnk is empty");
+    return root;
+}
+
+// from MutableBinaryTree
+template <typename Data>
+BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root(){
+    if (root == nullptr) throw length_error("BinaryTreeLnk is empty");
+    return root;
+}
+
 
 /* ************************************************************************** */
 

@@ -1,5 +1,5 @@
 
-//#include "zlasdtest/test.hpp"
+#include "zlasdtest/test.hpp"
 
 #include "zmytest/test.hpp"
 
@@ -18,8 +18,8 @@ int main() {
     if (input != 0 && input != 1) std::cout << "input non valido" << std::endl;
   } while (input != 0 && input != 1);
 
-  // if (input == 0) lasdtest();
-  // else if (input == 1) mytest();
+  if (input == 0) lasdtest();
+  else if (input == 1) mytest();
 
   return 0;
 }
