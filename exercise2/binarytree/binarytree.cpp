@@ -28,7 +28,7 @@ inline bool BinaryTree<Data>::Node::IsLeaf() const noexcept {
 template <typename Data>
 bool BinaryTree<Data>::operator==(const BinaryTree<Data>& other) const noexcept{
     if (size == 0 && other.size == 0) return true;
-    if (size == 0 || other.size == 0) return false;
+    if (size != other.size) return false;
     return Root() == other.Root();
 }
 

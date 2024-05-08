@@ -109,7 +109,7 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  bool operator==(const BinaryTreeVec<Data>& other) const noexcept;
+  inline bool operator==(const BinaryTreeVec<Data>& other) const noexcept;
   inline bool operator!=(const BinaryTreeVec<Data>& other) const noexcept;
 
   /* ************************************************************************ */

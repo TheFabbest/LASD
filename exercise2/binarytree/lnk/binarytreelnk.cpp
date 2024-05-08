@@ -195,6 +195,16 @@ BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(BinaryTreeLnk<Data>&& other)
 }
 
 template <typename Data>
+inline bool BinaryTreeLnk<Data>::operator==(const BinaryTreeLnk<Data>& other) const noexcept {
+    return BinaryTree<Data>::operator==(other);
+}
+
+template <typename Data>
+inline bool BinaryTreeLnk<Data>::operator!=(const BinaryTreeLnk<Data>& other) const noexcept {
+    return BinaryTree<Data>::operator!=(other);
+} 
+
+template <typename Data>
 BinaryTreeLnk<Data>::~BinaryTreeLnk(){
     delete root;
 }

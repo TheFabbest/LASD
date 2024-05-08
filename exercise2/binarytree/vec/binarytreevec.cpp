@@ -154,18 +154,21 @@ BinaryTreeVec<Data>::BinaryTreeVec(MappableContainer<Data>&& mappable) noexcept 
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(const BinaryTreeVec<Data>& other) {
     this->vector = other.vector;
+    this->size = other.size;
 }
 
 // Move constructor
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept{
     std::swap(this->vector, other.vector);
+    std::swap(this->size, other.size);
 }
 
 // Copy assignment
 template <typename Data>
 BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){
     this->vector = other.vector;
+    this->size = other.size;
     return *this;
 }
 
@@ -173,19 +176,20 @@ BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& o
 template <typename Data>
 BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other) noexcept{
     std::swap(this->vector, other.vector);
+    std::swap(this->size, other.size);
     return *this;
 }
 
 
 // Comparison operators
 template <typename Data>
-bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data>& other) const noexcept {
-    return this->vector[0] == other.vector[0];
+inline bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data>& other) const noexcept {
+    return BinaryTree<Data>::operator==(other);
 }
 
 template <typename Data>
 inline bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data>& other) const noexcept {
-    return !(this->operator==(other));
+    return BinaryTree<Data>::operator!=(other);
 }
 
 
