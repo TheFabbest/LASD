@@ -94,6 +94,113 @@ MutableBinaryTree<Data>::MutableNode& BinaryTreeVec<Data>::NodeVec::RightChild()
     return (NodeVec*) address;
 }
 
+// BinaryTreeVec
+
+// Specific constructors
+template <typename Data>
+BinaryTreeVec<Data>::BinaryTreeVec(const TraversableContainer<Data>& traversable) {
+    // QueueVec<typename NodeVec**> queue;
+    // queue.Enqueue(&this->Root());
+    // traversable.Traverse([this, queue](const Data& data){
+    //     NodeVec** curr = queue.HeadNDequeue();
+    //     (*curr) = new NodeVec(this, data);
+    //     queue.Enqueue(&(*curr)->LeftChild());
+    //     queue.Enqueue(&(*curr)->RightChild());
+    // });
+    // queue.Clear();
+
+    unsigned long index = 0;
+    traversable.Traverse([this, index](const Data& data){
+        ++index;
+        unsigned long size = this->vector->Size();
+        if (index >= size) {
+            this->vector->Resize(size*2);
+        }
+        this->vector[index] = data;
+    });
+}
+
+template <typename Data>
+BinaryTreeVec<Data>::BinaryTreeVec(MappableContainer<Data>&& mappable) noexcept {
+    unsigned long index = 0;
+    mappable.Map([this, index](Data& data){
+        ++index;
+        unsigned long size = this->vector->Size();
+        if (index >= size) {
+            this->vector->Resize(size*2);
+        }
+        this->vector[index] = data;
+    });
+}
+
+
+// Copy constructor
+template <typename Data>
+BinaryTreeVec<Data>::BinaryTreeVec(const BinaryTreeVec<Data>& other) {
+    this->vector = other.vector;
+}
+
+// Move constructor
+template <typename Data>
+BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept;
+
+
+// Destructor
+template <typename Data>
+BinaryTreeVec<Data>::~BinaryTreeVec(){
+    // todo
+}
+
+// Copy assignment
+template <typename Data>
+BinaryTreeVec& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){
+
+}
+
+// Move assignment
+template <typename Data>
+BinaryTreeVec& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other) noexcept;
+
+
+// Comparison operators
+template <typename Data>
+bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data>& other) const noexcept;
+
+template <typename Data>
+inline bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data>& other) const noexcept;
+
+
+// Specific member functions (inherited from BinaryTree)
+
+template <typename Data>
+const NodeVec& BinaryTreeVec<Data>::Root() const override;
+
+// Specific member function (inherited from MutableBinaryTree)
+
+template <typename Data>
+NodeVec& BinaryTreeVec<Data>::Root() override;
+
+// Specific member function (inherited from ClearableContainer)
+
+void Clear() {
+
+}
+
+// Specific member function (inherited from BreadthTraversableContainer)
+
+template <typename Data>
+virtual void BinaryTreeVec<Data>::BreadthTraverse(TraverseFun function) const {
+
+}
+
+/* ************************************************************************ */
+
+// Specific member function (inherited from BreadthMappableContainer)
+
+template <typename Data>
+virtual void BinaryTreeVec<Data>::BreadthMap(MapFun function) {
+
+}
 
 /* ************************************************************************** */
 

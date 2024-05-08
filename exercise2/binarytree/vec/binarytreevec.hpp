@@ -126,13 +126,13 @@ public:
 
   // Specific member function (inherited from BreadthTraversableContainer)
 
-  virtual void BreadthTraverse(TraverseFun function) const; // Override BreadthTraversableContainer member
+  virtual void BreadthTraverse(TraverseFun function) const override; // Override BreadthTraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from BreadthMappableContainer)
 
-  virtual void BreadthMap(MapFun function); // Override BreadthMappableContainer member
+  virtual void BreadthMap(MapFun function) override; // Override BreadthMappableContainer member
 
 protected:
 
