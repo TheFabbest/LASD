@@ -113,17 +113,17 @@ inline void MutableBinaryTree<Data>::Map(MapFun function) {
 
 template <typename Data>
 inline void MutableBinaryTree<Data>::PreOrderMap(MapFun function) {
-    PreOrderMap(function, Root());
+    if (size > 0) PreOrderMap(function, Root());
 }
 
 template <typename Data>
 inline void MutableBinaryTree<Data>::PostOrderMap(MapFun function) {
-    PostOrderMap(function, Root());
+    if (size > 0) PostOrderMap(function, Root());
 }
 
 template <typename Data>
 inline void MutableBinaryTree<Data>::InOrderMap(MapFun function) {
-    InOrderMap(function, Root());
+    if (size > 0) InOrderMap(function, Root());
 }
 
 template <typename Data>
@@ -146,24 +146,24 @@ void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::PreOrderMap(MapFun function, Node& curr) const{
+void MutableBinaryTree<Data>::PreOrderMap(MapFun function, MutableNode& curr) const{
     function(curr.Element());
     if (curr.HasLeftChild()) PreOrderMap(function, curr.LeftChild());
     if (curr.HasRightChild()) PreOrderMap(function, curr.RightChild());
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::PostOrderMap(MapFun function, Node& curr) const{
-    if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
-    if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
+void MutableBinaryTree<Data>::PostOrderMap(MapFun function, MutableNode& curr) const{
+    if (curr.HasLeftChild()) PostOrderMap(function, curr.LeftChild());
+    if (curr.HasRightChild()) PostOrderMap(function, curr.RightChild());
     function(curr.Element());
 }
 
 template <typename Data>
-void MutableBinaryTree<Data>::InOrderMap(MapFun function, Node& curr) const{
-    if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
+void MutableBinaryTree<Data>::InOrderMap(MapFun function, MutableNode& curr) const{
+    if (curr.HasLeftChild()) InOrderMap(function, curr.LeftChild());
     function(curr.Element());
-    if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
+    if (curr.HasRightChild()) InOrderMap(function, curr.RightChild());
 }
 
 // BTPreOrderIterator

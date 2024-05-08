@@ -160,13 +160,6 @@ BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept{
     std::swap(this->vector, other.vector);
 }
 
-
-// // Destructor
-// template <typename Data>
-// BinaryTreeVec<Data>::~BinaryTreeVec(){
-//     delete vector;
-// }
-
 // Copy assignment
 template <typename Data>
 BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){

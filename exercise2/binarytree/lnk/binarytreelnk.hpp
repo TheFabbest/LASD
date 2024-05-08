@@ -94,10 +94,10 @@ public:
   /* ************************************************************************ */
 
   // Copy assignment
-  BinaryTreeLnk& operator=(const BinaryTreeLnk<Data>& other);
+  BinaryTreeLnk<Data>& operator=(const BinaryTreeLnk<Data>& other);
 
   // Move assignment
-  BinaryTreeLnk& operator=(BinaryTreeLnk<Data>&& other) noexcept;
+  BinaryTreeLnk<Data>& operator=(BinaryTreeLnk<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
@@ -109,13 +109,13 @@ public:
 
   // Specific member functions (inherited from BinaryTree)
 
-  const NodeLnk& Root() const override; // Override BinaryTree member (throw std::length_error when empty)
+  virtual const Node& Root() const override; // Override BinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MutableBinaryTree)
 
-  NodeLnk& Root() override; // Override MutableBinaryTree member (throw std::length_error when empty)
+  virtual MutableNode& Root() override; // Override MutableBinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 

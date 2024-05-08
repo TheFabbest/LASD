@@ -40,11 +40,11 @@ public:
 
   protected:
 
+
+  public:
     // Comparison operators
     bool operator==(const Node& other) const noexcept; // Comparison of abstract types is possible, but is not visible.
     inline bool operator!=(const Node& other) const noexcept; // Comparison of abstract types is possible, but is not visible.
-
-  public:
 
     friend class BinaryTree<Data>;
 
@@ -212,7 +212,7 @@ public:
   /* ************************************************************************ */
 
   // Specific member functions
-
+  using BinaryTree<Data>::Root;
   virtual MutableNode& Root() = 0; // (concrete function must throw std::length_error when empty)
 
   /* ************************************************************************ */
@@ -245,16 +245,15 @@ public:
 
   // Specific member function (inherited from BreadthMappableContainer)
 
-  // TODO + inline
   void BreadthMap(MapFun function) override; // Override BreadthMappableContainer member
 
 protected:
   
-  void PreOrderMap(MapFun function, Node& curr) const;
+  void PreOrderMap(MapFun function, MutableNode& curr) const;
 
-  void PostOrderMap(MapFun function, Node& curr) const;
+  void PostOrderMap(MapFun function, MutableNode& curr) const;
 
-  void InOrderMap(MapFun function, Node& curr) const;
+  void InOrderMap(MapFun function, MutableNode& curr) const;
 
 };
 

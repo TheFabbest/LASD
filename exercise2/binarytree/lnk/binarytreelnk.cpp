@@ -159,6 +159,41 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
 //     });
 // }
 
+
+// Copy constructor
+template <typename Data>
+BinaryTreeLnk<Data>::BinaryTreeLnk(const BinaryTreeLnk<Data>& other) {
+    if (other.root != nullptr) {
+        this->root = new NodeLnk(*other.root);
+        this->size = other.size;
+    }
+}
+
+// Move constructor
+template <typename Data>
+BinaryTreeLnk<Data>::BinaryTreeLnk(BinaryTreeLnk<Data>&& other) noexcept {
+    std::swap(this->root, other.root);
+    std::swap(this->size, other.size);
+}
+
+// operator=
+// copy assignment
+template <typename Data>
+BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data>& other) {
+    this->Clear();
+    root = new NodeLnk(*other.root);
+    this->size = other.size;
+    return *this;
+}
+
+// Move assignment
+template <typename Data>
+BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(BinaryTreeLnk<Data>&& other) noexcept {
+    std::swap(this->root, other.root);
+    std::swap(this->size, other.size);
+    return *this;
+}
+
 template <typename Data>
 BinaryTreeLnk<Data>::~BinaryTreeLnk(){
     delete root;
@@ -166,14 +201,14 @@ BinaryTreeLnk<Data>::~BinaryTreeLnk(){
 
 // from BinaryTree
 template <typename Data>
-const BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root() const{
+const BinaryTreeLnk<Data>::Node& BinaryTreeLnk<Data>::Root() const{
     if (root == nullptr) throw std::length_error("BinaryTreeLnk is empty");
     return *root;
 }
 
 // from MutableBinaryTree
 template <typename Data>
-BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root(){
+BinaryTreeLnk<Data>::MutableNode& BinaryTreeLnk<Data>::Root(){
     if (root == nullptr) throw length_error("BinaryTreeLnk is empty");
     return *root;
 }
