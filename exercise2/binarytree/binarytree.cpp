@@ -8,7 +8,7 @@ namespace lasd {
 // TODO chiedi se uguaglianza controlla solo presenza o anche posizione (perche questo controlla anche posizione)
 template <typename Data>
 bool BinaryTree<Data>::Node::operator==(const Node& other) const noexcept{
-    return data == other.data &&
+    return Element() == other.Element() &&
         ((HasLeftChild() && other.HasLeftChild() && LeftChild() == other.LeftChild()) || (!HasLeftChild() && !other.HasLeftChild())) && 
         ((HasRightChild() && other.HasRightChild() && RightChild() == other.RightChild()) || (!HasRightChild() && !other.HasRightChild()));
 }
@@ -60,16 +60,29 @@ inline void BinaryTree<Data>::InOrderTraverse(TraverseFun function) const{
     InOrderTraverse(function, Root());
 }
 
-// TODO
-// template <typename Data>
-// void BinaryTree<Data>::BreadthTraverse(TraverseFun function) const{
-//     if (size == 0) return;
-//     BreadthTraverse(function, Root());
-// }
+
+template <typename Data>
+void BinaryTree<Data>::BreadthTraverse(TraverseFun function) const{
+    if (size == 0) return;
+    QueueLst<const Node*> queue;
+    queue.Enqueue(&Root());
+    while (!queue.Empty()) {
+        const Node * curr = queue.HeadNDequeue();
+        function (curr->Element());
+        if (curr->HasLeftChild())
+        {
+            queue.Enqueue(&curr->LeftChild());
+        }
+        if (curr->HasRightChild())
+        {
+            queue.Enqueue(&curr->RightChild());
+        }
+    }
+}
 
 template <typename Data>
 void BinaryTree<Data>::PreOrderTraverse(TraverseFun function, const Node& curr) const{
-    function(curr);
+    function(curr.Element());
     if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
     if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
 }
@@ -78,22 +91,15 @@ template <typename Data>
 void BinaryTree<Data>::PostOrderTraverse(TraverseFun function, const Node& curr) const{
     if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
     if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
-    function(curr);
+    function(curr.Element());
 }
 
 template <typename Data>
 void BinaryTree<Data>::InOrderTraverse(TraverseFun function, const Node& curr) const{
     if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
-    function(curr);
+    function(curr.Element());
     if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
-
-// template <typename Data>
-// void BinaryTree<Data>::BreadthTraverse(TraverseFun function, const Node& curr) const{
-//     function(curr);
-//     if (curr.HasLeftChild()) PreOrderTraverse(function, curr.LeftChild());
-//     if (curr.HasRightChild()) PreOrderTraverse(function, curr.RightChild());
-// }
 
 // MutableNode
 
@@ -120,15 +126,28 @@ inline void MutableBinaryTree<Data>::InOrderMap(MapFun function) {
     InOrderMap(function, Root());
 }
 
-// TODO
-// template <typename Data>
-// void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
-//     BreadthMap(function, Root());
-// }
+template <typename Data>
+void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
+    if (size == 0) return;
+    QueueLst<MutableNode*> queue;
+    queue.Enqueue(&Root());
+    while (!queue.Empty()) {
+        MutableNode * curr = queue.HeadNDequeue();
+        function (curr->Element());
+        if (curr->HasLeftChild())
+        {
+            queue.Enqueue(&curr->LeftChild());
+        }
+        if (curr->HasRightChild())
+        {
+            queue.Enqueue(&curr->RightChild());
+        }
+    }
+}
 
 template <typename Data>
 void MutableBinaryTree<Data>::PreOrderMap(MapFun function, Node& curr) const{
-    function(curr);
+    function(curr.Element());
     if (curr.HasLeftChild()) PreOrderMap(function, curr.LeftChild());
     if (curr.HasRightChild()) PreOrderMap(function, curr.RightChild());
 }
@@ -137,13 +156,13 @@ template <typename Data>
 void MutableBinaryTree<Data>::PostOrderMap(MapFun function, Node& curr) const{
     if (curr.HasLeftChild()) PostOrderTraverse(function, curr.LeftChild());
     if (curr.HasRightChild()) PostOrderTraverse(function, curr.RightChild());
-    function(curr);
+    function(curr.Element());
 }
 
 template <typename Data>
 void MutableBinaryTree<Data>::InOrderMap(MapFun function, Node& curr) const{
     if (curr.HasLeftChild()) InOrderTraverse(function, curr.LeftChild());
-    function(curr);
+    function(curr.Element());
     if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
 
@@ -275,7 +294,7 @@ template <typename Data>
 BTPostOrderIterator<Data>::BTPostOrderIterator(const BinaryTree<Data> &binarytree){
     this->tree = &binarytree;
     this->stack.Clear();
-    if (binarytree.Size() > 0) this->FillStackFromBinaryTree(binarytree.Root());
+    if (binarytree.Size() > 0) this->FillToLeftMostLeaf(binarytree.Root()); // TODO
 }
 
 // copy constructor
@@ -330,9 +349,16 @@ inline bool BTPostOrderIterator<Data>::Terminated() const noexcept{
 // inherited from ForwardIterator
 template <typename Data>
 BTPostOrderIterator<Data>& BTPostOrderIterator<Data>::operator++() {
-    if (stack.Empty()) throw std::out_of_range("BTPostOrderIterator was empty");
-    stack.Pop();
+    // if (stack.Empty()) {
+    //     throw std::out_of_range("BTPostOrderIterator was empty");
+    // }
+    // Node* curr = stack.TopNPop();
+    // if (curr->HasRightChild())
+    // {
+    //     FillToLeftMostLeaf(curr->RightChild());
+    // }
     return *this;
+    // TODO fix
 }
 
 // inherited from ResettableIterator
@@ -340,15 +366,16 @@ template <typename Data>
 void BTPostOrderIterator<Data>::Reset() noexcept{
     if (this->tree == nullptr || this->tree->Empty()) return;
     stack.Clear();
-    FillStackFromBinaryTree(this->tree->Root());
+    FillToLeftMostLeaf(this->tree->Root()); // TODO FIX
 }
 
 // aux functions
 template <typename Data>
-void BTPostOrderIterator<Data>::FillStackFromBinaryTree(const typename BinaryTree<Data>::Node& curr) {
+void BTPostOrderIterator<Data>::FillToLeftMostLeaf(const typename BinaryTree<Data>::Node& curr) {
     stack.Push(&curr);
-    if (curr.HasLeftChild()) FillStackFromBinaryTree(curr.LeftChild());
-    if (curr.HasRightChild()) FillStackFromBinaryTree(curr.RightChild());
+    if (curr.HasLeftChild()) FillToLeftMostLeaf(curr.LeftChild());
+    if (curr.HasRightChild()) FillToLeftMostLeaf(curr.RightChild());
+    // TODO fix e gay
 }
 
 

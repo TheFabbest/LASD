@@ -4,16 +4,26 @@ namespace lasd {
 /* ************************************************************************** */
 
 // NodeVec
+// default constructor
+template <typename Data>
+BinaryTreeVec<Data>::NodeVec::NodeVec()
+{
+    tree = nullptr; // TODO chiedi a mog se puoi usare tree==nullptr come controllo che il nodo sia valido o meno
+    // eliminare valid
+    // quando creo il vettore di NodeVec, ogni nodo viene creato con costruttore di default, quindi non so che albero dargli
+    // 1) immediatamente dopo aver creato o ridimensionato il vettore devo settare il tree
+    // 2) come dico sopra
+}
 
 // specific constructors
 template <typename Data>
-BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, const Data& data) : tree(binarytree)
+BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, const Data& data) : tree(&binarytree)
 {
     this->data = data;
 }
 
 template <typename Data>
-BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, Data&& data) noexcept : tree(binarytree)
+BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, Data&& data) noexcept : tree(&binarytree)
 {
     this->data = std::move(data);
 }
@@ -53,45 +63,67 @@ BinaryTreeVec<Data>::NodeVec BinaryTreeVec<Data>::NodeVec::operator=(NodeVec&& o
 }
 
 template <typename Data>
+inline const Data& BinaryTreeVec<Data>::NodeVec::Element() const noexcept {
+    return data;
+}
+
+template <typename Data>
+inline Data& BinaryTreeVec<Data>::NodeVec::Element() noexcept {
+    return data;
+}
+
+template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept {
-    const unsigned long address = 2*tree->vector + 1;
-    if (address >= tree->vector + sizeof(tree->vector)) return false; // TODO controlla bene, >= ?, anche right
-    return (NodeVec*)address->valid;
+    const unsigned long childIndex = 2 * Index() + 1;
+    const unsigned long address = BaseAddress() + childIndex;
+    if (childIndex >= this->tree->vector.Size()) return false; // TODO controlla bene, >= ?, anche right 
+    return ((NodeVec*)address)->valid;
 }
 
 template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept {
-    const unsigned long address = 2*tree->vector + 2;
-    if (address >= tree->vector + sizeof(tree->vector)) return false;
-    return (NodeVec*)address->valid;
+    const unsigned long childIndex = 2 * Index() + 2;
+    const unsigned long address = BaseAddress() + childIndex;
+    if (childIndex >= this->tree->vector.Size()) return false;
+    return ((NodeVec*)address)->valid;
 }
 
 template <typename Data>
 const BinaryTree<Data>::Node& BinaryTreeVec<Data>::NodeVec::LeftChild() const {
     if (HasLeftChild() == false) throw std::out_of_range("NodeVec has no left child");
-    const unsigned long address = 2*tree->vector + 1;
-    return (NodeVec*) address;
+    const unsigned long address = 2 * Index() + 1;
+    return this->tree->vector[address];
 }
 
 template <typename Data>
 const BinaryTree<Data>::Node& BinaryTreeVec<Data>::NodeVec::RightChild() const {
     if (HasRightChild() == false) throw std::out_of_range("NodeVec has no right child");
-    const unsigned long address = 2*tree->vector + 2;
-    return (NodeVec*) address;
+    const unsigned long address = 2 * Index() + 2;
+    return this->tree->vector[address];
 }
 
 template <typename Data>
 MutableBinaryTree<Data>::MutableNode& BinaryTreeVec<Data>::NodeVec::LeftChild() {
     if (HasLeftChild() == false) throw std::out_of_range("NodeVec has no left child");
-    const unsigned long address = 2*tree->vector + 1;
-    return (NodeVec*) address;
+    const unsigned long address = 2 * Index() + 1;
+    return this->tree->vector[address];
 }
 
 template <typename Data>
 MutableBinaryTree<Data>::MutableNode& BinaryTreeVec<Data>::NodeVec::RightChild() {
     if (HasRightChild() == false) throw std::out_of_range("NodeVec has no right child");
-    const unsigned long address = 2*tree->vector + 2;
-    return (NodeVec*) address;
+    const unsigned long address = 2 * Index() + 2;
+    return this->tree->vector[address];
+}
+
+template <typename Data>
+inline unsigned long BinaryTreeVec<Data>::NodeVec::BaseAddress() const noexcept {
+    return (unsigned long) &(this->tree->Root());
+}
+
+template <typename Data>
+inline unsigned long BinaryTreeVec<Data>::NodeVec::Index() const noexcept {
+    return ((unsigned long)this - BaseAddress()) / sizeof(NodeVec);
 }
 
 // BinaryTreeVec
@@ -99,37 +131,19 @@ MutableBinaryTree<Data>::MutableNode& BinaryTreeVec<Data>::NodeVec::RightChild()
 // Specific constructors
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(const TraversableContainer<Data>& traversable) {
-    // QueueVec<typename NodeVec**> queue;
-    // queue.Enqueue(&this->Root());
-    // traversable.Traverse([this, queue](const Data& data){
-    //     NodeVec** curr = queue.HeadNDequeue();
-    //     (*curr) = new NodeVec(this, data);
-    //     queue.Enqueue(&(*curr)->LeftChild());
-    //     queue.Enqueue(&(*curr)->RightChild());
-    // });
-    // queue.Clear();
-
+    this->vector.Resize(traversable.Size());
     unsigned long index = 0;
-    traversable.Traverse([this, index](const Data& data){
-        ++index;
-        unsigned long size = this->vector->Size();
-        if (index >= size) {
-            this->vector->Resize(size*2);
-        }
-        this->vector[index] = data;
+    traversable.Traverse([this, &index](const Data& data){
+        this->vector[++index] = NodeVec(*this, data);
     });
 }
 
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(MappableContainer<Data>&& mappable) noexcept {
+    this->vector.Resize(mappable.Size());
     unsigned long index = 0;
-    mappable.Map([this, index](Data& data){
-        ++index;
-        unsigned long size = this->vector->Size();
-        if (index >= size) {
-            this->vector->Resize(size*2);
-        }
-        this->vector[index] = data;
+    mappable.Map([this, &index](Data& data){
+        this->vector[++index] = NodeVec(*this, data);
     });
 }
 
@@ -142,55 +156,76 @@ BinaryTreeVec<Data>::BinaryTreeVec(const BinaryTreeVec<Data>& other) {
 
 // Move constructor
 template <typename Data>
-BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept;
-
-
-// Destructor
-template <typename Data>
-BinaryTreeVec<Data>::~BinaryTreeVec(){
-    // todo
+BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept{
+    std::swap(this->vector, other.vector);
 }
+
+
+// // Destructor
+// template <typename Data>
+// BinaryTreeVec<Data>::~BinaryTreeVec(){
+//     delete vector;
+// }
 
 // Copy assignment
 template <typename Data>
-BinaryTreeVec& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){
-
+BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){
+    this->vector = other.vector;
+    return *this;
 }
 
 // Move assignment
 template <typename Data>
-BinaryTreeVec& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other) noexcept;
+BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other) noexcept{
+    std::swap(this->vector, other.vector);
+    return *this;
+}
 
 
 // Comparison operators
 template <typename Data>
-bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data>& other) const noexcept;
+bool BinaryTreeVec<Data>::operator==(const BinaryTreeVec<Data>& other) const noexcept {
+    return this->vector[0] == other.vector[0];
+}
 
 template <typename Data>
-inline bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data>& other) const noexcept;
+inline bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data>& other) const noexcept {
+    return !(this->operator==(other));
+}
 
 
 // Specific member functions (inherited from BinaryTree)
 
 template <typename Data>
-const NodeVec& BinaryTreeVec<Data>::Root() const override;
+const BinaryTreeVec<Data>::NodeVec& BinaryTreeVec<Data>::Root() const {
+    if (this->Empty()) throw std::length_error("BinaryTreeVec is empty");
+    return this->vector[0];
+}
 
 // Specific member function (inherited from MutableBinaryTree)
 
 template <typename Data>
-NodeVec& BinaryTreeVec<Data>::Root() override;
+BinaryTreeVec<Data>::NodeVec& BinaryTreeVec<Data>::Root() {
+    if (this->Empty()) throw std::length_error("BinaryTreeVec is empty");
+    return this->vector[0];
+}
 
 // Specific member function (inherited from ClearableContainer)
 
-void Clear() {
-
+template <typename Data>
+void BinaryTreeVec<Data>::Clear() {
+    this->size = 0;
+    this->vector.Clear();
 }
 
 // Specific member function (inherited from BreadthTraversableContainer)
 
 template <typename Data>
-virtual void BinaryTreeVec<Data>::BreadthTraverse(TraverseFun function) const {
-
+void BinaryTreeVec<Data>::BreadthTraverse(TraverseFun function) const {
+    for (unsigned long i = 0; i < this->Size(); ++i)
+    {
+        function (vector[i].Element());
+    }
 }
 
 /* ************************************************************************ */
@@ -198,8 +233,11 @@ virtual void BinaryTreeVec<Data>::BreadthTraverse(TraverseFun function) const {
 // Specific member function (inherited from BreadthMappableContainer)
 
 template <typename Data>
-virtual void BinaryTreeVec<Data>::BreadthMap(MapFun function) {
-
+void BinaryTreeVec<Data>::BreadthMap(MapFun function) {
+    for (unsigned long i = 0; i < this->Size(); ++i)
+    {
+        function (vector[i].Element());
+    }
 }
 
 /* ************************************************************************** */

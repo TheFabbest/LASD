@@ -22,6 +22,9 @@ private:
   // ...
 
 protected:
+  
+  using typename BinaryTree<Data>::Node;
+  using typename MutableBinaryTree<Data>::MutableNode;
 
   struct NodeVec : virtual MutableNode { // Must extend MutableNode
 
@@ -34,10 +37,10 @@ protected:
 
     bool valid = true;
     Data data;
-    BinaryTreeVec &tree;
+    BinaryTreeVec *tree;
 
   public:
-    NodeVec() = delete;
+    NodeVec();
 
     // specific constructors
     NodeVec(BinaryTreeVec &binarytree, const Data& data);
@@ -61,6 +64,11 @@ protected:
     virtual MutableNode& LeftChild() override;
     virtual MutableNode& RightChild() override;
 
+    inline const Data& Element() const noexcept override;
+    inline Data& Element() noexcept override;
+
+    inline unsigned long BaseAddress() const noexcept;
+    inline unsigned long Index() const noexcept;
   };
   
   Vector<NodeVec> vector;
@@ -87,7 +95,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~BinaryTreeVec();
+  virtual ~BinaryTreeVec() = default;
 
   /* ************************************************************************ */
 
@@ -126,12 +134,14 @@ public:
 
   // Specific member function (inherited from BreadthTraversableContainer)
 
+  using typename TraversableContainer<Data>::TraverseFun;
   virtual void BreadthTraverse(TraverseFun function) const override; // Override BreadthTraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from BreadthMappableContainer)
 
+  using typename MappableContainer<Data>::MapFun;
   virtual void BreadthMap(MapFun function) override; // Override BreadthMappableContainer member
 
 protected:

@@ -141,8 +141,6 @@ protected:
 
   void InOrderTraverse(TraverseFun function, const Node& curr) const;
 
-  void BreadthTraverse(TraverseFun function, const Node& curr) const;
-
 };
 
 /* ************************************************************************** */
@@ -189,8 +187,11 @@ public:
 
     // Specific member functions
 
+    using Node::Element;
     virtual Data& Element() noexcept = 0; // Mutable access to the element (concrete function should not throw exceptions)
 
+    using Node::LeftChild;
+    using Node::RightChild;
     virtual MutableNode& LeftChild() = 0; // (concrete function must throw std::out_of_range when not existent)
     virtual MutableNode& RightChild() = 0; // (concrete function must throw std::out_of_range when not existent)
   };
@@ -254,9 +255,6 @@ protected:
   void PostOrderMap(MapFun function, Node& curr) const;
 
   void InOrderMap(MapFun function, Node& curr) const;
-
-  // TODO
-  //void BreadthTraverse(TraverseFun function, Node& curr) const;
 
 };
 
@@ -402,7 +400,7 @@ protected:
   const BinaryTree<Data> *tree = nullptr;
   StackLst<const typename BinaryTree<Data>::Node*> stack;
 
-  virtual void FillStackFromBinaryTree(const typename BinaryTree<Data>::Node& curr); // TODO vedi se gli altri ce l'hanno
+  virtual void FillToLeftMostLeaf(const typename BinaryTree<Data>::Node& curr); // TODO vedi se gli altri ce l'hanno
 
 public:
 

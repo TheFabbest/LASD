@@ -39,7 +39,7 @@ protected:
     Data data;
 
   public:
-    //friend class BinaryTreeLnk<Data>;
+    friend class BinaryTreeLnk<Data>;
     // specific constructors
     NodeLnk(const Data& data);
     NodeLnk(Data&& data) noexcept;
@@ -62,6 +62,8 @@ protected:
     virtual MutableNode& LeftChild() override;
     virtual MutableNode& RightChild() override;
 
+    inline const Data& Element() const noexcept override;
+    inline Data& Element() noexcept override;
   };
 
   NodeLnk *root = nullptr;

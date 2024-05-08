@@ -64,28 +64,38 @@ template <typename Data>
 const BinaryTree<Data>::Node& BinaryTreeLnk<Data>::NodeLnk::LeftChild() const
 {
     if (left == nullptr) throw std::out_of_range("NodeLnk has no left child");
-    return left;
+    return *left;
 }
 
 template <typename Data>
 const BinaryTree<Data>::Node& BinaryTreeLnk<Data>::NodeLnk::RightChild() const
 {
     if (right == nullptr) throw std::out_of_range("NodeLnk has no right child");
-    return right;
+    return *right;
 }
 
 template <typename Data>
 MutableBinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::LeftChild()
 {
     if (left == nullptr) throw std::out_of_range("NodeLnk has no left child");
-    return left;
+    return *left;
 }
 
 template <typename Data>
 MutableBinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::RightChild()
 {
     if (right == nullptr) throw std::out_of_range("NodeLnk has no right child");
-    return right;
+    return *right;
+}
+
+template <typename Data>
+inline const Data& BinaryTreeLnk<Data>::NodeLnk::Element() const noexcept {
+    return data;
+}
+
+template <typename Data>
+inline Data& BinaryTreeLnk<Data>::NodeLnk::Element() noexcept {
+    return data;
 }
 
 //BinaryTreeLnk
@@ -95,6 +105,7 @@ MutableBinaryTree<Data>::MutableNode& BinaryTreeLnk<Data>::NodeLnk::RightChild()
 template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
     if (traversable.Empty()) return;
+    this->size = traversable.Size();
     QueueLst<NodeLnk**> queue;
     queue.Enqueue(&root);
     traversable.Traverse([&queue](const Data& currentData){
@@ -108,6 +119,7 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable
 template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
     if (mappable.Empty()) return;
+    this->size = mappable.Size();
     QueueLst<NodeLnk**> queue;
     queue.Enqueue(&root);
     mappable.Map([&queue](Data&& currentData){
@@ -118,6 +130,35 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
     });
 }
 
+// come li fa il prof
+// template <typename Data>
+// BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
+//     if (traversable.Empty()) return;
+//     size = traversable.Size();
+//     QueueLst<NodeLnk**> queue;
+//     queue.Enqueue(&root);
+//     traversable.Traverse([&queue](const Data& currentData){
+//         NodeLnk*&currentNode = *queue.HeadNDequeue();
+//         currentNode = new NodeLnk(currentData);
+//         queue.Enqueue(&currentNode->left);
+//         queue.Enqueue(&currentNode->right);
+//     });
+// }
+
+// template <typename Data>
+// BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
+//     if (mappable.Empty()) return;
+//     size = mappable.Size();
+//     QueueLst<NodeLnk**> queue;
+//     queue.Enqueue(&root);
+//     mappable.Map([&queue](Data& currentData){
+//         NodeLnk*& currentNode = *queue.HeadNDequeue();
+//         currentNode = new NodeLnk(currentData);
+//         queue.Enqueue(&currentNode->left);
+//         queue.Enqueue(&currentNode->right);
+//     });
+// }
+
 template <typename Data>
 BinaryTreeLnk<Data>::~BinaryTreeLnk(){
     delete root;
@@ -126,24 +167,23 @@ BinaryTreeLnk<Data>::~BinaryTreeLnk(){
 // from BinaryTree
 template <typename Data>
 const BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root() const{
-    if (root == nullptr) throw length_error("BinaryTreeLnk is empty");
-    return root;
+    if (root == nullptr) throw std::length_error("BinaryTreeLnk is empty");
+    return *root;
 }
 
 // from MutableBinaryTree
 template <typename Data>
 BinaryTreeLnk<Data>::NodeLnk& BinaryTreeLnk<Data>::Root(){
     if (root == nullptr) throw length_error("BinaryTreeLnk is empty");
-    return root;
+    return *root;
 }
 
 // from ClearableContainer
 template <typename Data>
 void BinaryTreeLnk<Data>::Clear(){
     delete root;
-    root = nullptr;
-    size = 0;
-    
+    this->root = nullptr;
+    this->size = 0;   
 }
 
 /* ************************************************************************** */
