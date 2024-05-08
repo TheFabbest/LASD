@@ -49,6 +49,9 @@ protected:
     // move constructor
     NodeLnk(NodeLnk&& other) noexcept;
 
+    // destructor
+    virtual ~NodeLnk();
+
     // copy assignment
     NodeLnk operator=(const NodeLnk& other);
     // move assignment

@@ -67,7 +67,7 @@ void stestBinaryTreeInt(uint & testnum, uint & testerr) {
     btvec.Clear();
     btvec = move(copbtvec);
     NonEqualBT(loctestnum, loctesterr, copbtvec, btvec);
-    // Empty(loctestnum, loctesterr, copbtvec, true);
+    Empty(loctestnum, loctesterr, copbtvec, true);
 
     lasd::BinaryTreeLnk<int> copbtlnk(btlnk);
     EqualBT(loctestnum, loctesterr, copbtlnk, btlnk);

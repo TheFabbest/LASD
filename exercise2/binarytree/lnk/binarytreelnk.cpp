@@ -17,7 +17,13 @@ BinaryTreeLnk<Data>::NodeLnk::NodeLnk(Data&& dat) noexcept {
 
 // copy constructor
 template <typename Data>
-BinaryTreeLnk<Data>::NodeLnk::NodeLnk(const BinaryTreeLnk<Data>::NodeLnk& other) : left(other.left), right(other.right){
+BinaryTreeLnk<Data>::NodeLnk::NodeLnk(const BinaryTreeLnk<Data>::NodeLnk& other) {
+    if (other.left != nullptr) {
+        this->left = new NodeLnk(*other.left);
+    }
+    if (other.right != nullptr) {
+        this->right = new NodeLnk(*other.right);
+    }
     this->data = other.data;
 }
 
@@ -29,12 +35,47 @@ BinaryTreeLnk<Data>::NodeLnk::NodeLnk(BinaryTreeLnk<Data>::NodeLnk&& other) noex
     std::swap(right, other.right);
 }
 
+// destructor
+template <typename Data>
+BinaryTreeLnk<Data>::NodeLnk::~NodeLnk() {
+    delete left;
+    delete right;
+}
+
 // copy assignment
 template <typename Data>
 BinaryTreeLnk<Data>::NodeLnk BinaryTreeLnk<Data>::NodeLnk::operator=(const BinaryTreeLnk<Data>::NodeLnk& other){
     this->data = other.data;
-    this->left = other.left;
-    this->right = other.right;
+    if (other.left != nullptr) {
+        if (left == nullptr)
+        {
+            this->left = new NodeLnk(*other.left);
+        }
+        else
+        {
+            *this->left = *other.left;
+        }
+    }
+    else if (left != nullptr) {
+        delete left;
+        left = nullptr;
+    }
+
+    if (other.right != nullptr) {
+        if (right == nullptr)
+        {
+            this->right = new NodeLnk(*other.right);
+        }
+        else
+        {
+            *this->right = *other.right;
+        }
+    }
+    else if (right != nullptr)
+    {
+        delete right;
+        right = nullptr;
+    }
     return *this;
 }
 

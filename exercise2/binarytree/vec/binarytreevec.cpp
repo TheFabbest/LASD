@@ -1,4 +1,5 @@
-
+#include <iostream>
+using namespace std;
 namespace lasd {
 
 /* ************************************************************************** */
@@ -76,7 +77,9 @@ template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept {
     const unsigned long childIndex = 2 * Index() + 1;
     const unsigned long address = BaseAddress() + childIndex;
-    if (childIndex >= this->tree->vector.Size()) return false; // TODO controlla bene, >= ?, anche right 
+    if (childIndex >= this->tree->vector.Size()) {
+        return false;
+    }
     return ((NodeVec*)address)->valid;
 }
 
@@ -84,7 +87,9 @@ template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept {
     const unsigned long childIndex = 2 * Index() + 2;
     const unsigned long address = BaseAddress() + childIndex;
-    if (childIndex >= this->tree->vector.Size()) return false;
+    if (childIndex >= this->tree->vector.Size()) {
+        return false;
+    }
     return ((NodeVec*)address)->valid;
 }
 
@@ -153,30 +158,50 @@ BinaryTreeVec<Data>::BinaryTreeVec(MappableContainer<Data>&& mappable) noexcept 
 // Copy constructor
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(const BinaryTreeVec<Data>& other) {
-    this->vector = other.vector;
     this->size = other.size;
+    this->vector = other.vector;
+    unsigned long i;
+    for (i = 0; i < this->size; ++i)
+    {
+        this->vector[i].tree = this;
+    }
 }
 
 // Move constructor
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(BinaryTreeVec<Data>&& other) noexcept{
-    std::swap(this->vector, other.vector);
     std::swap(this->size, other.size);
+    std::swap(this->vector, other.vector);
+    unsigned long i;
+    for (i = 0; i < this->size; ++i)
+    {
+        this->vector[i].tree = this;
+    }
 }
 
 // Copy assignment
 template <typename Data>
 BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(const BinaryTreeVec<Data>& other){
-    this->vector = other.vector;
     this->size = other.size;
+    this->vector = other.vector;
+    unsigned long i;
+    for (i = 0; i < this->size; ++i)
+    {
+        this->vector[i].tree = this;
+    }
     return *this;
 }
 
 // Move assignment
 template <typename Data>
 BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other) noexcept{
-    std::swap(this->vector, other.vector);
     std::swap(this->size, other.size);
+    std::swap(this->vector, other.vector);
+    unsigned long i;
+    for (i = 0; i < this->size; ++i)
+    {
+        this->vector[i].tree = this;
+    }
     return *this;
 }
 
