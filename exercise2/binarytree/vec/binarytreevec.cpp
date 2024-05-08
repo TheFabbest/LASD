@@ -131,19 +131,21 @@ inline unsigned long BinaryTreeVec<Data>::NodeVec::Index() const noexcept {
 // Specific constructors
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(const TraversableContainer<Data>& traversable) {
-    this->vector.Resize(traversable.Size());
+    this->size = traversable.Size();
+    this->vector.Resize(this->size);
     unsigned long index = 0;
     traversable.Traverse([this, &index](const Data& data){
-        this->vector[++index] = NodeVec(*this, data);
+        this->vector[index++] = NodeVec(*this, data);
     });
 }
 
 template <typename Data>
 BinaryTreeVec<Data>::BinaryTreeVec(MappableContainer<Data>&& mappable) noexcept {
-    this->vector.Resize(mappable.Size());
+    this->size = mappable.Size();
+    this->vector.Resize(this->size);
     unsigned long index = 0;
     mappable.Map([this, &index](Data& data){
-        this->vector[++index] = NodeVec(*this, data);
+        this->vector[index++] = NodeVec(*this, data);
     });
 }
 
