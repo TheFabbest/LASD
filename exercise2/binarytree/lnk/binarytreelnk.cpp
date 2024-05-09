@@ -45,6 +45,7 @@ BinaryTreeLnk<Data>::NodeLnk::~NodeLnk() {
 // copy assignment
 template <typename Data>
 BinaryTreeLnk<Data>::NodeLnk BinaryTreeLnk<Data>::NodeLnk::operator=(const BinaryTreeLnk<Data>::NodeLnk& other){
+    cout << other.data << endl;
     this->data = other.data;
     if (other.left != nullptr) {
         if (left == nullptr)
@@ -145,6 +146,7 @@ inline Data& BinaryTreeLnk<Data>::NodeLnk::Element() noexcept {
 // constructors
 template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
+    cout << "BinaryTreeLnk" << endl;
     if (traversable.Empty()) return;
     this->size = traversable.Size();
     QueueLst<NodeLnk**> queue;
@@ -159,6 +161,7 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable
 
 template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
+    cout << "BinaryTreeLnk mappable" << endl;
     if (mappable.Empty()) return;
     this->size = mappable.Size();
     QueueLst<NodeLnk**> queue;
@@ -171,7 +174,7 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
     });
 }
 
-// come li fa il prof
+// TODO come li fa il prof
 // template <typename Data>
 // BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
 //     if (traversable.Empty()) return;
@@ -221,9 +224,13 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(BinaryTreeLnk<Data>&& other) noexcept {
 // copy assignment
 template <typename Data>
 BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data>& other) {
+    cout << &other << endl;
+    cout << sizeof(int) << endl;
     this->Clear();
-    root = new NodeLnk(*other.root);
-    this->size = other.size;
+    if (other.Empty() == false) {
+        *root = *other.root;
+        this->size = other.size;
+    }
     return *this;
 }
 
