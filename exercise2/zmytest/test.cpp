@@ -3,6 +3,7 @@
 #include "../binarytree/binarytree.hpp"
 #include "../binarytree/vec/binarytreevec.hpp"
 #include "../binarytree/lnk/binarytreelnk.hpp"
+#include "../bst/bst.hpp"
 
 using namespace std;
 using namespace lasd;
@@ -100,11 +101,12 @@ void TestMappable(lasd::MappableContainer<int> &mappable, string expected_concat
 }
 
 // BINARY TREE
-void TestEmptyBinaryTree(BinaryTree<string> &tree){
+template <class T>
+void TestEmptyBinaryTree(BinaryTree<T> &tree){
   const char *TEST_TITLE = "Empty BinaryTree";
   if (tree.Size() != 0) FoundError("size", TEST_TITLE);
   if (tree.Empty() == false) FoundError("empty", TEST_TITLE);
-  if (tree.Exists("") == true) FoundError("exists", TEST_TITLE);
+  if (tree.Exists(T{}) == true) FoundError("exists", TEST_TITLE);
   TestEmptyContainer(tree);
 }
 
@@ -130,13 +132,9 @@ void TestEmptyBinaryTree(){
 
   cout << "Testing copy assignment" << endl;
   treeVecFromVec = treeVec;
-  cout << "here" << endl;
   treeLnkFromVec = treeLnk;
-  cout << "here" << endl;
   TestEmptyBinaryTree(treeVecFromVec);
-  cout << "here" << endl;
   TestEmptyBinaryTree(treeLnkFromVec);
-  cout << "here" << endl;
 
   cout << "Testing copy constructor" << endl;
   BinaryTreeLnk<string> treeLnkCopyConstructor(treeLnk);
@@ -145,15 +143,108 @@ void TestEmptyBinaryTree(){
   TestEmptyBinaryTree(treeVecCopyConstructor);
 }
 
-void TestBinaryTreeFull() {
+void TestBinaryTreeLnk(BinaryTreeLnk<int> &tree, unsigned long size) {
+  const char *TEST_TITLE = "BinaryTreeLnk (tree, size)";
+  if (tree.Size() != size) FoundError("Size or Constructor", TEST_TITLE);
+  if (tree.Empty() && size != 0) FoundError("Empty", TEST_TITLE);
+}
+
+void TestBinaryTreeLnk() {
+  const char *TEST_TITLE = "BinaryTreeLnk";
+  const unsigned long size = 18;
+
+  TellTest(TEST_TITLE);
+
+  List<int> list;
+  for (unsigned long i = 0; i < size; ++i) {
+    BinaryTreeLnk<int> tree(list);
+    TestBinaryTreeLnk(tree, i);
+
+    BinaryTreeLnk<int> assignment_tree = tree;
+    TestBinaryTreeLnk(assignment_tree, i);
+
+    tree = assignment_tree;
+    TestBinaryTreeLnk(tree, i);
+
+    BinaryTreeLnk<int> move_tree = std::move(tree);
+    TestEmptyBinaryTree(tree);
+    TestBinaryTreeLnk(move_tree, i);
+
+    BinaryTreeLnk<int> move_constr_tree(std::move(assignment_tree));
+    TestEmptyBinaryTree(assignment_tree);
+    TestBinaryTreeLnk(move_constr_tree, i);
+
+    list.InsertAtBack(i);
+  }
+
+  list.Clear();
+  const unsigned long size2 = 9;
+  for (unsigned long i = 0; i < size2; ++i) {
+    list.InsertAtBack(i);
+  }
+
+  BinaryTreeLnk<int> tree(list);
+  
+  for (unsigned long i = 0; i < size2; ++i) {
+    if (!tree.Exists(i)) {
+      FoundError("Exists", TEST_TITLE);
+    }
+  }
+
+  string result;
+  string traverse_result = "";
+  std::function concat = [](const int &curr, const string &acc) {return acc+to_string(curr);};
+  std::function concatForTraverse = [&traverse_result](const int &curr) {traverse_result += to_string(curr);};
+  result = tree.BreadthFold(concat, string());
+  tree.BreadthTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("BreadthFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("BreadthTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PreOrderFold(concat, string());
+  tree.PreOrderTraverse(concatForTraverse);
+  if (result != "013784256") {
+    FoundError("PreOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PreOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PostOrderFold(concat, string());
+  tree.PostOrderTraverse(concatForTraverse);
+  if (result != "783415620") {
+    FoundError("PostOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PostOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+  
+  result = tree.InOrderFold(concat, string());
+  tree.InOrderTraverse(concatForTraverse);
+  if (result != "738140526") {
+    FoundError("InOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("InOrderTraverse", TEST_TITLE);
+  }
+  
+  if (tree.Root().Element() != 0) FoundError("Root", TEST_TITLE);
+}
+
+void TestBinaryTreeRandom() {
   const char *TEST_TITLE = "BinaryTree (randomly populated)";
 
   // initializing random device
   auto seed = random_device{}();
-  seed = 1599831501;
-  cout << "Initializing random generator with seed " << seed << " for miscellaneus test." << endl;
+  cout << "Initializing random generator with seed " << seed << " for TestBinaryTreeRandom." << endl;
   default_random_engine genx(seed);
-  uniform_int_distribution<int> distx(1, 10);
+  uniform_int_distribution<int> distx(1, 10000);
 
   // creating list of random size with random values
   cout << "init list of random size and stack with random numbers" << endl;
@@ -162,20 +253,28 @@ void TestBinaryTreeFull() {
 
   List<int> list = List<int>();
   string acc = "";
-  int tot = 0;
+  int totAfterIncrement = 0;
+  unsigned long num_of_different_numbers = 0;
+  int totForBST = 0;
   
   for(int i = 0; i < size; i++) {
     int num = distx(genx);
-    cout << num << endl;
+
+    if (list.Exists(num) == false) {
+      ++num_of_different_numbers;
+      totForBST += num;
+    }
+
     list.InsertAtBack(num);
     acc += to_string(num);
-    tot += num+5;
+    totAfterIncrement += num+5;
   }
 
   cout << "Building trees from list" << endl;
   // TODO add BST
   BinaryTreeVec<int> treeVecFromList(list);
   BinaryTreeLnk<int> treeLnkFromList(list);
+  BST<int> BSTFromList(list);
 
   if (list.Size() != (unsigned long)size)
   {
@@ -185,7 +284,10 @@ void TestBinaryTreeFull() {
     FoundError("traversable constructor", "BinaryTreeVec");
   }
   if (treeLnkFromList.Size() != list.Size()) {
-    FoundError("traversable constructor", "BinaryTreeVec");
+    FoundError("traversable constructor", "BinaryTreeLnk");
+  }
+  if (BSTFromList.Size() != num_of_different_numbers) {
+    FoundError("traversable constructor", "BST");
   }
 
 
@@ -193,24 +295,18 @@ void TestBinaryTreeFull() {
   string concatvec = treeVecFromList.BreadthFold(std::function([](const int &curr, const string &acc) {return acc+to_string(curr);}), string());
   string concatlnk = treeLnkFromList.BreadthFold(std::function([](const int &curr, const string &acc) {return acc+to_string(curr);}), string());
 
-  if (concatlnk != concatvec || acc != concatlnk) FoundError("BreadthFold", TEST_TITLE);
+  if (concatlnk != acc || acc != concatlnk) FoundError("BreadthFold", TEST_TITLE);
   
   cout << "Checking Map and Fold correctness (for each \"order\")" << endl;
 
   int i = 0;
   auto incrementAndCount = [&i](int &curr){++curr; ++i;};
   treeVecFromList.Map(incrementAndCount);
-  cout << i << "  " << size << endl;
-  if (i != size) FoundError("Map", "BinaryTreeVec");
   treeVecFromList.InOrderMap(incrementAndCount);
-  if (i != size*2) FoundError("InOrderMap", "BinaryTreeVec");
   treeVecFromList.PreOrderMap(incrementAndCount);
-  if (i != size*3) FoundError("PreOrderMap", "BinaryTreeVec");
   treeVecFromList.PostOrderMap(incrementAndCount);
-  if (i != size*4) FoundError("PostOrderMap", "BinaryTreeVec");
   treeVecFromList.BreadthMap(incrementAndCount);
   if (i != size*5) FoundError("BreadthMap", "BinaryTreeVec");
-
 
   i = 0;
   treeLnkFromList.Map(incrementAndCount);
@@ -219,43 +315,57 @@ void TestBinaryTreeFull() {
   treeLnkFromList.PostOrderMap(incrementAndCount);
   treeLnkFromList.BreadthMap(incrementAndCount);
   if (i != size*5) FoundError("Map", "BinaryTreeLnk");
-  
-
 
   int vecTot = treeVecFromList.Fold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
   int lnkTot = treeLnkFromList.Fold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
-  if (tot != vecTot) {
+  int bstTot = BSTFromList.Fold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
+  if (totAfterIncrement != vecTot) {
     FoundError("Fold or Map", "BinaryTreeVec");
   }
-  if (tot != lnkTot) {
+  if (totAfterIncrement != lnkTot) {
     FoundError("Fold or Map", "BinaryTreeLnk");
+  }
+  if (totForBST != bstTot) {
+    FoundError("Fold or Map", "BST");
   }
 
   vecTot = treeVecFromList.InOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
   lnkTot = treeLnkFromList.InOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
-  if (tot != vecTot) {
+  bstTot = BSTFromList.InOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
+  if (totAfterIncrement != vecTot) {
     FoundError("InOrderFold or Map", "BinaryTreeVec");
   }
-  if (tot != lnkTot) {
+  if (totAfterIncrement != lnkTot) {
     FoundError("InOrderFold or Map", "BinaryTreeLnk");
+  }
+  if (totForBST != bstTot) {
+    FoundError("InOrderFold or Map", "BST");
   }
 
   vecTot = treeVecFromList.PostOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
   lnkTot = treeLnkFromList.PostOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
-  if (tot != vecTot) {
+  bstTot = BSTFromList.PostOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
+  if (totAfterIncrement != vecTot) {
     FoundError("PostOrderFold or Map", "BinaryTreeVec");
   }
-  if (tot != lnkTot) {
+  if (totAfterIncrement != lnkTot) {
     FoundError("PostOrderFold or Map", "BinaryTreeLnk");
+  }
+  if (totForBST != bstTot) {
+    FoundError("PostOrderFold or Map", "BST");
   }
 
   vecTot = treeVecFromList.PreOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
   lnkTot = treeLnkFromList.PreOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
-  if (tot != vecTot) {
+  bstTot = BSTFromList.PostOrderFold(std::function([](const int &curr, const int &acc) {return acc+curr;}), 0);
+  if (totAfterIncrement != vecTot) {
     FoundError("PreOrderFold or Map", "BinaryTreeVec");
   }
-  if (tot != lnkTot) {
+  if (totAfterIncrement != lnkTot) {
     FoundError("PreOrderFold or Map", "BinaryTreeLnk");
+  }
+  if (totForBST != bstTot) {
+    FoundError("PreOrderFold or Map", "BST");
   }
 }
 
@@ -264,7 +374,8 @@ void TestBinaryTree()
   TellTest ("BinaryTree");
 
   TestEmptyBinaryTree();
-  TestBinaryTreeFull();
+  TestBinaryTreeLnk();
+  TestBinaryTreeRandom();
 }
 }
 

@@ -25,7 +25,6 @@ inline bool BinaryTree<Data>::Node::IsLeaf() const noexcept {
     return !HasLeftChild() && !HasRightChild();
 }
 
-
 // BinaryTree
 template <typename Data>
 bool BinaryTree<Data>::operator==(const BinaryTree<Data>& other) const noexcept{

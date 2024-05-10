@@ -337,8 +337,7 @@ const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToMin(const NodeLnk * c
         {
             curr = &((*curr)->left);
         }
-    } 
-    cout << (*curr)->Element();
+    }
     return *curr;
 }
 
