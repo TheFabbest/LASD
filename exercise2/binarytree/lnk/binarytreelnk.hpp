@@ -34,12 +34,13 @@ protected:
     // ...
 
   protected:
+
+  public:
+    // TODO vedi se protected con friendship (che pero non si eredita in bst)
     NodeLnk *left = nullptr;
     NodeLnk *right = nullptr;
     Data data;
-
-  public:
-    friend class BinaryTreeLnk<Data>;
+    
     // specific constructors
     NodeLnk(const Data& data);
     NodeLnk(Data&& data) noexcept;

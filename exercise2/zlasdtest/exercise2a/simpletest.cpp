@@ -167,6 +167,7 @@ void stestBinaryTreeFloat(lasd::MutableBinaryTree<double> & bt, uint & testnum, 
   cout << "End of BinaryTree<double> Test! (Errors/Tests: " << loctesterr << "/" << loctestnum << ")" << endl;
   testnum += loctestnum;
   testerr += loctesterr;
+  cout << "EJHRIE" << endl;
 }
 
 void stestBinaryTreeFloat(uint & testnum, uint & testerr) {
@@ -196,7 +197,9 @@ void stestBinaryTreeFloat(uint & testnum, uint & testerr) {
     lasd::BinaryTreeLnk<double> copbtlnk(move(btlnk));
     Empty(loctestnum, loctesterr, btlnk, true);
     NonEqualBT(loctestnum, loctesterr, copbtlnk, btlnk);
-    btlnk = copbtlnk;
+    cout << "ass" << endl;
+    btlnk = copbtlnk; // error here
+    cout << "culo" << endl;
     EqualBT(loctestnum, loctesterr, copbtlnk, btlnk);
   }
   catch (...) {
@@ -267,6 +270,7 @@ void stestBinaryTreeString(uint & testnum, uint & testerr) {
 void testSimpleExercise2A(uint & testnum, uint & testerr) {
   stestBinaryTreeInt(testnum, testerr);
   stestBinaryTreeFloat(testnum, testerr);
+  cout << "here" << endl;
   stestBinaryTreeString(testnum, testerr);
   cout << endl << "Exercise 2A (Simple Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
 }

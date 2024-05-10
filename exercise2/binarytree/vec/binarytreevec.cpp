@@ -79,7 +79,7 @@ inline bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept {
     if (childIndex >= this->tree->vector.Size()) {
         return false;
     }
-    return this->tree->vector[childIndex]->valid;
+    return this->tree->vector[childIndex].valid;
 }
 
 template <typename Data>
@@ -88,7 +88,7 @@ inline bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept {
     if (childIndex >= this->tree->vector.Size()) {
         return false;
     }
-    return this->tree->vector[childIndex]->valid;
+    return this->tree->vector[childIndex].valid;
 }
 
 template <typename Data>

@@ -46,6 +46,7 @@ BinaryTreeLnk<Data>::NodeLnk::~NodeLnk() {
 template <typename Data>
 BinaryTreeLnk<Data>::NodeLnk BinaryTreeLnk<Data>::NodeLnk::operator=(const BinaryTreeLnk<Data>::NodeLnk& other){
     cout << other.data << endl;
+    cout << other.left << " " << left << endl;
     this->data = other.data;
     if (other.left != nullptr) {
         if (left == nullptr)
@@ -54,7 +55,9 @@ BinaryTreeLnk<Data>::NodeLnk BinaryTreeLnk<Data>::NodeLnk::operator=(const Binar
         }
         else
         {
+            cout << "her" << endl;
             *this->left = *other.left;
+            cout << "ric donme" << endl;
         }
     }
     else if (left != nullptr) {
@@ -228,7 +231,9 @@ BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data>& o
     cout << sizeof(int) << endl;
     this->Clear();
     if (other.Empty() == false) {
+        cout << "err here?" << endl;
         *root = *other.root;
+        cout << " e al fine" << endl;
         this->size = other.size;
     }
     return *this;
