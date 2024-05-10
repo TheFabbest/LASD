@@ -76,21 +76,19 @@ inline Data& BinaryTreeVec<Data>::NodeVec::Element() noexcept {
 template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasLeftChild() const noexcept {
     const unsigned long childIndex = 2 * Index() + 1;
-    const unsigned long address = BaseAddress() + childIndex;
     if (childIndex >= this->tree->vector.Size()) {
         return false;
     }
-    return ((NodeVec*)address)->valid;
+    return this->tree->vector[childIndex]->valid;
 }
 
 template <typename Data>
 inline bool BinaryTreeVec<Data>::NodeVec::HasRightChild() const noexcept {
     const unsigned long childIndex = 2 * Index() + 2;
-    const unsigned long address = BaseAddress() + childIndex;
     if (childIndex >= this->tree->vector.Size()) {
         return false;
     }
-    return ((NodeVec*)address)->valid;
+    return this->tree->vector[childIndex]->valid;
 }
 
 template <typename Data>
