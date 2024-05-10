@@ -26,13 +26,6 @@ BST<Data>::BST(const BST<Data>& other) : BinaryTreeLnk<Data>(other) {}
 template <typename Data>
 BST<Data>::BST(BST<Data>&& other) noexcept : BinaryTreeLnk<Data>(std::move(other)) {}
 
-// destructor
-template <typename Data>
-BST<Data>::~BST() {
-    delete root;
-}
-
-
 // Copy assignment
 template <typename Data>
 BST<Data>& BST<Data>::operator=(const BST<Data>& other) {
@@ -50,12 +43,24 @@ BST<Data>& BST<Data>::operator=(BST<Data>&& other) noexcept {
 // Comparison operators
 template <typename Data>
 inline bool BST<Data>::operator==(const BST<Data>& other) const noexcept {
-    return BinaryTreeLnk<Data>::operator==(other);
+    if (size != other.Size()) {
+        return false;
+    }
+    BTInOrderIterator<Data> iter1(*this);
+    BTInOrderIterator<Data> iter2(other);
+    while (!iter1.Terminated()) {
+        if (*iter1 != *iter2) {
+            return false;
+        }
+        ++iter1;
+        ++iter2;
+    }
+    return true;
 }
 
 template <typename Data>
 inline bool BST<Data>::operator!=(const BST<Data>& other) const noexcept {
-    return BinaryTreeLnk<Data>::operator!=(other);
+    return !this->operator==(other);
 }
 
 
@@ -234,7 +239,7 @@ bool BST<Data>::Insert(Data && data) {
 template<typename Data>
 bool BST<Data>::Remove(const Data & data) {
     NodeLnk * & ptr = FindPointerTo(root, data);
-    if (ptr != nullptr) {
+    if (ptr == nullptr) {
         return false;
     }
     NodeLnk * nod = Detach(ptr);
@@ -299,22 +304,23 @@ BST<Data>::NodeLnk * BST<Data>::Skip2Left(NodeLnk *& node) noexcept {
 // TODO vedi why return e why diverso dal prof
 template <typename Data>
 BST<Data>::NodeLnk * BST<Data>::Skip2Right(NodeLnk *& node) noexcept {
-    // NodeLnk *right = nullptr;
-    // if (node != nullptr)
-    // {
-    //     std::swap(right, node->right);
-    //     std::swap(right, node);
-    //     --size;
-    // }
-    // return right;
-
-    if (node != nullptr) {
-        NodeLnk *right = node->right;
-        node->right = nullptr;
-        node = right;
+    NodeLnk *right = nullptr;
+    if (node != nullptr)
+    {
+        std::swap(right, node->right);
+        std::swap(right, node);
         --size;
     }
-    return node;
+    return right;
+
+    // non funziona
+    // if (node != nullptr) {
+    //     NodeLnk *right = node->right;
+    //     node->right = nullptr;
+    //     node = right;
+    //     --size;
+    // }
+    // return node;
 }
 
 template <typename Data>
@@ -332,6 +338,7 @@ const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToMin(const NodeLnk * c
             curr = &((*curr)->left);
         }
     } 
+    cout << (*curr)->Element();
     return *curr;
 }
 
@@ -399,19 +406,18 @@ const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToPredecessor(const Nod
     {
         return node;
     }
-
     const Data& curr = node->Element();
     if (data == curr)
     {
         const NodeLnk * const & pred = FindPointerToMax(node->left);
-        return (pred == nullptr) ? node : pred;
+        return pred;
     }
     else if (data < curr) {
         return FindPointerToPredecessor(node->left, data);
     }
     else
     {
-        const NodeLnk * const & pred = FindPointerToPredecessor(node->left, data);
+        const NodeLnk * const & pred = FindPointerToPredecessor(node->right, data);
         if (pred == nullptr) {
             return node;
         }
@@ -436,19 +442,19 @@ const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToSuccessor(const NodeL
     const Data& curr = node->Element();
     if (data == curr)
     {
-        const NodeLnk * const & pred = FindPointerToMin(node->right);
-        return (pred == nullptr) ? node : pred;
+        const NodeLnk * const & succ = FindPointerToMin(node->right);
+        return succ;
     }
     else if (data > curr) {
         return FindPointerToSuccessor(node->right, data);
     }
     else
     {
-        const NodeLnk * const & pred = FindPointerToSuccessor(node->right, data);
-        if (pred == nullptr) {
+        const NodeLnk * const & succ = FindPointerToSuccessor(node->left, data);
+        if (succ == nullptr) {
             return node;
         }
-        return (curr < pred->data) ? node : pred;
+        return (curr < succ->data) ? node : succ;
     }
 }
 /* ************************************************************************** */

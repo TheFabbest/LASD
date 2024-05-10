@@ -155,6 +155,8 @@ void stestBSTInt(uint & testnum, uint & testerr) {
 
     Empty(loctestnum, loctesterr, bst, true);
     Size(loctestnum, loctesterr, bst, true, 0);
+    
+    cout << "here" << endl;
   }
   catch (...) {
     loctestnum++; loctesterr++;
