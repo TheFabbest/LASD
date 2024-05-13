@@ -167,10 +167,8 @@ void BST<Data>::RemovePredecessor(const Data& data) {
 
 template <typename Data>
 const Data& BST<Data>::Successor(const Data& data) const {
-    cout << "jere" << endl;
-    // TODO REMOVE (findpointertosuccessor funziona senza)
+    // TODO findpointertosuccessor funziona senza
     if (root == nullptr) {
-        cout << "UHHEURHU" << endl;
         throw std::length_error("BST is empty");
     }
 
@@ -439,12 +437,10 @@ template<typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToSuccessor(const NodeLnk * const & node, const Data & data) const noexcept {
     if (node == nullptr)
     {
-        cout << "node is nullptr" << endl;
         return node;
     }
 
     const Data& curr = node->Element();
-    cout << "reading " << curr << endl;
     if (data == curr)
     {
         const NodeLnk * const & succ = FindPointerToMin(node->right);

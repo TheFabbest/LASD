@@ -194,10 +194,9 @@ void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &n
                     int &prec, int &succ, int &root) {
   // initializing random device
   auto seed = random_device{}();
-  seed = 722826848; // TODO togli
   cout << "Initializing random generator with seed " << seed << endl;
   default_random_engine genx(seed);
-  uniform_int_distribution<int> distx(1, 20);
+  uniform_int_distribution<int> distx(1, 100);
 
   size = 0;
   min = 0;
@@ -703,9 +702,15 @@ void TestBinaryTreeRandom() {
   BinaryTreeVec<int> newBTVec(list);
   BinaryTreeLnk<int> newBTLnk(list);
   BST<int> newBST(list);
-  if (inserted ^ (newBTVec != treeVecFromList)) FoundError("Comparison", "BinaryTreeVec");
-  if (inserted ^ (newBTLnk != treeLnkFromList)) FoundError("Comparison", "BinaryTreeVec");
-  if (inserted ^ (newBST != BSTFromList)) FoundError("Comparison", "BinaryTreeVec");
+  if (inserted == (newBTVec == treeVecFromList)) {
+    FoundError("Comparison", "BinaryTreeVec");
+  }
+  if (inserted == (newBTLnk == treeLnkFromList)) {
+    FoundError("Comparison", "BinaryTreeVec");
+  }
+  if (inserted == (newBST == BSTFromList)) {
+    FoundError("Comparison", "BinaryTreeVec");
+  }
 }
 
 void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_test, int succ, int prec, int root) {
@@ -753,9 +758,23 @@ void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_tes
     FoundError("PredecessorNRemove", TEST_TITLE);
   }
   bst.RemovePredecessor(num_for_test);
-  if (bst.Predecessor(num_for_test) >= prec || bst != copy) {
+  
+  // tries to find another predecessor after removal but there could be none
+  try {
+    int new_prec = bst.Predecessor(num_for_test);
+    if (new_prec >= prec) {
+      FoundError("RemovePredecessor", TEST_TITLE);
+    }
+  } catch (std::length_error &err) {
+    if (prec != min) {
+      FoundError("RemovePredecessor (in this case prec should be = min but is not)", TEST_TITLE);
+    }
+  }
+  
+  if (bst != copy) {
     FoundError("RemovePredecessor", TEST_TITLE);
   }
+
 
   cout << "Testing Successor" << endl;
   bst = restore;
@@ -766,8 +785,20 @@ void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_tes
   if (copy.SuccessorNRemove(num_for_test) != succ) {
     FoundError("SuccessorNRemove", TEST_TITLE);
   }
+
   bst.RemoveSuccessor(num_for_test);
-  if (bst.Successor(num_for_test) <= succ || bst != copy) {
+  // tries to find another successor after removal but there could be none
+  try {
+    int new_succ = bst.Successor(num_for_test);
+    if (new_succ <= succ) {
+      FoundError("RemoveSuccessor", TEST_TITLE);
+    }
+  } catch (std::length_error &err) {
+    if (succ != max) {
+      FoundError("RemoveSuccessor (in this case succ should be = max but is not)", TEST_TITLE);
+    }
+  }
+  if (bst != copy) {
     FoundError("RemoveSuccessor", TEST_TITLE);
   }
 
