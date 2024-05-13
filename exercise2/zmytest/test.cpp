@@ -38,6 +38,32 @@ using namespace lasd;
   BinaryTreeVec
     (same as BinaryTreeLnk)
 
+  BST
+    default constr
+    traversable constr
+    mappable constr
+    copy constr
+    move constr
+    = copy
+    = move
+    Min
+    MinNRemove
+    RemoveMax
+    Predecessor
+    PredecessorNRemove
+    RemovePredecessor
+    Successor
+    SuccessorNRemove
+    RemoveSuccessor
+    Root
+    Insert
+    Insert (move)
+    Remove
+    Exists
+    Clear
+    protected methods (TODO)
+
+
   Iterator
     = copy
     = move
@@ -164,6 +190,66 @@ void TestMappable(lasd::MappableContainer<int> &mappable, string expected_concat
   mappable.Map([](int &curr) {curr++;});
 }
 
+void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &num_for_tests,
+                    int &prec, int &succ, int &root) {
+  // initializing random device
+  auto seed = random_device{}();
+  seed = 722826848; // TODO togli
+  cout << "Initializing random generator with seed " << seed << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx(1, 20);
+
+  size = 0;
+  min = 0;
+  max = 0;
+  root = 0;
+  bst.Clear();
+  int num = distx(genx);
+  Vector<int> generated_numbers(num);
+  for (int i = 0; i < num; ++i)
+  {
+    int generated = distx(genx);
+    generated_numbers[i] = generated;
+
+    bool inserted = bst.Insert(generated);
+    if (inserted) {
+      if (root == 0) {
+        root = generated;
+      }
+      if (min == 0 || generated < min)
+      {
+        min = generated;
+      }
+      if (max == 0 || generated > max)
+      {
+        max = generated;
+      }
+      ++size;
+    }
+  }
+  
+  // TODO vedi se 3 va bene in testbst
+  if (size < 3) {
+    GetRandomBST(bst, size, min, max, num_for_tests, 
+                prec, succ, root);
+  }
+
+  do {
+    num_for_tests = distx(genx);
+  } while (num_for_tests <= min || num_for_tests >= max);
+
+  prec = min;
+  succ = max;
+  for (int i = 0; i < num; i++) {
+    int cur = generated_numbers[i];
+    if (cur > prec && cur < num_for_tests) {
+      prec = cur;
+    }
+    if (cur < succ && cur > num_for_tests) {
+      succ = cur;
+    }
+  }
+}
 // BINARY TREE
 template <class T>
 void TestEmptyBinaryTree(BinaryTree<T> &tree){
@@ -257,14 +343,8 @@ void TestEmptyBinaryTree(){
   TestEmptyBinaryTree(bst);
 }
 
-void TestBinaryTreeLnkSize(BinaryTreeLnk<int> &tree, unsigned long size) {
-  const char *TEST_TITLE = "BinaryTreeLnk (tree, size)";
-  if (tree.Size() != size) FoundError("Size or Constructor", TEST_TITLE);
-  if (tree.Empty() && size != 0) FoundError("Empty", TEST_TITLE);
-}
-
-void TestBinaryTreeVecSize(BinaryTreeVec<int> &tree, unsigned long size) {
-  const char *TEST_TITLE = "BinaryTreeLnk (tree, size)";
+void TestBinaryTreeSize(BinaryTree<int> &tree, unsigned long size) {
+  const char *TEST_TITLE = "BinaryTreeSize";
   if (tree.Size() != size) FoundError("Size or Constructor", TEST_TITLE);
   if (tree.Empty() && size != 0) FoundError("Empty", TEST_TITLE);
 }
@@ -279,21 +359,21 @@ void TestBinaryTreeLnk() {
   List<int> list;
   for (unsigned long i = 0; i < size; ++i) {
     BinaryTreeLnk<int> tree(list);
-    TestBinaryTreeLnkSize(tree, i);
+    TestBinaryTreeSize(tree, i);
 
     BinaryTreeLnk<int> assignment_tree = tree;
-    TestBinaryTreeLnkSize(assignment_tree, i);
+    TestBinaryTreeSize(assignment_tree, i);
 
     tree = assignment_tree;
-    TestBinaryTreeLnkSize(tree, i);
+    TestBinaryTreeSize(tree, i);
 
     BinaryTreeLnk<int> move_tree = std::move(tree);
     TestEmptyBinaryTree(tree);
-    TestBinaryTreeLnkSize(move_tree, i);
+    TestBinaryTreeSize(move_tree, i);
 
     BinaryTreeLnk<int> move_constr_tree(std::move(assignment_tree));
     TestEmptyBinaryTree(assignment_tree);
-    TestBinaryTreeLnkSize(move_constr_tree, i);
+    TestBinaryTreeSize(move_constr_tree, i);
 
     list.InsertAtBack(i);
   }
@@ -385,21 +465,21 @@ void TestBinaryTreeVec() {
   List<int> list;
   for (unsigned long i = 0; i < size; ++i) {
     BinaryTreeVec<int> tree(list);
-    TestBinaryTreeVecSize(tree, i);
+    TestBinaryTreeSize(tree, i);
 
     BinaryTreeVec<int> assignment_tree = tree;
-    TestBinaryTreeVecSize(assignment_tree, i);
+    TestBinaryTreeSize(assignment_tree, i);
 
     tree = assignment_tree;
-    TestBinaryTreeVecSize(tree, i);
+    TestBinaryTreeSize(tree, i);
 
     BinaryTreeVec<int> move_tree = std::move(tree);
     TestEmptyBinaryTree(tree);
-    TestBinaryTreeVecSize(move_tree, i);
+    TestBinaryTreeSize(move_tree, i);
 
     BinaryTreeVec<int> move_constr_tree(std::move(assignment_tree));
     TestEmptyBinaryTree(assignment_tree);
-    TestBinaryTreeVecSize(move_constr_tree, i);
+    TestBinaryTreeSize(move_constr_tree, i);
 
     list.InsertAtBack(i);
   }
@@ -628,8 +708,171 @@ void TestBinaryTreeRandom() {
   if (inserted ^ (newBST != BSTFromList)) FoundError("Comparison", "BinaryTreeVec");
 }
 
+void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_test, int succ, int prec, int root) {
+  const char* TEST_TITLE = "BST (with arguments)";
+
+  BST<int> restore(bst);
+  BST<int> copy = bst;
+
+  cout << "Testing Size" << endl;
+  if (bst.Size() != size) {
+    FoundError("Size", TEST_TITLE);
+  }
+
+  cout << "Testing Min" << endl;
+  if (bst.Min() != min) {
+    FoundError("Min", TEST_TITLE);
+  }
+  if (copy.MinNRemove() != min || copy.Size() != --size) {
+    FoundError("MinNRemove", TEST_TITLE);
+  }
+  bst.RemoveMin();
+  if (bst.Min() <= min || bst != copy) {
+    FoundError("RemoveMin", TEST_TITLE);
+  }
+
+  cout << "Testing Max" << endl;
+  if (bst.Max() != max) {
+    FoundError("Max", TEST_TITLE);
+  }
+  if (copy.MaxNRemove() != max || copy.Size() != --size) {
+    FoundError("MaxNRemove", TEST_TITLE);
+  }
+  bst.RemoveMax();
+  if (bst.Max() > max || bst != copy) {
+    FoundError("RemoveMax", TEST_TITLE);
+  }
+
+  cout << "Testing Predecessor" << endl;
+  bst = restore;
+  copy = restore;
+  if (bst.Predecessor(num_for_test) != prec) {
+    FoundError("Predecessor", TEST_TITLE);
+  }
+  if (copy.PredecessorNRemove(num_for_test) != prec) {
+    FoundError("PredecessorNRemove", TEST_TITLE);
+  }
+  bst.RemovePredecessor(num_for_test);
+  if (bst.Predecessor(num_for_test) >= prec || bst != copy) {
+    FoundError("RemovePredecessor", TEST_TITLE);
+  }
+
+  cout << "Testing Successor" << endl;
+  bst = restore;
+  copy = restore;
+  if (bst.Successor(num_for_test) != succ) {
+    FoundError("Successor", TEST_TITLE);
+  }
+  if (copy.SuccessorNRemove(num_for_test) != succ) {
+    FoundError("SuccessorNRemove", TEST_TITLE);
+  }
+  bst.RemoveSuccessor(num_for_test);
+  if (bst.Successor(num_for_test) <= succ || bst != copy) {
+    FoundError("RemoveSuccessor", TEST_TITLE);
+  }
+
+  cout << "Testing Root" << endl;
+
+  bst = restore;
+  if (bst.Root().Element() != root) {
+    FoundError("Root", TEST_TITLE);
+  }
+
+
+  cout << "Testing Exists and dictionary functions" << endl;
+  int tests [3] {max, min, prec};
+  for (int i = 0; i < 3; i++)
+  {
+    int curr = tests[i];
+    if (bst.Exists(curr) == false) {
+      FoundError("Exists", TEST_TITLE);
+    }
+
+    if (bst.Insert(curr)) {
+      FoundError("Insert (existing value)", TEST_TITLE);
+    }
+  
+    if (bst.Remove(curr) == false) {
+      FoundError("Remove (existing value)", TEST_TITLE);
+    }
+
+    if (bst.Remove(curr)) {
+      FoundError("Remove (non present value)", TEST_TITLE);
+    }
+
+    if (bst.Insert(curr) == false) {
+      FoundError("Insert (non present value)", TEST_TITLE);
+    }
+  }
+
+  cout << "Testing comparisons" << endl;
+  if (bst != restore) {
+    FoundError("Comparisons", TEST_TITLE);
+  }
+
+  cout << "Testing Clear" << endl;
+  bst.Clear();
+  TestEmptyBinaryTree(bst);
+}
+
 void TestBST(){
-  // TODO
+  const char* TEST_TITLE = "BST";
+  TellTest(TEST_TITLE);
+
+  cout << "Creating List" << endl;
+  List<int> list;
+  list.InsertAtBack(10);
+  list.InsertAtBack(2);
+  list.InsertAtBack(1);
+  list.InsertAtBack(3);
+  list.InsertAtBack(6);
+  list.InsertAtBack(1);
+
+  cout << "Testing Constructors" << endl;
+  BST<int> bst_trav(list);
+  TestBinaryTreeSize(bst_trav, 5);
+  
+  BST<int> bst_copy = bst_trav;
+  TestBinaryTreeSize(bst_copy, 5);
+
+  BST<int> bst_map(std::move(bst_trav));
+  TestBinaryTreeSize(bst_trav, 0);
+  TestBinaryTreeSize(bst_map, 5);
+
+  BST<int> bst = std::move(bst_copy);
+  TestBinaryTreeSize(bst_trav, 0);
+  TestBinaryTreeSize(bst, 5);
+
+  bst_copy = bst;
+  TestBinaryTreeSize(bst_copy, 5);
+
+  BST<int> bst_copy_constr(bst);
+  TestBinaryTreeSize(bst_copy_constr, 5);
+
+  TestBST(bst, 5, 1, 10, 3, 6, 2, 10);
+
+  cout << "Building random BST" << endl;
+  unsigned long size;
+  int min;
+  int max;
+  int num_for_tests;
+  int prec;
+  int succ;
+  int root;
+  BST<int> random_bst;
+  GetRandomBST(random_bst, size, min, max, num_for_tests, 
+                prec, succ, root);
+  
+  cout << "BST created with: " << endl;
+  cout << "size = " << size << endl;
+  cout << "min = " << min << endl;
+  cout << "max = " << max << endl;
+  cout << "num for tests = " << num_for_tests << endl;
+  cout << "prec = " << prec << endl;
+  cout << "succ = " << succ << endl;
+  cout << "root = " << root << endl;
+
+  TestBST(random_bst, size, min, max, num_for_tests, succ, prec, root);
 }
 
 void TestBinaryTree()
@@ -643,10 +886,26 @@ void TestBinaryTree()
   TestBinaryTreeRandom();
 }
 
+void TestIteratorBST()
+{
+  unsigned long size;
+  int min;
+  int max;
+  int num_for_tests;
+  int prec;
+  int succ;
+  int root;
+  BST<int> bst;
+  GetRandomBST(bst, size, min, max, num_for_tests, 
+                prec, succ, root);
+
+  // TODO
+}
+
 void TestIterators()
 {
   TellTest ("Iterator");
-  // TODO
+  TestIteratorBST();
 }
 
 }
