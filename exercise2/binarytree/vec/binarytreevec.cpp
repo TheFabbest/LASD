@@ -200,6 +200,10 @@ BinaryTreeVec<Data>& BinaryTreeVec<Data>::operator=(BinaryTreeVec<Data>&& other)
     {
         this->vector[i].tree = this;
     }
+    for (i = 0; i < other.size; ++i)
+    {
+        other.vector[i].tree = &other;
+    }
     return *this;
 }
 
