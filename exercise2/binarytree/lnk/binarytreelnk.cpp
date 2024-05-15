@@ -163,7 +163,7 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
     this->size = mappable.Size();
     QueueLst<NodeLnk**> queue;
     queue.Enqueue(&root);
-    mappable.Map([&queue](Data&& currentData){
+    mappable.Map([&queue](Data& currentData){
         NodeLnk** currentNode = queue.HeadNDequeue();
         (*currentNode) = new NodeLnk(std::move(currentData));
         queue.Enqueue(&(*currentNode)->left);

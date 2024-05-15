@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace lasd;
-string to_string(string str){return str;} // for templates
+string to_string(string str){return str;} // for templates TODO check if useless
 
 /* TEST
   BinaryTree
@@ -98,6 +98,56 @@ string to_string(string str){return str;} // for templates
   
 */
 
+/*
+  TestEmptyBinaryTree (called on empty binarytreevec, empty binarytreelnk and empty BST (any constructor) )
+    size
+    empty
+    exists
+    == e !=
+    root
+    traverse e fold (numero di iter = 0)
+
+  TestEmptyBST (called with every constructor)
+    (calls TestEmptyBinaryTree)
+    size
+    RemoveSome/All, InsertSome/All (with/without move)
+    Min/RemoveMin/MinNRemove (same for Max)
+    Exists
+
+  TestBinaryTree (called on binarytreelnk (every constructor) )
+    size
+    empty
+    root
+    Traverse e Fold
+
+  TestBinaryTreeLnk/TestBinaryTreeVec ()
+    (calls TestBinaryTree)
+    Exists
+    Traverse and Fold (checks order on known tree)
+    comparison (superficial, further testing in random)
+    Clear (calls TestEmptyBinaryTree)
+
+  TestBinaryTreeRandom (works on binarytreelnk, binarytreevec, bst)
+    Map/Fold
+    comparison (superficial)ì
+
+  TestBST (with arguments passed (called on BST with every constructor))
+    (calls TestBinaryTree)
+    Min/MinNRemove/RemoveMin (same for Max)
+    Successor/SuccessorNRemove/RemoveSuccessor (same for Predecessor)
+    Exists
+    Insert
+    Remove
+    InsertSome/All
+    RemoveSome/All
+    Clear (calls TestEmptyBinaryTree)
+
+  TestBST
+    (calls TestBST with arguments)
+    generates known tree and random tree
+  
+  // TODO see iterators
+*/
 
 namespace fab{
 unsigned long num_of_errors = 0;
@@ -114,85 +164,8 @@ void TellTest(const char *name)
   cout << endl << endl << "---STARTING TEST " << name << "---" << endl; 
 }
 
-// CONTAINER
-void TestEmptyContainer(lasd::Container &container)
-{
-  const char *TEST_TITLE = "Empty Container";
-  if (container.Empty() == false || container.Size() != 0) FoundError("Emtpy or Size", TEST_TITLE);
-}
-void TestFullContainer(lasd::Container &container)
-{
-  const char *TEST_TITLE = "Full Container";
-  if (container.Empty() == true || container.Size() == 0) FoundError("Emtpy or Size", TEST_TITLE);
-}
-
-// RESIZABLE CONTAINER
-void TestResizableContainer(lasd::ResizableContainer &resizable, unsigned int newsize)
-{
-  const char *TEST_TITLE = "Resizable Container";
-  resizable.Resize(newsize);
-  if (resizable.Size() != newsize) FoundError("Resize or Size", TEST_TITLE);
-}
-
-// CLEARABLE CONTAINER
-void TestClearableContainer(lasd::ClearableContainer &clearable)
-{
-  const char *TEST_TITLE = "Clearable Container";
-  clearable.Clear();
-  if (clearable.Size() != 0) FoundError("Clear or Size", TEST_TITLE);
-  if (clearable.Empty() == false) FoundError("Empty or Size", TEST_TITLE);
-}
-
-// TESTABLE
-void TestTestable(TestableContainer<int> &testable, bool empty, unsigned long size, int num_in_container)
-{
-  const char *TEST_TITLE = "Testable";
-  if (testable.Empty() != empty) FoundError("Empty", TEST_TITLE);
-  if (testable.Size() != size) FoundError("Size", TEST_TITLE);
-  if (!testable.Empty()){
-    if (!testable.Exists(num_in_container)) FoundError("Exists", TEST_TITLE);
-  }
-}
-
-// DICTIONARY
-void TestDictionary(lasd::DictionaryContainer<int> &dictionary)
-{
-  const char *TEST_TITLE = "Dictionary";
-  if (!dictionary.Exists(9999))
-  {
-    unsigned long curr_size = dictionary.Size();
-    dictionary.Remove(9999);
-    if (dictionary.Size() != curr_size) FoundError("Remove", TEST_TITLE);
-    dictionary.Insert(9999);
-    ++curr_size;
-    if (dictionary.Size() != curr_size) FoundError("Insert", TEST_TITLE);
-    dictionary.Remove(9999);
-    --curr_size;
-    if (dictionary.Size() != curr_size) FoundError("Remove", TEST_TITLE);
-  }
-}
-
-// TRAVERSABLE
-void TestTraversable(lasd::TraversableContainer<int> &traversable, string expected_concat)
-{
-  const char *TEST_TITLE = "Traversable";
-  string tot = "";
-  traversable.Traverse([&tot](const int &curr) {tot = tot + to_string(curr);});
-  string tot2 = "";
-  tot2 = traversable.Fold(std::function([](const int &curr, const string &acc) {return acc+to_string(curr);}), string());
-  if (tot != expected_concat) FoundError("Traverse", TEST_TITLE);
-  if (tot2 != expected_concat) FoundError("Fold", TEST_TITLE);
-}
-
-// MAPPABLE
-void TestMappable(lasd::MappableContainer<int> &mappable, string expected_concat)
-{
-  TestTraversable(mappable, expected_concat);
-  mappable.Map([](int &curr) {curr++;});
-}
-
 void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &num_for_tests,
-                    int &prec, int &succ, int &root) {
+                    int &prec, int &succ, int &root, int &tot) {
   // initializing random device
   auto seed = random_device{}();
   if (min == 0) seed = 8433919; // for repeating
@@ -205,6 +178,7 @@ void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &n
   min = 0;
   max = 0;
   root = 0;
+  tot = 0;
   bst.Clear();
   int num = distx(genx);
   Vector<int> generated_numbers(num);
@@ -215,6 +189,7 @@ void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &n
 
     bool inserted = bst.Insert(generated);
     if (inserted) {
+      tot += generated;
       if (root == 0) {
         root = generated;
       }
@@ -234,7 +209,7 @@ void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &n
   if (size < 3) {
     cout << "retrying..." << endl;
     GetRandomBST(bst, size, min, max, num_for_tests, 
-                prec, succ, root);
+                prec, succ, root, tot);
     return;
   }
 
@@ -263,17 +238,18 @@ void GetRandomBST(BST<int> &bst) {
   int prec;
   int succ;
   int root;
-  GetRandomBST(bst, size, min, max, num_for_tests, prec, succ, root);
+  int tot;
+  GetRandomBST(bst, size, min, max, num_for_tests, prec, succ, root, tot);
 }
 
 // BINARY TREE
 template <class T>
 void TestEmptyBinaryTree(BinaryTree<T> &tree){
   const char *TEST_TITLE = "Empty BinaryTree";
-  TestEmptyContainer(tree);
   if (tree.Size() != 0) FoundError("size", TEST_TITLE);
   if (tree.Empty() == false) FoundError("empty", TEST_TITLE);
   if (tree.Exists(T{}) == true) FoundError("exists", TEST_TITLE);
+  if (!(tree == tree)) FoundError("Comparison", TEST_TITLE);
   if (tree != tree) FoundError("Comparison", TEST_TITLE);
 
   bool error = false;
@@ -309,10 +285,7 @@ void TestEmptyBinaryTree(BinaryTree<T> &tree){
 void TestEmptyBST(BST<string> &bst) {
   const char *TEST_TITLE = "BST (empty)";
 
-  if (bst.Size() != 0){
-    FoundError("Size", TEST_TITLE);
-    cout << "You might have called TestEmptyBST on a non-empty BST" << endl;
-  }
+  TestEmptyBinaryTree(bst);
 
   Vector<string> vec(3);
   vec[0] = "";
@@ -453,7 +426,6 @@ void TestEmptyBinaryTree(){
 
   TestEmptyBinaryTree(treeVec);
   TestEmptyBinaryTree(treeLnk);
-  TestEmptyBinaryTree(bst);
   TestEmptyBST(bst);
 
   cout << "Testing constructors from traversable/mappable" << endl;
@@ -464,8 +436,15 @@ void TestEmptyBinaryTree(){
 
   TestEmptyBinaryTree(treeVecFromVec);
   TestEmptyBinaryTree(treeLnkFromVec);
-  TestEmptyBinaryTree(bstFromVec);
   TestEmptyBST(bstFromVec);
+
+  BinaryTreeVec<string> treeVecFromVecMove(std::move(Vector(vector)));
+  BinaryTreeLnk<string> treeLnkFromVecMove(std::move(Vector(vector)));
+  BST<string> bstFromVecMove(std::move(Vector(vector)));
+
+  TestEmptyBinaryTree(treeVecFromVecMove);
+  TestEmptyBinaryTree(treeLnkFromVecMove);
+  TestEmptyBST(bstFromVecMove);
 
   cout << "Testing copy assignment" << endl;
   treeVecFromVec = treeVec;
@@ -473,7 +452,6 @@ void TestEmptyBinaryTree(){
   bstFromVec = bst;
   TestEmptyBinaryTree(treeVecFromVec);
   TestEmptyBinaryTree(treeLnkFromVec);
-  TestEmptyBinaryTree(bstFromVec);
   TestEmptyBST(bstFromVec);
 
   cout << "Testing move assignment" << endl;
@@ -482,11 +460,10 @@ void TestEmptyBinaryTree(){
   bst = std::move(bstFromVec);
   TestEmptyBinaryTree(treeVec);
   TestEmptyBinaryTree(treeLnk);
-  TestEmptyBinaryTree(bst);
   TestEmptyBST(bst);
   TestEmptyBinaryTree(treeVecFromVec);
   TestEmptyBinaryTree(treeLnkFromVec);
-  TestEmptyBinaryTree(bstFromVec);
+  TestEmptyBST(bstFromVec);
 
   cout << "Testing copy constructor" << endl;
   BinaryTreeLnk<string> treeLnkCopyConstructor(treeLnk);
@@ -494,7 +471,6 @@ void TestEmptyBinaryTree(){
   BST<string> bstCopyConstructor(bst);
   TestEmptyBinaryTree(treeLnkCopyConstructor);
   TestEmptyBinaryTree(treeVecCopyConstructor);
-  TestEmptyBinaryTree(bstCopyConstructor);
   TestEmptyBST(bstCopyConstructor);
 
   cout << "Testing move constructor" << endl;
@@ -503,17 +479,16 @@ void TestEmptyBinaryTree(){
   BST<string> bstMoveConstructor(std::move(bst));
   TestEmptyBinaryTree(treeLnkMoveConstructor);
   TestEmptyBinaryTree(treeVecMoveConstructor);
-  TestEmptyBinaryTree(bstMoveConstructor);
   TestEmptyBST(bstMoveConstructor);
   TestEmptyBinaryTree(treeVec);
   TestEmptyBinaryTree(treeLnk);
-  TestEmptyBinaryTree(bst);
+  TestEmptyBST(bst);
 }
 
 void TestBinaryTree(BinaryTree<int> &tree, unsigned long size, int root, int expected_tot) {
   const char *TEST_TITLE = "BinaryTree (with parameters)";
   if (tree.Size() != size) {
-    FoundError("Size or Constructor", TEST_TITLE);
+    FoundError("Size", TEST_TITLE);
   }
   if (tree.Empty() && size != 0) {
     FoundError("Empty", TEST_TITLE);
@@ -766,7 +741,6 @@ void TestBinaryTreeRandom() {
 
   // initializing random device
   auto seed = random_device{}();
-  seed = 413063144; // TODO remove
   cout << "Initializing random generator with seed " << seed << " for TestBinaryTreeRandom." << endl;
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx(1, 100);
@@ -799,11 +773,7 @@ void TestBinaryTreeRandom() {
   BinaryTreeVec<int> treeVecFromList(list);
   BinaryTreeLnk<int> treeLnkFromList(list);
   BST<int> BSTFromList(list);
-
-  if (list.Size() != (unsigned long)size)
-  {
-    FoundError("InsertAtBack", "List");
-  }
+  
   if (treeVecFromList.Size() != list.Size()) {
     FoundError("traversable constructor", "BinaryTreeVec");
   }
@@ -813,7 +783,6 @@ void TestBinaryTreeRandom() {
   if (BSTFromList.Size() != num_of_different_numbers) {
     FoundError("traversable constructor", "BST");
   }
-
 
   cout << "Checking BreadthFold correctness" << endl;
   string concatvec = treeVecFromList.BreadthFold(std::function([](const int &curr, const string &acc) {return acc+to_string(curr);}), string());
@@ -915,11 +884,13 @@ void TestBinaryTreeRandom() {
   }
 }
 
-void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_test, int succ, int prec, int root) {
+void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_test, int succ, int prec, int root, int tot) {
   const char* TEST_TITLE = "BST (with arguments)";
 
   BST<int> restore(bst);
   BST<int> copy = bst;
+
+  TestBinaryTree(bst, size, root, tot);
 
   cout << "Testing Size" << endl;
   if (bst.Size() != size) {
@@ -1049,6 +1020,114 @@ void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_tes
   TestEmptyBinaryTree(bst);
 }
 
+void TestDegenerateBST(){
+  const char* TEST_TITLE = "Degenerate BST (right)";
+  List<int> list = List<int>();
+  for (int i = 0; i < 9; ++i) {
+    list.InsertAtBack(i);
+  }
+
+  BST<int> tree(list);
+  string result;
+  string traverse_result = "";
+  std::function concat = [](const int &curr, const string &acc) {return acc+to_string(curr);};
+  std::function concatForTraverse = [&traverse_result](const int &curr) {traverse_result += to_string(curr);};
+  result = tree.BreadthFold(concat, string());
+  tree.BreadthTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("BreadthFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("BreadthTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PreOrderFold(concat, string());
+  tree.PreOrderTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("PreOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PreOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PostOrderFold(concat, string());
+  tree.PostOrderTraverse(concatForTraverse);
+  if (result != "876543210") {
+    FoundError("PostOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PostOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+  
+  result = tree.InOrderFold(concat, string());
+  tree.InOrderTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("InOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("InOrderTraverse", TEST_TITLE);
+  }
+
+  TestBST(tree, 9, 0, 8, 1, 2, 0, 0, 36);
+}
+
+void TestDegenerateBSTAllLeft(){
+  const char* TEST_TITLE = "Degenerate BST (left)";
+  List<int> list = List<int>();
+  for (int i = 8; i >= 0; --i) {
+    list.InsertAtBack(i);
+  }
+
+  BST<int> tree(list);
+  string result;
+  string traverse_result = "";
+  std::function concat = [](const int &curr, const string &acc) {return acc+to_string(curr);};
+  std::function concatForTraverse = [&traverse_result](const int &curr) {traverse_result += to_string(curr);};
+  result = tree.BreadthFold(concat, string());
+  tree.BreadthTraverse(concatForTraverse);
+  if (result != "876543210") {
+    FoundError("BreadthFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("BreadthTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PreOrderFold(concat, string());
+  tree.PreOrderTraverse(concatForTraverse);
+  if (result != "876543210") {
+    FoundError("PreOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PreOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+
+  result = tree.PostOrderFold(concat, string());
+  tree.PostOrderTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("PostOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("PostOrderTraverse", TEST_TITLE);
+  }
+  traverse_result = "";
+  
+  result = tree.InOrderFold(concat, string());
+  tree.InOrderTraverse(concatForTraverse);
+  if (result != "012345678") {
+    FoundError("InOrderFold", TEST_TITLE);
+  }
+  if (traverse_result != result) {
+    FoundError("InOrderTraverse", TEST_TITLE);
+  }
+
+  TestBST(tree, 9, 0, 8, 7, 8, 6, 8, 36);
+}
+
 void TestBST(){
   const char* TEST_TITLE = "BST";
   TellTest(TEST_TITLE);
@@ -1064,27 +1143,90 @@ void TestBST(){
   int tot = 22;
 
   cout << "Testing Constructors" << endl;
+  cout << "From Traversable" << endl;
   BST<int> bst_trav(list);
-  TestBinaryTree(bst_trav, 5, 10, tot);
+  TestBST(bst_trav, 5, 1, 10, 3, 6, 2, 10, tot);
+
+  cout << "From Mappable" << endl;
+  BST<int> bst_mapp(std::move(list));
+  TestBST(bst_mapp, 5, 1, 10, 3, 6, 2, 10, tot);
   
-  BST<int> bst_copy = bst_trav;
-  TestBinaryTree(bst_copy, 5, 10, tot);
+  cout << "From Copy Constr." << endl;
+  BST<int> bst_copy_constr(bst_trav);
+  TestBST(bst_copy_constr, 5, 1, 10, 3, 6, 2, 10, tot);
 
-  BST<int> bst_map(std::move(bst_trav));
-  TestBinaryTree(bst_trav, 0, 10, 0);
-  TestBinaryTree(bst_map, 5, 10, tot);
+  cout << "From Move Constr." << endl;
+  BST<int> bst_mov(std::move(bst_trav));
+  TestEmptyBinaryTree(bst_trav);
+  TestBST(bst_mov, 5, 1, 10, 3, 6, 2, 10, tot);
 
-  BST<int> bst = std::move(bst_copy);
-  TestBinaryTree(bst_trav, 0, 10, 0);
-  TestBinaryTree(bst, 5, 10, tot);
+  cout << "From Copy Assign." << endl;
+  BST<int> bst_copy;
+  bst_copy = bst_copy_constr;
+  TestBST(bst_copy, 5, 1, 10, 3, 6, 2, 10, tot);
 
-  bst_copy = bst;
-  TestBinaryTree(bst_copy, 5, 10, tot);
+  cout << "From Move Assign." << endl;
+  BST<int> bst;
+  bst = std::move(bst_copy);
+  TestEmptyBinaryTree(bst_copy);
+  TestBST(bst, 5, 1, 10, 3, 6, 2, 10, tot);
 
-  BST<int> bst_copy_constr(bst);
-  TestBinaryTree(bst_copy_constr, 5, 10, tot);
+  cout << "Testing Dictionary methods (RemoveSome/All and InsertSome/All)" << endl;
+  if (bst.InsertSome(list)) {
+    FoundError("InsertSome", TEST_TITLE);
+  }
+  if (bst.InsertAll(list)) {
+    FoundError("InsertAll", TEST_TITLE);
+  }
+  if (bst.RemoveAll(list)) {
+    FoundError("RemoveAll", TEST_TITLE);
+  }
+  bst = BST(list);
+  if (bst.RemoveSome(list) == false) {
+    FoundError("RemoveSome", TEST_TITLE);    
+  }
+  if (bst.InsertAll(list)) {
+    FoundError("InsertAll", TEST_TITLE);
+  }
+  list.Remove(1);
+  list.Remove(1);
+  bst = BST(list);
+  if (bst.InsertSome(list)) {
+    FoundError("InsertSome", TEST_TITLE);
+  }
+  if (!bst.RemoveAll(list)) {
+    FoundError("RemoveAll", TEST_TITLE);
+  }
 
-  TestBST(bst, 5, 1, 10, 3, 6, 2, 10);
+  cout << "now with move" << endl;
+  list.InsertAtFront(1);
+  list.InsertAtBack(1);
+  if (bst.InsertAll(std::move(List(list)))) {
+    FoundError("InsertAll", TEST_TITLE);
+  }
+  if (bst.InsertSome(std::move(List(list)))) {
+    FoundError("InsertSome", TEST_TITLE);
+  }
+  if (bst.RemoveAll(list)) {
+    FoundError("RemoveAll", TEST_TITLE);
+  }
+  bst = BST(list);
+  if (bst.RemoveSome(list) == false) {
+    FoundError("RemoveSome", TEST_TITLE);    
+  }
+  if (bst.InsertAll(std::move(List(list)))) {
+    FoundError("InsertAll", TEST_TITLE);    
+  }
+  list.Remove(1);
+  list.Remove(1);
+  bst = BST(list);
+  if (bst.InsertSome(std::move(List(list)))) {
+    FoundError("InsertSome", TEST_TITLE);
+  }
+  if (!bst.RemoveAll(list)) {
+    FoundError("RemoveAll", TEST_TITLE);
+  }
+
 
   cout << "Building random BST" << endl;
   unsigned long size;
@@ -1096,7 +1238,7 @@ void TestBST(){
   int root;
   BST<int> random_bst;
   GetRandomBST(random_bst, size, min, max, num_for_tests, 
-                prec, succ, root);
+                prec, succ, root, tot);
   
   cout << "BST created with: " << endl;
   cout << "size = " << size << endl;
@@ -1107,7 +1249,11 @@ void TestBST(){
   cout << "succ = " << succ << endl;
   cout << "root = " << root << endl;
 
-  TestBST(random_bst, size, min, max, num_for_tests, succ, prec, root);
+  TestBST(random_bst, size, min, max, num_for_tests, succ, prec, root, tot);
+
+  cout << "Testing other edge cases for BST" << endl;
+  TestDegenerateBST();
+  TestDegenerateBSTAllLeft();
 }
 
 void TestBinaryTree()
