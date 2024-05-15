@@ -315,7 +315,7 @@ BST<Data>::NodeLnk * BST<Data>::Skip2Right(NodeLnk *& node) noexcept {
     }
     return right;
 
-    // non funziona
+    // todo non funziona
     // if (node != nullptr) {
     //     NodeLnk *right = node->right;
     //     node->right = nullptr;
@@ -400,7 +400,6 @@ BST<Data>::NodeLnk *& BST<Data>::FindPointerToPredecessor(NodeLnk *& node, const
     return const_cast<NodeLnk *&>(static_cast<const BST<Data> *>(this)->FindPointerToPredecessor(node, data));
 }
 
-// TODO Messo *&, also e diverso
 template<typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToPredecessor(const NodeLnk * const & node, const Data & data) const noexcept {
     if (node == nullptr)

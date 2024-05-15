@@ -702,13 +702,13 @@ void TestBinaryTreeRandom() {
     FoundError("PreOrderFold or Map", "BST");
   }
 
-  cout << "Trying comparisons after random insert" << endl;
+  cout << "Trying comparisons after random insert ";
   bool inserted = list.Insert(distx(genx));
   if (inserted) {
-    cout << "the number was inserted" << endl;
+    cout << "(the number was inserted)" << endl;
   }
   else {
-    cout << "the number was not inserted" << endl;
+    cout << "(the number was not inserted)" << endl;
   }
 
   list.Map([](int& curr) {
@@ -1016,6 +1016,9 @@ void TestBTPreOrderIterator(BTPreOrderIterator<T> &iterator, BinaryTree<T> &bt)
   iterator.Reset();
 
   BTPreOrderIterator<T> copy = iterator;
+  if (copy != iterator) {
+    FoundError("Comparison", TEST_TITLE);
+  }
 
   if (bt.Size() > 2) {
     ++iterator;
@@ -1044,7 +1047,29 @@ void TestBTPreOrderIterator(BTPreOrderIterator<T> &iterator, BinaryTree<T> &bt)
     ++iterator;
   });
 
-  // TODO test try catch out_of_range (anche altri)
+  cout << "Testing out_of_range" << endl;
+
+  bool error = false;
+  try {
+    *iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
+
+  error = false;
+  try {
+    ++iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
 
   iterator.Reset();
 }
@@ -1060,6 +1085,10 @@ void TestBTInOrderIterator(BTInOrderIterator<T> &iterator, BinaryTree<T> &bt)
   iterator.Reset();
 
   BTInOrderIterator<T> copy = iterator;
+  if (copy != iterator) {
+    FoundError("Comparison", TEST_TITLE);
+  }
+
   if (bt.Size() > 2) {
     ++iterator;
     ++iterator;
@@ -1086,6 +1115,30 @@ void TestBTInOrderIterator(BTInOrderIterator<T> &iterator, BinaryTree<T> &bt)
     }
     ++iterator;
   });
+  
+  cout << "Testing out_of_range" << endl;
+
+  bool error = false;
+  try {
+    *iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
+
+  error = false;
+  try {
+    ++iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
 
   iterator.Reset();
 }
@@ -1100,6 +1153,10 @@ void TestBTPostOrderIterator(BTPostOrderIterator<T> &iterator, BinaryTree<T> &bt
   iterator.Reset();
 
   BTPostOrderIterator<T> copy = iterator;
+  if (copy != iterator) {
+    FoundError("Comparison", TEST_TITLE);
+  }
+
   if (bt.Size() > 2) {
     ++iterator;
     ++iterator;
@@ -1127,6 +1184,30 @@ void TestBTPostOrderIterator(BTPostOrderIterator<T> &iterator, BinaryTree<T> &bt
     ++iterator;
   });
 
+  cout << "Testing out_of_range" << endl;
+
+  bool error = false;
+  try {
+    *iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
+
+  error = false;
+  try {
+    ++iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
+
   iterator.Reset();
 }
 
@@ -1140,6 +1221,10 @@ void TestBTBreadthIterator(BTBreadthIterator<T> &iterator, BinaryTree<T> &bt)
   iterator.Reset();
 
   BTBreadthIterator<T> copy = iterator;
+  if (copy != iterator) {
+    FoundError("Comparison", TEST_TITLE);
+  }
+
   if (bt.Size() > 2) {
     ++iterator;
     ++iterator;
@@ -1166,6 +1251,30 @@ void TestBTBreadthIterator(BTBreadthIterator<T> &iterator, BinaryTree<T> &bt)
     }
     ++iterator;
   });
+
+  cout << "Testing out_of_range" << endl;
+
+  bool error = false;
+  try {
+    *iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
+
+  error = false;
+  try {
+    ++iterator;
+  }
+  catch (std::out_of_range &e) {
+    error = true;
+  }
+  if (!error) {
+    FoundError("operator* (terminated)", TEST_TITLE);
+  }
 
   iterator.Reset();
 }

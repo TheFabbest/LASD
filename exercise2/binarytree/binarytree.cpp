@@ -7,7 +7,6 @@ namespace lasd {
 
 // Node
 
-// TODO chiedi se uguaglianza controlla solo presenza o anche posizione (perche questo controlla anche posizione)
 template <typename Data>
 bool BinaryTree<Data>::Node::operator==(const Node& other) const noexcept{
     return Element() == other.Element() &&
@@ -106,7 +105,6 @@ void BinaryTree<Data>::InOrderTraverse(TraverseFun function, const Node& curr) c
 
 // MutableBinaryTree
 
-// TODO check if preorder
 template <typename Data>
 inline void MutableBinaryTree<Data>::Map(MapFun function) {
     this->PreOrderMap(function);
@@ -332,7 +330,7 @@ BTPostOrderIterator<Data>& BTPostOrderIterator<Data>::operator=(BTPostOrderItera
 // comparisons operator
 template <typename Data>
 bool BTPostOrderIterator<Data>::operator==(const BTPostOrderIterator<Data>& other) const noexcept{
-    return this->tree == other.tree && this->stack == other.stack; // TODO stesso PUNTATORE a radice, se sono due alberi uguali ma non lo stesso albero allora gli iteratori sono diversi
+    return this->tree == other.tree && this->stack == other.stack;
 }
 
 template <typename Data>
@@ -562,7 +560,7 @@ BTBreadthIterator<Data>& BTBreadthIterator<Data>::operator=(BTBreadthIterator<Da
 // comparisons operator
 template <typename Data>
 bool BTBreadthIterator<Data>::operator==(const BTBreadthIterator<Data>& other) const noexcept{
-    return (*this->tree) == (*other.tree) && this->queue == other.queue; // TODO controlla *tree o tree, eventualmente cambia o correggi gli altri
+    return this->tree == other.tree && this->queue == other.queue;
 }
 
 template <typename Data>
