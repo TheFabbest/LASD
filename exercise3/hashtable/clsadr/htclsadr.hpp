@@ -14,28 +14,28 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HashTableClsAdr {
+class HashTableClsAdr : virtual public HashTable<Data> {
   // Must extend HashTable<Data>
 
 private:
 
-  // ...
+  static const unsigned long MIN_SIZE = 8;
 
 protected:
 
   // using HashTable<Data>::???;
 
-  // ...
+  Vector<List<Data>> table;
 
 public:
 
   // Default constructor
-  // HashTableClsAdr() specifiers;
+  HashTableClsAdr();
 
   /* ************************************************************************ */
 
   // Specific constructors
-  // HashTableClsAdr(argument) specifiers; // A hash table of a given size
+  HashTableClsAdr(const unsigned long size); // A hash table of a given size
   // HashTableClsAdr(argument) specifiers; // A hash table obtained from a TraversableContainer
   // HashTableClsAdr(argument) specifiers; // A hash table of a given size obtained from a TraversableContainer
   // HashTableClsAdr(argument) specifiers; // A hash table obtained from a MappableContainer
@@ -65,16 +65,16 @@ public:
   /* ************************************************************************ */
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  bool operator==(const HashTableClsAdr<Data>& other) const noexcept;
+  inline bool operator!=(const HashTableClsAdr<Data>& other) const noexcept;
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from DictionaryContainer)
 
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Copy of the value)
-  // type Insert(argument) specifiers; // Override DictionaryContainer member (Move of the value)
-  // type Remove(argument) specifiers; // Override DictionaryContainer member
+  virtual bool Insert(const Data &data) override; // Override DictionaryContainer member (Copy of the value)
+  virtual bool Insert(Data &&data) override; // Override DictionaryContainer member (Move of the value)
+  virtual bool Remove(const Data &data) override; // Override DictionaryContainer member
 
   /* ************************************************************************ */
 

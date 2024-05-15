@@ -21,14 +21,15 @@ class Hashable {
 
 public:
 
-  Data operator(const Data& data) const noexcept; // (concrete function should not throw exceptions)
+  // TODO vedi quaderno e chiedi
+  unsigned long operator() const noexcept; // (concrete function should not throw exceptions)
 
 };
 
 /* ************************************************************************** */
 
 template <typename Data>
-class HashTable {
+class HashTable : virtual public ResizableContainer, virtual public DictionaryContainer<Data>{
                   // Must extend ResizableContainer,
                   //             DictionaryContainer<Data>
 
@@ -45,21 +46,21 @@ protected:
 public:
 
   // Destructor
-  // ~HashTable() specifiers
+  virtual ~HashTable() = default;
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types should not be possible.
+  HashTable& operator=(const HashTable&) = delete; // Copy assignment of abstract types should not be possible.
 
   // Move assignment
-  // type operator=(argument); // Move assignment of abstract types should not be possible.
+  HashTable& operator=(HashTable&&) noexcept = delete; // Move assignment of abstract types should not be possible.
 
   /* ************************************************************************ */
 
-  // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract hashtable is possible but not required.
-  // type operator!=(argument) specifiers; // Comparison of abstract hashtable is possible but not required.
+  // Comparison operators (TODO not required)
+  bool operator==(const HashTable& other) const noexcept = delete; // Comparison of abstract hashtable is possible but not required.
+  bool operator!=(const HashTable& other) const noexcept = delete;// Comparison of abstract hashtable is possible but not required.
 
 protected:
 
