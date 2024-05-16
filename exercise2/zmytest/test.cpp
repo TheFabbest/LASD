@@ -10,58 +10,8 @@ using namespace lasd;
 string to_string(string str){return str;} // for templates TODO check if useless
 
 /* TEST
-  BinaryTree
-    = copy (done)
-    = move (done)
-    comparison (done)
-    Root (done)
-    Traverse (pre, post, in, breadth) (done)
-  
-  MutableBinaryTree
-    (BinaryTree) + mutable (done)
-    Map (pre, post, in, breadth) (done)
-    Clear (done)
-
-  BinaryTreeLnk
-    (MutableBinaryTree)
-    default constr (done)
-    traversable constr (done)
-    mappable constr TODO
-    copy constr (done)
-    move constr (done)
-    = copy (done)
-    = move (done)
-    comparison (done)
-    root (done)
-    root (mutable) (done)
-    clear (done)
-
-  BinaryTreeVec
-    (same as BinaryTreeLnk)
-
-  BST
-    default constr
-    traversable constr
-    mappable constr
-    copy constr
-    move constr
-    = copy
-    = move
-    Min
-    MinNRemove
-    RemoveMax
-    Predecessor
-    PredecessorNRemove
-    RemovePredecessor
-    Successor
-    SuccessorNRemove
-    RemoveSuccessor
-    Root
-    Insert
-    Insert (move)
-    Remove
-    Exists
-    Clear
+  TODO
+    check move constr.
     protected methods (TODO)
 
 
@@ -164,12 +114,44 @@ void TellTest(const char *name)
   cout << endl << endl << "---STARTING TEST " << name << "---" << endl; 
 }
 
+BinaryTreeLnk<int> GetRandomBinaryTreeLnk() {
+  // initializing random device
+  auto seed = random_device{}();
+  cout << "Initializing random generator with seed " << seed << " for random BinaryTreeLnk" << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx(1, 100);
+
+  List<int> list = List<int>();
+  int num = distx(genx);
+  for (int i = 0; i < num; ++i)
+  {
+    int generated = distx(genx);
+    list.InsertAtFront(generated);
+  }
+  return BinaryTreeLnk<int>(list);
+}
+
+BinaryTreeVec<int> GetRandomBinaryTreeVec() {
+  // initializing random device
+  auto seed = random_device{}();
+  cout << "Initializing random generator with seed " << seed << " for random BinaryTreeLnk" << endl;
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx(1, 100);
+
+  List<int> list = List<int>();
+  int num = distx(genx);
+  for (int i = 0; i < num; ++i)
+  {
+    int generated = distx(genx);
+    list.InsertAtFront(generated);
+  }
+  return BinaryTreeVec<int>(list);
+}
+
 void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &num_for_tests,
                     int &prec, int &succ, int &root, int &tot) {
   // initializing random device
   auto seed = random_device{}();
-  if (min == 0) seed = 8433919; // for repeating
-  // 2909141848
   cout << "Initializing random generator with seed " << seed << " for random BST" << endl;
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx(1, 100);
@@ -243,12 +225,12 @@ void GetRandomBST(BST<int> &bst) {
 }
 
 // BINARY TREE
-template <class T>
-void TestEmptyBinaryTree(BinaryTree<T> &tree){
+template <class Data>
+void TestEmptyBinaryTree(BinaryTree<Data> &tree){
   const char *TEST_TITLE = "Empty BinaryTree";
   if (tree.Size() != 0) FoundError("size", TEST_TITLE);
   if (tree.Empty() == false) FoundError("empty", TEST_TITLE);
-  if (tree.Exists(T{}) == true) FoundError("exists", TEST_TITLE);
+  if (tree.Exists(Data{}) == true) FoundError("exists", TEST_TITLE);
   if (!(tree == tree)) FoundError("Comparison", TEST_TITLE);
   if (tree != tree) FoundError("Comparison", TEST_TITLE);
 
@@ -264,7 +246,7 @@ void TestEmptyBinaryTree(BinaryTree<T> &tree){
 
 
   int counter = 0;
-  std::function increment = [&counter](const T&){++counter;};
+  std::function increment = [&counter](const Data&){++counter;};
   tree.Traverse(increment);
   tree.PreOrderTraverse(increment);
   tree.PostOrderTraverse(increment);
@@ -273,7 +255,7 @@ void TestEmptyBinaryTree(BinaryTree<T> &tree){
   if (counter != 0) FoundError("Traverse", TEST_TITLE);
 
   string empty = "";
-  std::function concat = [](const T &curr, const string &acc) {return acc+to_string(curr);};
+  std::function concat = [](const Data &curr, const string &acc) {return acc+to_string(curr);};
   empty = tree.Fold(concat, empty);
   empty = tree.PreOrderFold(concat, empty);
   empty = tree.PostOrderFold(concat, empty);
@@ -539,7 +521,8 @@ void TestBinaryTreeLnk() {
     tree = assignment_tree;
     TestBinaryTree(tree, i, 0, tot);
 
-    BinaryTreeLnk<int> move_tree = std::move(tree);
+    BinaryTreeLnk<int> move_tree;
+    move_tree = std::move(tree);
     TestEmptyBinaryTree(tree);
     TestBinaryTree(move_tree, i, 0, tot);
 
@@ -611,6 +594,8 @@ void TestBinaryTreeLnk() {
   
   cout << "Testing Root" << endl;
   if (tree.Root().Element() != 0) FoundError("Root", TEST_TITLE);
+  tree.Root().Element() = 2;
+  if (tree.Root().Element() != 2) FoundError("Root", TEST_TITLE);
 
   cout << "Testing comparison (better tests are done in TestBinaryTreeRandom)" << endl;
   BinaryTreeLnk<int> other_tree(tree);
@@ -647,7 +632,8 @@ void TestBinaryTreeVec() {
     tree = assignment_tree;
     TestBinaryTree(tree, i, 0, tot);
 
-    BinaryTreeLnk<int> move_tree = std::move(tree);
+    BinaryTreeLnk<int> move_tree;
+    move_tree = std::move(tree);
     TestEmptyBinaryTree(tree);
     TestBinaryTree(move_tree, i, 0, tot);
 
@@ -719,6 +705,8 @@ void TestBinaryTreeVec() {
   
   cout << "Testing Root" << endl;
   if (tree.Root().Element() != 0) FoundError("Root", TEST_TITLE);
+  tree.Root().Element() = 2;
+  if (tree.Root().Element() != 2) FoundError("Root", TEST_TITLE);
 
   cout << "Testing comparison (better tests are done in TestBinaryTreeRandom)" << endl;
   BinaryTreeVec<int> other_tree(tree);
@@ -746,9 +734,8 @@ void TestBinaryTreeRandom() {
   uniform_int_distribution<int> distx(1, 100);
 
   // creating list of random size with random values
-  cout << "init list of random size and stack with random numbers" << endl;
   int size = distx(genx);
-  cout << "Size is " << size << endl;
+  cout << "init. trees from list of random size (" << size << ") with random numbers" << endl;
 
   List<int> list = List<int>();
   string acc = "";
@@ -888,7 +875,8 @@ void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_tes
   const char* TEST_TITLE = "BST (with arguments)";
 
   BST<int> restore(bst);
-  BST<int> copy = bst;
+  BST<int> copy;
+  copy = bst;
 
   TestBinaryTree(bst, size, root, tot);
 
@@ -924,7 +912,7 @@ void TestBST(BST<int> bst, unsigned long size, int min, int max, int num_for_tes
   cout << "Testing Predecessor" << endl;
   bst = restore;
   copy = restore;
-  if (bst.Predecessor(num_for_test) != prec) { // todo error
+  if (bst.Predecessor(num_for_test) != prec) {
     cout << bst.Predecessor(num_for_test) << " diff " << prec << endl;
     FoundError("Predecessor", TEST_TITLE);
   }
@@ -1267,19 +1255,16 @@ void TestBinaryTree()
   TestBinaryTreeRandom();
 }
 
-template <typename T>
-void TestBTIterator (Iterator<T> &iterator, BinaryTree<T> &bt) {
+template <typename Data>
+void TestBTIterator (Iterator<Data> &iterator, BinaryTree<Data> &bt) {
   const char* TEST_TITLE = "BTIterator";
   cout << "Testing Iterator as a Iterator" << endl;
 
   if (bt.Empty()) {
-    cout << "Binary tree was empty" << endl;
-    cout << "Checking if iterator is terminated" << endl;
     if (iterator.Terminated() == false) {
       FoundError("Terminated", TEST_TITLE);
     }
     
-    cout << "Testing operator*" << endl;
     bool err = false;
     try {
       (*iterator);
@@ -1288,37 +1273,19 @@ void TestBTIterator (Iterator<T> &iterator, BinaryTree<T> &bt) {
       err = true;
     }
     if (err == false) {
-      FoundError("operator* (no exception was thrown)", TEST_TITLE);
+      FoundError("operator* (no exception was thrown on terminated iterator)", TEST_TITLE);
     }
   }
   else 
   {
-    cout << "BTIterator skipped because binary tree was not empty" << endl;
-  }
-}
-
-template <typename T>
-void TestBTMutableIterator(MutableIterator<T> &mutableiterator, BinaryTree<T> &bt) {
-  const char* TEST_TITLE = "MutableIterator";
-  cout << "Testing Iterator as a MutableIterator" << endl;
-  TestBTIterator(mutableiterator, bt);
-  if (bt.Empty()) {
-    if (mutableiterator.Terminated() == false) {
+    if (iterator.Terminated()) {
       FoundError("Terminated", TEST_TITLE);
     }
   }
-  else
-  {
-    T old = bt.Root().Element();
-    ++(*mutableiterator);
-    if (bt.Root().Element() != old+1) {
-      FoundError("Mutable", TEST_TITLE);
-    }
-  }
 }
 
-template <typename T>
-void TestBTForwardIterator(ForwardIterator<T> &forwarditerator, BinaryTree<T> &bt) {
+template <typename Data>
+void TestBTForwardIterator(ForwardIterator<Data> &forwarditerator, BinaryTree<Data> &bt) {
   const char *TEST_TITLE = "ForwardIterator";
   cout << "Testing Iterator as a ForwardIterator" << endl;
   unsigned long count = 0;
@@ -1327,7 +1294,6 @@ void TestBTForwardIterator(ForwardIterator<T> &forwarditerator, BinaryTree<T> &b
     ++forwarditerator;
   }
   if (count != bt.Size()) {
-    cout << count << "  " << bt.Size() << endl;
     FoundError("Terminated or ++", TEST_TITLE);
   }
   
@@ -1342,18 +1308,31 @@ void TestBTForwardIterator(ForwardIterator<T> &forwarditerator, BinaryTree<T> &b
   if (error == false) {
     FoundError("operator* (terminated)", TEST_TITLE);
   }
+
+  error = false;
+  try {
+    ++forwarditerator;
+  }
+  catch (std::out_of_range &e)
+  {
+    error = true;
+  }
+  if (error == false) {
+    FoundError("operator++ (terminated)", TEST_TITLE);
+  }
 }
 
-template <typename T>
-void TestBTPreOrderIterator(BTPreOrderIterator<T> &iterator, BinaryTree<T> &bt)
+template <typename Data>
+void TestBTPreOrderIterator(BTPreOrderIterator<Data> &iterator, BinaryTree<Data> &bt)
 {
   const char* TEST_TITLE = "BTPreOrderIterator";
+  iterator.Reset();
   TestBTIterator(iterator, bt);
   iterator.Reset();
   TestBTForwardIterator(iterator, bt);
   iterator.Reset();
 
-  BTPreOrderIterator<T> copy = iterator;
+  BTPreOrderIterator<Data> copy = iterator;
   if (copy != iterator) {
     FoundError("Comparison", TEST_TITLE);
   }
@@ -1378,7 +1357,7 @@ void TestBTPreOrderIterator(BTPreOrderIterator<T> &iterator, BinaryTree<T> &bt)
   }
 
   cout << "Testing order" << endl;
-  bt.PreOrderTraverse([&iterator, &TEST_TITLE](const T& curr){
+  bt.PreOrderTraverse([&iterator, &TEST_TITLE](const Data& curr){
     if (curr != (*iterator)) {
       FoundError("Increment", TEST_TITLE);
     }
@@ -1409,20 +1388,39 @@ void TestBTPreOrderIterator(BTPreOrderIterator<T> &iterator, BinaryTree<T> &bt)
     FoundError("operator* (terminated)", TEST_TITLE);
   }
 
+  cout << "Testing comparison" << endl;
   iterator.Reset();
+  auto other_iterator = iterator;
+  if (iterator != iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (iterator != other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  
+  if (!other_iterator.Terminated()) {
+    ++other_iterator;
+    if (iterator == other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+    other_iterator.Reset();
+    if (iterator != other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+  }
 }
 
-template <typename T>
-void TestBTInOrderIterator(BTInOrderIterator<T> &iterator, BinaryTree<T> &bt)
+template <typename Data>
+void TestBTInOrderIterator(BTInOrderIterator<Data> &iterator, BinaryTree<Data> &bt)
 {
   const char* TEST_TITLE = "BTInOrderIterator";
-  // TODO mutable
+  iterator.Reset();
   TestBTIterator(iterator, bt);
   iterator.Reset();
   TestBTForwardIterator(iterator, bt);
   iterator.Reset();
 
-  BTInOrderIterator<T> copy = iterator;
+  BTInOrderIterator<Data> copy = iterator;
   if (copy != iterator) {
     FoundError("Comparison", TEST_TITLE);
   }
@@ -1447,7 +1445,7 @@ void TestBTInOrderIterator(BTInOrderIterator<T> &iterator, BinaryTree<T> &bt)
   }
 
   cout << "Testing order" << endl;
-  bt.InOrderTraverse([&iterator, &TEST_TITLE](const T& curr){
+  bt.InOrderTraverse([&iterator, &TEST_TITLE](const Data& curr){
     if (curr != (*iterator)) {
       FoundError("Increment", TEST_TITLE);
     }
@@ -1477,20 +1475,39 @@ void TestBTInOrderIterator(BTInOrderIterator<T> &iterator, BinaryTree<T> &bt)
   if (!error) {
     FoundError("operator* (terminated)", TEST_TITLE);
   }
-
+  
+  cout << "Testing comparison" << endl;
   iterator.Reset();
+  auto other_iterator = iterator;
+  if (iterator != iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (iterator != other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (!other_iterator.Terminated()) {
+    ++other_iterator;
+    if (iterator == other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+    other_iterator.Reset();
+    if (iterator != other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+  }
 }
 
-template <typename T>
-void TestBTPostOrderIterator(BTPostOrderIterator<T> &iterator, BinaryTree<T> &bt)
+template <typename Data>
+void TestBTPostOrderIterator(BTPostOrderIterator<Data> &iterator, BinaryTree<Data> &bt)
 {
   const char* TEST_TITLE = "BTPostOrderIterator";
+  iterator.Reset();
   TestBTIterator(iterator, bt);
   iterator.Reset();
   TestBTForwardIterator(iterator, bt);
   iterator.Reset();
 
-  BTPostOrderIterator<T> copy = iterator;
+  BTPostOrderIterator<Data> copy = iterator;
   if (copy != iterator) {
     FoundError("Comparison", TEST_TITLE);
   }
@@ -1515,7 +1532,7 @@ void TestBTPostOrderIterator(BTPostOrderIterator<T> &iterator, BinaryTree<T> &bt
   }
 
   cout << "Testing order" << endl;
-  bt.PostOrderTraverse([&iterator, &TEST_TITLE](const T& curr){
+  bt.PostOrderTraverse([&iterator, &TEST_TITLE](const Data& curr){
     if (curr != (*iterator)) {
       FoundError("Increment", TEST_TITLE);
     }
@@ -1546,19 +1563,38 @@ void TestBTPostOrderIterator(BTPostOrderIterator<T> &iterator, BinaryTree<T> &bt
     FoundError("operator* (terminated)", TEST_TITLE);
   }
 
+  cout << "Testing comparison" << endl;
   iterator.Reset();
+  auto other_iterator = iterator;
+  if (iterator != iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (iterator != other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (!other_iterator.Terminated()) {
+    ++other_iterator;
+    if (iterator == other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+    other_iterator.Reset();
+    if (iterator != other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+  }
 }
 
-template <typename T>
-void TestBTBreadthIterator(BTBreadthIterator<T> &iterator, BinaryTree<T> &bt)
+template <typename Data>
+void TestBTBreadthIterator(BTBreadthIterator<Data> &iterator, BinaryTree<Data> &bt)
 {
   const char* TEST_TITLE = "BTBreadthIterator";
+  iterator.Reset();
   TestBTIterator(iterator, bt);
   iterator.Reset();
   TestBTForwardIterator(iterator, bt);
   iterator.Reset();
 
-  BTBreadthIterator<T> copy = iterator;
+  BTBreadthIterator<Data> copy = iterator;
   if (copy != iterator) {
     FoundError("Comparison", TEST_TITLE);
   }
@@ -1583,7 +1619,7 @@ void TestBTBreadthIterator(BTBreadthIterator<T> &iterator, BinaryTree<T> &bt)
   }
 
   cout << "Testing order" << endl;
-  bt.BreadthTraverse([&iterator, &TEST_TITLE](const T& curr){
+  bt.BreadthTraverse([&iterator, &TEST_TITLE](const Data& curr){
     if (curr != (*iterator)) {
       FoundError("Increment", TEST_TITLE);
     }
@@ -1613,11 +1649,497 @@ void TestBTBreadthIterator(BTBreadthIterator<T> &iterator, BinaryTree<T> &bt)
   if (!error) {
     FoundError("operator* (terminated)", TEST_TITLE);
   }
-
+  
+  cout << "Testing comparison" << endl;
   iterator.Reset();
+  auto other_iterator = iterator;
+  if (iterator != iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (iterator != other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+  if (!other_iterator.Terminated()) {
+    ++other_iterator;
+    if (iterator == other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+    other_iterator.Reset();
+    if (iterator != other_iterator) {
+      FoundError("comparison", TEST_TITLE);
+    }
+  }
+}
+
+template <typename Data>
+void TestBTPreOrderMutableIterator(BTPreOrderMutableIterator<Data> &iterator, MutableBinaryTree<Data> &bt) {
+  const char* TEST_TITLE = "BTPreOrderMutableIterator";
+  TestBTPreOrderIterator(iterator, bt);
+  
+  List<Data> elements = List<Data>();
+  std::function copy_into_elements_and_increment = [&elements](Data& curr) {
+    elements.InsertAtBack(curr);
+    ++curr;
+  };
+
+  elements.Clear();
+  iterator.Reset();
+
+  // saving state in list and incrementing all data in binary tree by 1
+  bt.PreOrderMap(copy_into_elements_and_increment);
+  
+  bt.PreOrderTraverse([&iterator, &elements, TEST_TITLE](const Data& cur){
+
+    // checking if the iterator runs in the right order
+    if ((*iterator) != cur) {
+      FoundError("iteration 1", TEST_TITLE);
+    }
+
+    // decrementing the binary tree again
+    --(*iterator);
+    ++iterator;
+  });
+
+  if (iterator.Terminated() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+
+  // checking if iterator has modified the tree properly
+  bt.PreOrderTraverse([&elements, TEST_TITLE](const Data& cur) {
+    if (cur != elements.FrontNRemove()) {
+      FoundError("iteration 2", TEST_TITLE);
+    }
+  });
+
+  if (elements.Empty() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+}
+
+template <typename Data>
+void TestBTInOrderMutableIterator(BTInOrderMutableIterator<Data> &iterator, MutableBinaryTree<Data> &bt) {
+  const char* TEST_TITLE = "BTInOrderMutableIterator";
+  TestBTInOrderIterator(iterator, bt);
+  
+  List<Data> elements = List<Data>();
+  std::function copy_into_elements_and_increment = [&elements](Data& curr) {
+    elements.InsertAtBack(curr);
+    ++curr;
+  };
+
+  elements.Clear();
+  iterator.Reset();
+  // saving state in list and incrementing all data in binary tree by 1
+  bt.InOrderMap(copy_into_elements_and_increment);
+  
+  bt.InOrderTraverse([&iterator, &elements, TEST_TITLE](const Data& cur){
+
+    // checking if the iterator runs in the right order
+    if ((*iterator) != cur) {
+      FoundError("iteration 1", TEST_TITLE);
+    }
+
+    // decrementing the binary tree again
+    --(*iterator);
+    ++iterator;
+  });
+
+  if (iterator.Terminated() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+
+  // checking if iterator has modified the tree properly
+  bt.InOrderTraverse([&elements, TEST_TITLE](const Data& cur) {
+    if (cur != elements.FrontNRemove()) {
+      FoundError("iteration 2", TEST_TITLE);
+    }
+  });
+  
+  if (elements.Empty() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+}
+
+template <typename Data>
+void TestBTPostOrderMutableIterator(BTPostOrderMutableIterator<Data> &iterator, MutableBinaryTree<Data> &bt) {
+  const char* TEST_TITLE = "BTPostOrderMutableIterator";
+  TestBTPostOrderIterator(iterator, bt);
+  
+  List<Data> elements = List<Data>();
+  std::function copy_into_elements_and_increment = [&elements](Data& curr) {
+    elements.InsertAtBack(curr);
+    ++curr;
+  };
+
+  elements.Clear();
+  iterator.Reset();
+  // saving state in list and incrementing all data in binary tree by 1
+  bt.PostOrderMap(copy_into_elements_and_increment);
+  
+  bt.PostOrderTraverse([&iterator, &elements, TEST_TITLE](const Data& cur){
+
+    // checking if the iterator runs in the right order
+    if ((*iterator) != cur) {
+      FoundError("iteration 1", TEST_TITLE);
+    }
+
+    // decrementing the binary tree again
+    --(*iterator);
+    ++iterator;
+  });
+
+  if (iterator.Terminated() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+
+  // checking if iterator has modified the tree properly
+  bt.PostOrderTraverse([&elements, TEST_TITLE](const Data& cur) {
+    if (cur != elements.FrontNRemove()) {
+      FoundError("iteration 2", TEST_TITLE);
+    }
+  });
+  
+  if (elements.Empty() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+}
+
+template <typename Data>
+void TestBTBreadthMutableIterator(BTBreadthMutableIterator<Data> &iterator, MutableBinaryTree<Data> &bt) {
+  const char* TEST_TITLE = "BTBreadthMutableIterator";
+  TestBTBreadthIterator(iterator, bt);
+  
+  List<Data> elements = List<Data>();
+  std::function copy_into_elements_and_increment = [&elements](Data& curr) {
+    elements.InsertAtBack(curr);
+    ++curr;
+  };
+
+  elements.Clear();
+  iterator.Reset();
+  // saving state in list and incrementing all data in binary tree by 1
+  bt.BreadthMap(copy_into_elements_and_increment);
+  
+  bt.BreadthTraverse([&iterator, &elements, TEST_TITLE](const Data& cur){
+
+    // checking if the iterator runs in the right order
+    if ((*iterator) != cur) {
+      FoundError("iteration 1", TEST_TITLE);
+    }
+
+    // decrementing the binary tree again
+    --(*iterator);
+    ++iterator;
+  });
+
+  if (iterator.Terminated() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+
+  // checking if iterator has modified the tree properly
+  bt.BreadthTraverse([&elements, TEST_TITLE](const Data& cur) {
+    if (cur != elements.FrontNRemove()) {
+      FoundError("iteration 2", TEST_TITLE);
+    }
+  });
+  
+  if (elements.Empty() == false) {
+    FoundError("Terminated", TEST_TITLE);
+  }
+}
+
+void TestPreOrderIteratorsBinaryTreeLnk(BinaryTreeLnk<int> &btl) {
+  const char *TEST_TITLE = "PreOrderIteratorsBinaryTreeLnk";
+  cout << " - Testing iterator(BinaryTreeLnk) - " << endl;
+  BTPreOrderMutableIterator<int> iterator(btl);
+  TestBTPreOrderMutableIterator(iterator, btl);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTPreOrderMutableIterator<int> copy_assign(btl);
+  copy_assign = iterator;
+  TestBTPreOrderMutableIterator(copy_assign, btl);
+  
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTPreOrderMutableIterator<int> move_assign(btl);
+  move_assign = std::move(iterator);
+  TestBTPreOrderMutableIterator(move_assign, btl);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTPreOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTPreOrderMutableIterator(copy_constr, btl);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTPreOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTPreOrderMutableIterator(move_constr, btl);
+
+  BinaryTreeLnk<int> other_tree = btl;
+  BTPreOrderMutableIterator<int> other_iterator = BTPreOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestInOrderIteratorsBinaryTreeLnk(BinaryTreeLnk<int> &btl) {
+  const char *TEST_TITLE = "InOrderIteratorsBinaryTreeLnk";
+  cout << " - Testing iterator(BinaryTreeLnk) - " << endl;
+  BTInOrderMutableIterator<int> iterator(btl);
+  TestBTInOrderMutableIterator(iterator, btl);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTInOrderMutableIterator<int> copy_assign(btl);
+  copy_assign = iterator;
+  TestBTInOrderMutableIterator(copy_assign, btl);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTInOrderMutableIterator<int> move_assign(btl);
+  move_assign = std::move(iterator);
+  TestBTInOrderMutableIterator(move_assign, btl);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;  
+  BTInOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTInOrderMutableIterator(copy_constr, btl);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTInOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTInOrderMutableIterator(move_constr, btl);
+  
+  BinaryTreeLnk<int> other_tree = btl;
+  BTInOrderMutableIterator<int> other_iterator = BTInOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestPostOrderIteratorsBinaryTreeLnk(BinaryTreeLnk<int> &btl) {
+  const char *TEST_TITLE = "PostOrderIteratorsBinaryTreeLnk";
+  cout << " - Testing iterator(BinaryTreeLnk) - " << endl;
+  BTPostOrderMutableIterator<int> iterator(btl);
+  TestBTPostOrderMutableIterator(iterator, btl);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTPostOrderMutableIterator<int> copy_assign(btl);
+  copy_assign = iterator;
+  TestBTPostOrderMutableIterator(copy_assign, btl);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTPostOrderMutableIterator<int> move_assign = std::move(iterator);
+  TestBTPostOrderMutableIterator(move_assign, btl);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTPostOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTPostOrderMutableIterator(copy_constr, btl);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTPostOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTPostOrderMutableIterator(move_constr, btl);
+
+  BinaryTreeLnk<int> other_tree = btl;
+  BTPostOrderMutableIterator<int> other_iterator = BTPostOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestBreadthIteratorsBinaryTreeLnk(BinaryTreeLnk<int> &btl) {
+  const char *TEST_TITLE = "BreadthIteratorsBinaryTreeLnk";
+  cout << " - Testing iterator(BinaryTreeLnk) - " << endl;
+  BTBreadthMutableIterator<int> iterator(btl);
+  TestBTBreadthMutableIterator(iterator, btl);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTBreadthMutableIterator<int> copy_assign(btl);
+  copy_assign = iterator;
+  TestBTBreadthMutableIterator(copy_assign, btl);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTBreadthMutableIterator<int> move_assign(btl);
+  move_assign = std::move(iterator);
+  TestBTBreadthMutableIterator(move_assign, btl);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTBreadthMutableIterator<int> copy_constr(move_assign);
+  TestBTBreadthMutableIterator(copy_constr, btl);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTBreadthMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTBreadthMutableIterator(move_constr, btl);
+  
+  BinaryTreeLnk<int> other_tree = btl;
+  BTBreadthMutableIterator<int> other_iterator = BTBreadthMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestIteratorsBinaryTreeLnk(BinaryTreeLnk<int> &btl) {
+  TellTest("PreOrderIterator (BinaryTreeLnk)");
+  TestPreOrderIteratorsBinaryTreeLnk(btl);
+  TellTest("InOrderIterator (BinaryTreeLnk)");
+  TestInOrderIteratorsBinaryTreeLnk(btl);
+  TellTest("PostOrderIterator (BinaryTreeLnk)");
+  TestPostOrderIteratorsBinaryTreeLnk(btl);
+  TellTest("BreadthIterator (BinaryTreeLnk)");
+  TestBreadthIteratorsBinaryTreeLnk(btl);
+}
+
+void TestIteratorsBinaryTreeLnk()
+{
+  TellTest("Iterators in BinaryTreeLnk");
+
+  BinaryTreeLnk<int> empty_BinaryTreeLnk;
+  TestIteratorsBinaryTreeLnk(empty_BinaryTreeLnk);
+
+  BinaryTreeLnk<int> random_BinaryTreeLnk = GetRandomBinaryTreeLnk();
+  TestIteratorsBinaryTreeLnk(random_BinaryTreeLnk);
+}
+
+void TestPreOrderIteratorsBinaryTreeVec(BinaryTreeVec<int> &btv) {
+  const char *TEST_TITLE = "PreOrderIteratorsBinaryTreeVec";
+  cout << " - Testing iterator(BinaryTreeVec) - " << endl;
+  BTPreOrderMutableIterator<int> iterator(btv);
+  TestBTPreOrderMutableIterator(iterator, btv);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTPreOrderMutableIterator<int> copy_assign(btv);
+  copy_assign = iterator;
+  TestBTPreOrderMutableIterator(copy_assign, btv);
+  
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTPreOrderMutableIterator<int> move_assign(btv);
+  move_assign = std::move(iterator);
+  TestBTPreOrderMutableIterator(move_assign, btv);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTPreOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTPreOrderMutableIterator(copy_constr, btv);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTPreOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTPreOrderMutableIterator(move_constr, btv);
+
+  BinaryTreeVec<int> other_tree = btv;
+  BTPreOrderMutableIterator<int> other_iterator = BTPreOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestInOrderIteratorsBinaryTreeVec(BinaryTreeVec<int> &btv) {
+  const char *TEST_TITLE = "InOrderIteratorsBinaryTreeVec";
+  cout << " - Testing iterator(BinaryTreeVec) - " << endl;
+  BTInOrderMutableIterator<int> iterator(btv);
+  TestBTInOrderMutableIterator(iterator, btv);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTInOrderMutableIterator<int> copy_assign(btv);
+  copy_assign = iterator;
+  TestBTInOrderMutableIterator(copy_assign, btv);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTInOrderMutableIterator<int> move_assign(btv);
+  move_assign = std::move(iterator);
+  TestBTInOrderMutableIterator(move_assign, btv);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;  
+  BTInOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTInOrderMutableIterator(copy_constr, btv);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTInOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTInOrderMutableIterator(move_constr, btv);
+  
+  BinaryTreeVec<int> other_tree = btv;
+  BTInOrderMutableIterator<int> other_iterator = BTInOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestPostOrderIteratorsBinaryTreeVec(BinaryTreeVec<int> &btv) {
+  const char *TEST_TITLE = "PostOrderIteratorsBinaryTreeVec";
+  cout << " - Testing iterator(BinaryTreeVec) - " << endl;
+  BTPostOrderMutableIterator<int> iterator(btv);
+  TestBTPostOrderMutableIterator(iterator, btv);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTPostOrderMutableIterator<int> copy_assign(btv);
+  copy_assign = iterator;
+  TestBTPostOrderMutableIterator(copy_assign, btv);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTPostOrderMutableIterator<int> move_assign = std::move(iterator);
+  TestBTPostOrderMutableIterator(move_assign, btv);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTPostOrderMutableIterator<int> copy_constr(move_assign);
+  TestBTPostOrderMutableIterator(copy_constr, btv);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTPostOrderMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTPostOrderMutableIterator(move_constr, btv);
+
+  BinaryTreeVec<int> other_tree = btv;
+  BTPostOrderMutableIterator<int> other_iterator = BTPostOrderMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestBreadthIteratorsBinaryTreeVec(BinaryTreeVec<int> &btv) {
+  const char *TEST_TITLE = "BreadthIteratorsBinaryTreeVec";
+  cout << " - Testing iterator(BinaryTreeVec) - " << endl;
+  BTBreadthMutableIterator<int> iterator(btv);
+  TestBTBreadthMutableIterator(iterator, btv);
+
+  cout << " - Testing iterator created with copy assignment - " << endl;
+  BTBreadthMutableIterator<int> copy_assign(btv);
+  copy_assign = iterator;
+  TestBTBreadthMutableIterator(copy_assign, btv);
+
+  cout << " - Testing iterator created with move assignment - " << endl;
+  BTBreadthMutableIterator<int> move_assign(btv);
+  move_assign = std::move(iterator);
+  TestBTBreadthMutableIterator(move_assign, btv);
+
+  cout << " - Testing iterator created with copy constructor - " << endl;
+  BTBreadthMutableIterator<int> copy_constr(move_assign);
+  TestBTBreadthMutableIterator(copy_constr, btv);
+
+  cout << " - Testing iterator created with move constructor - " << endl;
+  BTBreadthMutableIterator<int> move_constr(std::move(move_assign));
+  TestBTBreadthMutableIterator(move_constr, btv);
+  
+  BinaryTreeVec<int> other_tree = btv;
+  BTBreadthMutableIterator<int> other_iterator = BTBreadthMutableIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
+}
+
+void TestIteratorsBinaryTreeVec(BinaryTreeVec<int> &btv) {
+  TellTest("PreOrderIterator (BinaryTreeVec)");
+  TestPreOrderIteratorsBinaryTreeVec(btv);
+  TellTest("InOrderIterator (BinaryTreeVec)");
+  TestInOrderIteratorsBinaryTreeVec(btv);
+  TellTest("PostOrderIterator (BinaryTreeVec)");
+  TestPostOrderIteratorsBinaryTreeVec(btv);
+  TellTest("BreadthIterator (BinaryTreeVec)");
+  TestBreadthIteratorsBinaryTreeVec(btv);
+}
+
+void TestIteratorsBinaryTreeVec()
+{
+  TellTest("Iterators in BinaryTreeVec");
+
+  BinaryTreeVec<int> empty_BinaryTreeVec;
+  TestIteratorsBinaryTreeVec(empty_BinaryTreeVec);
+
+  BinaryTreeVec<int> random_BinaryTreeVec = GetRandomBinaryTreeVec();
+  TestIteratorsBinaryTreeVec(random_BinaryTreeVec);
 }
 
 void TestPreOrderIteratorsBST(BST<int> &bst) {
+  const char *TEST_TITLE = "PreOrderIteratorsBST";
   cout << " - Testing iterator(bst) - " << endl;
   BTPreOrderIterator<int> iterator(bst);
   TestBTPreOrderIterator(iterator, bst);
@@ -1639,9 +2161,16 @@ void TestPreOrderIteratorsBST(BST<int> &bst) {
   cout << " - Testing iterator created with move constructor - " << endl;
   BTPreOrderIterator<int> move_constr(std::move(move_assign));
   TestBTPreOrderIterator(move_constr, bst);
+
+  BST<int> other_tree = bst;
+  BTPreOrderIterator<int> other_iterator = BTPreOrderIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
 }
 
 void TestInOrderIteratorsBST(BST<int> &bst) {
+  const char *TEST_TITLE = "InOrderIteratorsBST";
   cout << " - Testing iterator(bst) - " << endl;
   BTInOrderIterator<int> iterator(bst);
   TestBTInOrderIterator(iterator, bst);
@@ -1663,9 +2192,16 @@ void TestInOrderIteratorsBST(BST<int> &bst) {
   cout << " - Testing iterator created with move constructor - " << endl;
   BTInOrderIterator<int> move_constr(std::move(move_assign));
   TestBTInOrderIterator(move_constr, bst);
+  
+  BST<int> other_tree = bst;
+  BTInOrderIterator<int> other_iterator = BTInOrderIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
 }
 
 void TestPostOrderIteratorsBST(BST<int> &bst) {
+  const char *TEST_TITLE = "PostOrderIteratorsBST";
   cout << " - Testing iterator(bst) - " << endl;
   BTPostOrderIterator<int> iterator(bst);
   TestBTPostOrderIterator(iterator, bst);
@@ -1686,9 +2222,16 @@ void TestPostOrderIteratorsBST(BST<int> &bst) {
   cout << " - Testing iterator created with move constructor - " << endl;
   BTPostOrderIterator<int> move_constr(std::move(move_assign));
   TestBTPostOrderIterator(move_constr, bst);
+
+  BST<int> other_tree = bst;
+  BTPostOrderIterator<int> other_iterator = BTPostOrderIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
 }
 
 void TestBreadthIteratorsBST(BST<int> &bst) {
+  const char *TEST_TITLE = "BreadthIteratorsBST";
   cout << " - Testing iterator(bst) - " << endl;
   BTBreadthIterator<int> iterator(bst);
   TestBTBreadthIterator(iterator, bst);
@@ -1710,6 +2253,12 @@ void TestBreadthIteratorsBST(BST<int> &bst) {
   cout << " - Testing iterator created with move constructor - " << endl;
   BTBreadthIterator<int> move_constr(std::move(move_assign));
   TestBTBreadthIterator(move_constr, bst);
+  
+  BST<int> other_tree = bst;
+  BTBreadthIterator<int> other_iterator = BTBreadthIterator<int>(other_tree);
+  if (iterator == other_iterator) {
+    FoundError("comparison", TEST_TITLE);
+  }
 }
 
 void TestIteratorsBST(BST<int> &bst) {
@@ -1749,6 +2298,8 @@ void TestIteratorsBST()
 void TestIterators()
 {
   TellTest ("Iterator");
+  TestIteratorsBinaryTreeLnk();
+  TestIteratorsBinaryTreeVec();
   TestIteratorsBST();
 }
 

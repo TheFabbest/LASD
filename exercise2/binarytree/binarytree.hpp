@@ -340,13 +340,12 @@ private:
 
 protected:
 
-  using BTPreOrderIterator<Data>::Terminated;
   using BTPreOrderIterator<Data>::stack;
 
 public:
 
   // Specific constructors
-  BTPreOrderMutableIterator(const BinaryTree<Data> &binarytree); // An iterator over a given binary tree
+  BTPreOrderMutableIterator(const MutableBinaryTree<Data> &binarytree); // An iterator over a given binary tree
 
   /* ************************************************************************ */
 
@@ -468,12 +467,11 @@ private:
 
 protected:
 
-  using BTPostOrderIterator<Data>::Terminated;
   using BTPostOrderIterator<Data>::stack;
 
 public:
   // Specific constructors
-  BTPostOrderMutableIterator(const BinaryTree<Data> &binarytree); // An iterator over a given binary tree
+  BTPostOrderMutableIterator(const MutableBinaryTree<Data> &binarytree); // An iterator over a given binary tree
 
   /* ************************************************************************ */
 
@@ -598,7 +596,7 @@ protected:
 public:
 
   // Specific constructors
-  BTInOrderMutableIterator(const BinaryTree<Data> &binarytree); // An iterator over a given binary tree
+  BTInOrderMutableIterator(const MutableBinaryTree<Data> &binarytree); // An iterator over a given binary tree
 
   /* ************************************************************************ */
 
@@ -717,7 +715,7 @@ private:
 
 protected:
 
-  // ...
+  using BTBreadthIterator<Data>::queue; // TODO to others
 
 public:
 
