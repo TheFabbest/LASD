@@ -36,31 +36,31 @@ public:
 
   // Specific constructors
   HashTableClsAdr(const unsigned long size); // A hash table of a given size
-  // HashTableClsAdr(argument) specifiers; // A hash table obtained from a TraversableContainer
-  // HashTableClsAdr(argument) specifiers; // A hash table of a given size obtained from a TraversableContainer
-  // HashTableClsAdr(argument) specifiers; // A hash table obtained from a MappableContainer
-  // HashTableClsAdr(argument) specifiers; // A hash table of a given size obtained from a MappableContainer
+  HashTableClsAdr(const TraversableContainer<Data>& traversable); // A hash table obtained from a TraversableContainer
+  HashTableClsAdr(const TraversableContainer<Data>& traversable, unsigned long size); // A hash table of a given size obtained from a TraversableContainer
+  HashTableClsAdr(MappableContainer<Data>&& mappable); // A hash table obtained from a MappableContainer
+  HashTableClsAdr(MappableContainer<Data>&& mappable, unsigned long size); // A hash table of a given size obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // HashTableClsAdr(argument) specifiers;
+  HashTableClsAdr(const HashTableClsAdr<Data>& other);
 
   // Move constructor
-  // HashTableClsAdr(argument) specifiers;
+  HashTableClsAdr(HashTableClsAdr<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
   // Destructor
-  // ~HashTableClsAdr() specifiers;
+  virtual ~HashTableClsAdr() = default; // TODO vedi (anche in btvec)
 
   /* ************************************************************************ */
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  HashTableClsAdr<Data>& operator=(const HashTableClsAdr<Data>& other);
 
   // Move assignment
-  // type operator=(argument) specifiers;
+  HashTableClsAdr<Data>& operator=(HashTableClsAdr<Data>&& other) noexcept;
 
   /* ************************************************************************ */
 
@@ -80,19 +80,19 @@ public:
 
   // Specific member functions (inherited from TestableContainer)
 
-  // type Exists(argument) specifiers; // Override TestableContainer member
+  bool Exists(const Data& data) const noexcept override; // Override TestableContainer member
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from ResizableContainer)
 
-  // type Resize(argument) specifiers; // Resize the hashtable to a given size
+  void Resize(unsigned long size) override; // Resize the hashtable to a given size
 
   /* ************************************************************************ */
 
   // Specific member functions (inherited from ClearableContainer)
 
-  // type Clear() specifiers; // Override Container member
+  void Clear() override; // Override Container member
 
 };
 

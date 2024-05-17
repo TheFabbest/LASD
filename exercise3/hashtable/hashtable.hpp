@@ -20,9 +20,8 @@ template <typename Data>
 class Hashable {
 
 public:
-
   // TODO vedi quaderno e chiedi
-  unsigned long operator() const noexcept; // (concrete function should not throw exceptions)
+  unsigned long operator(const Data& data) const noexcept = 0; // (concrete function should not throw exceptions)
 
 };
 
@@ -39,9 +38,16 @@ private:
 
 protected:
 
-  // using DictionaryContainer<Data>::???;
+  using DictionaryContainer<Data>::size;
 
-  // ...
+  static const Hashable<Data> encodingHash;
+
+  // TODO static/const?
+  unsigned long coeff_a = 1;
+  unsigned long coeff_b = 0;
+
+  unsigned long table_size = 8; // TODO define here? potrei usare .Size() del vettore, funzione virtual che me la restituisce
+
 
 public:
 
@@ -66,7 +72,8 @@ protected:
 
   // Auxiliary member functions
 
-  // type HashKey(argument) specifiers;
+  virtual inline unsigned long HashKey(const Data& data) const noexcept;
+  virtual unsigned long HashKey(const ulong key) const noexcept;
 
 };
 
