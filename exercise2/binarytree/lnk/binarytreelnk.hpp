@@ -22,7 +22,6 @@ private:
 
 protected:
 
-  //using BinaryTree<Data>::; TODO
   using typename BinaryTree<Data>::Node;
   using typename MutableBinaryTree<Data>::MutableNode;
 
@@ -36,7 +35,6 @@ protected:
   protected:
 
   public:
-    // TODO vedi se protected con friendship (che pero non si eredita in bst)
     NodeLnk *left = nullptr;
     NodeLnk *right = nullptr;
     Data data;
@@ -58,10 +56,13 @@ protected:
     // move assignment
     NodeLnk operator=(NodeLnk&& other) noexcept;
 
+    bool operator==(const NodeLnk& other) const noexcept;
+    inline bool operator!=(const NodeLnk& other) const noexcept;
+
     inline bool HasLeftChild() const noexcept override;
     inline bool HasRightChild() const noexcept override;
 
-    virtual const Node& LeftChild() const override; // TODO Node o NodeLnk
+    virtual const Node& LeftChild() const override;
     virtual const Node& RightChild() const override;
     virtual MutableNode& LeftChild() override;
     virtual MutableNode& RightChild() override;

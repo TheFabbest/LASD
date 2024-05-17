@@ -88,6 +88,17 @@ BinaryTreeLnk<Data>::NodeLnk BinaryTreeLnk<Data>::NodeLnk::operator=(BinaryTreeL
     return *this;
 }
 
+template <typename Data>
+bool BinaryTreeLnk<Data>::NodeLnk::operator==(const BinaryTreeLnk<Data>::NodeLnk& other) const noexcept {
+    return (data == other.Element()) &&
+            ((left == nullptr && other.left == nullptr) || (left != nullptr && other.left != nullptr && *left == *other.left)) &&
+            ((right == nullptr && other.right == nullptr) || (right != nullptr && other.right != nullptr && *right == *other.right));
+}
+
+template <typename Data>
+inline bool BinaryTreeLnk<Data>::NodeLnk::operator!=(const BinaryTreeLnk<Data>::NodeLnk& other) const noexcept {
+    return !this->operator==(other);
+}
 
 template <typename Data>
 inline bool BinaryTreeLnk<Data>::NodeLnk::HasLeftChild() const noexcept
@@ -141,13 +152,12 @@ inline Data& BinaryTreeLnk<Data>::NodeLnk::Element() noexcept {
 
 //BinaryTreeLnk
 
-// TODO controlla bene
 // constructors
 template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
     if (traversable.Empty()) return;
     this->size = traversable.Size();
-    QueueLst<NodeLnk**> queue;
+    QueueVec<NodeLnk**> queue;
     queue.Enqueue(&root);
     traversable.Traverse([&queue](const Data& currentData){
         NodeLnk** currentNode = queue.HeadNDequeue();
@@ -161,7 +171,7 @@ template <typename Data>
 BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
     if (mappable.Empty()) return;
     this->size = mappable.Size();
-    QueueLst<NodeLnk**> queue;
+    QueueVec<NodeLnk**> queue;
     queue.Enqueue(&root);
     mappable.Map([&queue](Data& currentData){
         NodeLnk** currentNode = queue.HeadNDequeue();
@@ -170,35 +180,6 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
         queue.Enqueue(&(*currentNode)->right);
     });
 }
-
-// TODO come li fa il prof
-// template <typename Data>
-// BinaryTreeLnk<Data>::BinaryTreeLnk(const TraversableContainer<Data>& traversable){
-//     if (traversable.Empty()) return;
-//     size = traversable.Size();
-//     QueueLst<NodeLnk**> queue;
-//     queue.Enqueue(&root);
-//     traversable.Traverse([&queue](const Data& currentData){
-//         NodeLnk*&currentNode = *queue.HeadNDequeue();
-//         currentNode = new NodeLnk(currentData);
-//         queue.Enqueue(&currentNode->left);
-//         queue.Enqueue(&currentNode->right);
-//     });
-// }
-
-// template <typename Data>
-// BinaryTreeLnk<Data>::BinaryTreeLnk(MappableContainer<Data>&& mappable) noexcept{
-//     if (mappable.Empty()) return;
-//     size = mappable.Size();
-//     QueueLst<NodeLnk**> queue;
-//     queue.Enqueue(&root);
-//     mappable.Map([&queue](Data& currentData){
-//         NodeLnk*& currentNode = *queue.HeadNDequeue();
-//         currentNode = new NodeLnk(currentData);
-//         queue.Enqueue(&currentNode->left);
-//         queue.Enqueue(&currentNode->right);
-//     });
-// }
 
 
 // Copy constructor
@@ -221,8 +202,13 @@ BinaryTreeLnk<Data>::BinaryTreeLnk(BinaryTreeLnk<Data>&& other) noexcept {
 // copy assignment
 template <typename Data>
 BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data>& other) {
-    this->Clear();
-    if (other.Empty() == false) {
+    if (other.Empty()) {
+        if (root != nullptr) {
+            delete root;
+            root = nullptr;
+        }
+    }
+    else {
         if (root != nullptr) {
             *root = *other.root;
         }
@@ -231,6 +217,7 @@ BinaryTreeLnk<Data>& BinaryTreeLnk<Data>::operator=(const BinaryTreeLnk<Data>& o
         }
         this->size = other.size;
     }
+    this->size = other.size;
     return *this;
 }
 

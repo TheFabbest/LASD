@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include "../list/list.hpp"
 #include "../binarytree/binarytree.hpp"
 #include "../binarytree/vec/binarytreevec.hpp"
 #include "../binarytree/lnk/binarytreelnk.hpp"
@@ -7,56 +8,7 @@
 
 using namespace std;
 using namespace lasd;
-
-/*
-  TestEmptyBinaryTree (called on empty binarytreevec, empty binarytreelnk and empty BST (any constructor) )
-    size
-    empty
-    exists
-    == e !=
-    root
-    traverse e fold (numero di iter = 0)
-
-  TestEmptyBST (called with every constructor)
-    (calls TestEmptyBinaryTree)
-    size
-    RemoveSome/All, InsertSome/All (with/without move)
-    Min/RemoveMin/MinNRemove (same for Max)
-    Exists
-
-  TestBinaryTree (called on binarytreelnk (every constructor) )
-    size
-    empty
-    root
-    Traverse e Fold
-
-  TestBinaryTreeLnk/TestBinaryTreeVec ()
-    (calls TestBinaryTree)
-    Exists
-    Traverse and Fold (checks order on known tree)
-    comparison (superficial, further testing in random)
-    Clear (calls TestEmptyBinaryTree)
-
-  TestBinaryTreeRandom (works on binarytreelnk, binarytreevec, bst)
-    Map/Fold
-    comparison (superficial)ì
-
-  TestBST (with arguments passed (called on BST with every constructor))
-    (calls TestBinaryTree)
-    Min/MinNRemove/RemoveMin (same for Max)
-    Successor/SuccessorNRemove/RemoveSuccessor (same for Predecessor)
-    Exists
-    Insert
-    Remove
-    InsertSome/All
-    RemoveSome/All
-    Clear (calls TestEmptyBinaryTree)
-
-  TestBST
-    (calls TestBST with arguments)
-    generates known tree and random tree
-*/
-
+// TODO CONTROLLA LST E VEC
 string to_string(string str){
   return str;
 } // for templates
@@ -149,7 +101,6 @@ void GetRandomBST(BST<int> &bst, unsigned long &size, int &min, int &max, int &n
     }
   }
   
-  // TODO vedi se 3 va bene in testbst
   if (size < 3) {
     cout << "retrying..." << endl;
     GetRandomBST(bst, size, min, max, num_for_tests, 
