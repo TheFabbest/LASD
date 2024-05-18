@@ -64,7 +64,7 @@ inline void BinaryTree<Data>::InOrderTraverse(TraverseFun function) const{
 template <typename Data>
 void BinaryTree<Data>::BreadthTraverse(TraverseFun function) const{
     if (size == 0) return;
-    QueueLst<const Node*> queue;
+    QueueVec<const Node*> queue;
     queue.Enqueue(&Root());
     while (!queue.Empty()) {
         const Node * curr = queue.HeadNDequeue();
@@ -101,8 +101,6 @@ void BinaryTree<Data>::InOrderTraverse(TraverseFun function, const Node& curr) c
     if (curr.HasRightChild()) InOrderTraverse(function, curr.RightChild());
 }
 
-// MutableNode
-
 // MutableBinaryTree
 
 template <typename Data>
@@ -128,7 +126,7 @@ inline void MutableBinaryTree<Data>::InOrderMap(MapFun function) {
 template <typename Data>
 void MutableBinaryTree<Data>::BreadthMap(MapFun function) {
     if (size == 0) return;
-    QueueLst<MutableNode*> queue;
+    QueueVec<MutableNode*> queue;
     queue.Enqueue(&Root());
     while (!queue.Empty()) {
         MutableNode * curr = queue.HeadNDequeue();
@@ -230,7 +228,9 @@ inline bool BTPreOrderIterator<Data>::Terminated() const noexcept{
 // inherited from ForwardIterator
 template <typename Data>
 BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator++() {
-    if (stack.Empty()) throw std::out_of_range("BTPreOrderIterator was empty");
+    if (stack.Empty()) {
+        throw std::out_of_range("BTPreOrderIterator was empty");
+    }
     const typename BinaryTree<Data>::Node* curr = stack.TopNPop();
     if (curr->HasRightChild()) {
         stack.Push(&curr->RightChild());
@@ -244,7 +244,9 @@ BTPreOrderIterator<Data>& BTPreOrderIterator<Data>::operator++() {
 // inherited from ResettableIterator
 template <typename Data>
 void BTPreOrderIterator<Data>::Reset() noexcept{
-    if (tree == nullptr || tree->Empty()) return;
+    if (tree == nullptr || tree->Empty()) {
+        return;
+    }
     stack.Clear();
     stack.Push(&tree->Root());
 }
@@ -277,7 +279,7 @@ inline BTPreOrderMutableIterator<Data>& BTPreOrderMutableIterator<Data>::operato
 
 // comparisons operator
 template <typename Data>
-bool BTPreOrderMutableIterator<Data>::operator==(const BTPreOrderMutableIterator<Data>& other) const noexcept{
+inline bool BTPreOrderMutableIterator<Data>::operator==(const BTPreOrderMutableIterator<Data>& other) const noexcept{
     return BTPreOrderIterator<Data>::operator==(other);
 }
 
@@ -439,13 +441,7 @@ BTInOrderIterator<Data>::BTInOrderIterator(const BinaryTree<Data> &binarytree){
     this->tree = &binarytree;
     if (binarytree.Empty()) return;
 
-    const typename BinaryTree<Data>::Node *curr = &binarytree.Root();
-    this->stack.Push(curr);
-    while (curr->HasLeftChild())
-    {
-        curr = &curr->LeftChild();
-        this->stack.Push(curr);
-    }
+    FillStackLeft(binarytree.Root());
 }
 
 // copy constructor
@@ -477,7 +473,7 @@ BTInOrderIterator<Data>& BTInOrderIterator<Data>::operator=(BTInOrderIterator<Da
 // comparisons operator
 template <typename Data>
 bool BTInOrderIterator<Data>::operator==(const BTInOrderIterator<Data>& other) const noexcept{
-    return this->tree == other.tree && this->stack == other.stack; // TODO stesso PUNTATORE a radice
+    return this->tree == other.tree && this->stack == other.stack;
 }
 
 template <typename Data>
@@ -506,13 +502,7 @@ BTInOrderIterator<Data>& BTInOrderIterator<Data>::operator++() {
 
     const typename BinaryTree<Data>::Node* curr = stack.TopNPop();
     if (curr->HasRightChild()) {
-        curr = &curr->RightChild();
-        stack.Push(curr);
-        while (curr->HasLeftChild())
-        {
-            curr = &curr->LeftChild();
-            stack.Push(curr);
-        }
+        FillStackLeft(curr->RightChild());
     }
     return *this;
 }
@@ -522,11 +512,16 @@ template <typename Data>
 void BTInOrderIterator<Data>::Reset() noexcept{
     if (tree == nullptr || tree->Empty()) return;
     stack.Clear();
-    const typename BinaryTree<Data>::Node* curr = &tree->Root();
-    stack.Push(curr);
-    while (curr->HasLeftChild()) {
-        curr = &curr->LeftChild();
-        stack.Push(curr);
+    FillStackLeft(tree->Root());
+}
+
+// auxiliary
+template <typename Data>
+void BTInOrderIterator<Data>::FillStackLeft(const typename BinaryTree<Data>::Node& curr) {
+    this->stack.Push(&curr);
+    if (curr.HasLeftChild())
+    {
+        FillStackLeft(curr.LeftChild());
     }
 }
 
@@ -637,7 +632,9 @@ inline bool BTBreadthIterator<Data>::Terminated() const noexcept{
 // inherited from ForwardIterator
 template <typename Data>
 BTBreadthIterator<Data>& BTBreadthIterator<Data>::operator++() {
-    if (queue.Empty()) throw std::out_of_range("BTBreadthIterator was empty");
+    if (queue.Empty()) {
+        throw std::out_of_range("BTBreadthIterator was empty");
+    }
     const typename BinaryTree<Data>::Node& curr = *queue.HeadNDequeue();
     if (curr.HasLeftChild()){
         queue.Enqueue(&curr.LeftChild());

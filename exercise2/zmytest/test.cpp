@@ -8,7 +8,7 @@
 
 using namespace std;
 using namespace lasd;
-// TODO CONTROLLA LST E VEC
+
 string to_string(string str){
   return str;
 } // for templates
@@ -2004,14 +2004,17 @@ void TestIteratorsBinaryTreeLnk()
 {
   TellTest("Iterators in BinaryTreeLnk");
 
+  cout << "Empty BinaryTreeLnk" << endl;
   BinaryTreeLnk<int> empty_BinaryTreeLnk;
   TestIteratorsBinaryTreeLnk(empty_BinaryTreeLnk);
 
+  cout << "BinaryTreeLnk with one item" << endl;
   Vector<int> vec(1);
   vec[0] = 1;
   BinaryTreeLnk<int> one_BinaryTreeLnk(vec);
   TestIteratorsBinaryTreeLnk(one_BinaryTreeLnk);
 
+  cout << "Random BinaryTreeLnk" << endl;
   BinaryTreeLnk<int> random_BinaryTreeLnk = GetRandomBinaryTreeLnk();
   TestIteratorsBinaryTreeLnk(random_BinaryTreeLnk);
 }
@@ -2154,14 +2157,17 @@ void TestIteratorsBinaryTreeVec()
 {
   TellTest("Iterators in BinaryTreeVec");
 
+  cout << "Empty BinaryTreeVec" << endl;
   BinaryTreeVec<int> empty_BinaryTreeVec;
   TestIteratorsBinaryTreeVec(empty_BinaryTreeVec);
 
+  cout << "BinaryTreeVec with one item" << endl;
   Vector<int> vec(1);
   vec[0] = 1;
   BinaryTreeVec<int> one_BinaryTreeVec(vec);
   TestIteratorsBinaryTreeVec(one_BinaryTreeVec);
 
+  cout << "Random BinaryTreeVec" << endl;
   BinaryTreeVec<int> random_BinaryTreeVec = GetRandomBinaryTreeVec();
   TestIteratorsBinaryTreeVec(random_BinaryTreeVec);
 }
@@ -2304,23 +2310,29 @@ void TestIteratorsBST()
 {
   TellTest("Iterators in BST");
 
+  cout << "Empty BST" << endl;
   BST<int> empty_bst;
   TestIteratorsBST(empty_bst);
 
+
+  cout << "BST with one item" << endl;
   Vector<int> vec(1);
   vec[0] = 1;
   BST<int> one_BST(vec);
   TestIteratorsBST(one_BST);
 
+  cout << "Random BST" << endl;
   BST<int> random_bst;
   GetRandomBST(random_bst);
   TestIteratorsBST(random_bst);
 
+  cout << "Degenerate BST (1)" << endl;
   BST<int> degenerate_bst;
   degenerate_bst.Insert(100);
   degenerate_bst.Insert(0);
   TestIteratorsBST(degenerate_bst);
 
+  cout << "Degenerate BST (2)" << endl;
   degenerate_bst.Insert(50);
   degenerate_bst.Insert(25);
   degenerate_bst.Insert(12);

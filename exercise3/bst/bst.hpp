@@ -117,13 +117,12 @@ protected:
 
   // Auxiliary functions, if necessary!
 
-  // TODO virtual?
-  Data DataNDelete(NodeLnk * ptr);
+  virtual Data DataNDelete(NodeLnk * ptr);
 
-  NodeLnk* Detach(NodeLnk*& node);
+  virtual NodeLnk* Detach(NodeLnk*& node);
 
-  NodeLnk *DetachMin(NodeLnk *& node) noexcept;
-  NodeLnk *DetachMax(NodeLnk *& node) noexcept;
+  virtual NodeLnk *DetachMin(NodeLnk *& node) noexcept;
+  virtual NodeLnk *DetachMax(NodeLnk *& node) noexcept;
 
   // detaches "node->left" from the tree and returns a pointer to node
   virtual NodeLnk* Skip2Left(NodeLnk *& node) noexcept;

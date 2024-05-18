@@ -5,28 +5,19 @@ namespace lasd {
 /* ************************************************************************** */
 
 // NodeVec
-// default constructor
-template <typename Data>
-BinaryTreeVec<Data>::NodeVec::NodeVec()
-{
-    tree = nullptr; // TODO chiedi a mog se puoi usare tree==nullptr come controllo che il nodo sia valido o meno
-    // eliminare valid
-    // quando creo il vettore di NodeVec, ogni nodo viene creato con costruttore di default, quindi non so che albero dargli
-    // 1) immediatamente dopo aver creato o ridimensionato il vettore devo settare il tree
-    // 2) come dico sopra
-}
-
 // specific constructors
 template <typename Data>
 BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, const Data& data) : tree(&binarytree)
 {
     this->data = data;
+    this->valid = true;
 }
 
 template <typename Data>
 BinaryTreeVec<Data>::NodeVec::NodeVec(BinaryTreeVec<Data> &binarytree, Data&& data) noexcept : tree(&binarytree)
 {
     this->data = std::move(data);
+    this->valid = true;
 }
 
 // copy constructor
@@ -40,9 +31,9 @@ BinaryTreeVec<Data>::NodeVec::NodeVec(const NodeVec& other){
 // move constructor
 template <typename Data>
 BinaryTreeVec<Data>::NodeVec::NodeVec(NodeVec&& other) noexcept {
-    this->tree = std::move(other.tree);
-    this->data = std::move(other.data);
-    this->valid = std::move(other.valid);
+    std::swap(this->tree, other.tree);
+    std::swap(this->data, other.data);
+    std::swap(this->valid, other.valid);
 }
 
 // operator=
@@ -223,16 +214,20 @@ inline bool BinaryTreeVec<Data>::operator!=(const BinaryTreeVec<Data>& other) co
 // Specific member functions (inherited from BinaryTree)
 
 template <typename Data>
-const BinaryTreeVec<Data>::NodeVec& BinaryTreeVec<Data>::Root() const {
-    if (this->Empty()) throw std::length_error("BinaryTreeVec is empty");
+const BinaryTreeVec<Data>::Node& BinaryTreeVec<Data>::Root() const {
+    if (this->Empty()) {
+        throw std::length_error("BinaryTreeVec is empty");
+    }
     return this->vector[0];
 }
 
 // Specific member function (inherited from MutableBinaryTree)
 
 template <typename Data>
-BinaryTreeVec<Data>::NodeVec& BinaryTreeVec<Data>::Root() {
-    if (this->Empty()) throw std::length_error("BinaryTreeVec is empty");
+BinaryTreeVec<Data>::MutableNode& BinaryTreeVec<Data>::Root() {
+    if (this->Empty()) {
+        throw std::length_error("BinaryTreeVec is empty");
+    }
     return this->vector[0];
 }
 

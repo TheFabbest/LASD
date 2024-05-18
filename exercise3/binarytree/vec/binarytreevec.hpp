@@ -35,12 +35,14 @@ protected:
   protected:
     friend class BinaryTreeVec<Data>;
 
-    bool valid = true;
+    bool valid = false;
     Data data;
-    BinaryTreeVec *tree;
+    BinaryTreeVec *tree = nullptr;
+    inline unsigned long BaseAddress() const noexcept;
+    inline unsigned long Index() const noexcept;
 
   public:
-    NodeVec();
+    NodeVec() = default;
 
     // specific constructors
     NodeVec(BinaryTreeVec &binarytree, const Data& data);
@@ -67,8 +69,7 @@ protected:
     inline const Data& Element() const noexcept override;
     inline Data& Element() noexcept override;
 
-    inline unsigned long BaseAddress() const noexcept;
-    inline unsigned long Index() const noexcept;
+    virtual ~NodeVec() = default;
   };
   
   Vector<NodeVec> vector;
@@ -116,13 +117,13 @@ public:
 
   // Specific member functions (inherited from BinaryTree)
 
-  const NodeVec& Root() const override; // Override BinaryTree member (throw std::length_error when empty)
+  const Node& Root() const override; // Override BinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from MutableBinaryTree)
 
-  NodeVec& Root() override; // Override MutableBinaryTree member (throw std::length_error when empty)
+  MutableNode& Root() override; // Override MutableBinaryTree member (throw std::length_error when empty)
 
   /* ************************************************************************ */
 

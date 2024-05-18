@@ -9,11 +9,10 @@
 
 #include "../iterator/iterator.hpp"
 
-// TODO inverti commenti
-//#include "../stack/vec/stackvec.hpp"
-#include "../stack/lst/stacklst.hpp"
-//#include "../queue/vec/queuevec.hpp"
-#include "../queue/lst/queuelst.hpp"
+#include "../stack/vec/stackvec.hpp"
+//#include "../stack/lst/stacklst.hpp"
+#include "../queue/vec/queuevec.hpp"
+//#include "../queue/lst/queuelst.hpp"
 
 /* ************************************************************************** */
 
@@ -45,8 +44,6 @@ public:
     // Comparison operators
     bool operator==(const Node& other) const noexcept; // Comparison of abstract types is possible, but is not visible.
     inline bool operator!=(const Node& other) const noexcept; // Comparison of abstract types is possible, but is not visible.
-
-    friend class BinaryTree<Data>;
 
     /* ********************************************************************** */
 
@@ -167,7 +164,6 @@ public:
 
   struct MutableNode : virtual Node {
     // Must extend Node
-    // friend class MutableBinaryTree<Data>;
 
     /* ********************************************************************** */
 
@@ -271,7 +267,7 @@ private:
 protected:
 
   const BinaryTree<Data> *tree = nullptr;
-  StackLst<const typename BinaryTree<Data>::Node*> stack;
+  StackVec<const typename BinaryTree<Data>::Node*> stack;
 
 public:
 
@@ -396,9 +392,9 @@ private:
 
 protected:
   const BinaryTree<Data> *tree = nullptr;
-  StackLst<const typename BinaryTree<Data>::Node*> stack;
+  StackVec<const typename BinaryTree<Data>::Node*> stack;
 
-  virtual void FillToLeftMostLeaf(const typename BinaryTree<Data>::Node& curr); // TODO vedi se gli altri ce l'hanno
+  virtual void FillToLeftMostLeaf(const typename BinaryTree<Data>::Node& curr);
 
 public:
 
@@ -522,7 +518,8 @@ private:
 protected:
 
   const BinaryTree<Data> *tree = nullptr;
-  StackLst<const typename BinaryTree<Data>::Node*> stack;
+  StackVec<const typename BinaryTree<Data>::Node*> stack;
+  virtual void FillStackLeft(const typename BinaryTree<Data>::Node& curr);
 
 public:
 
@@ -646,7 +643,7 @@ private:
 
 protected:
   const BinaryTree<Data> *tree = nullptr;
-  QueueLst<const typename BinaryTree<Data>::Node*> queue;
+  QueueVec<const typename BinaryTree<Data>::Node*> queue;
 
 public:
 
@@ -714,8 +711,6 @@ private:
   // ...
 
 protected:
-
-  using BTBreadthIterator<Data>::queue; // TODO to others
 
 public:
 

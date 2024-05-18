@@ -167,7 +167,6 @@ void BST<Data>::RemovePredecessor(const Data& data) {
 
 template <typename Data>
 const Data& BST<Data>::Successor(const Data& data) const {
-    // TODO findpointertosuccessor funziona senza
     if (root == nullptr) {
         throw std::length_error("BST is empty");
     }
@@ -290,7 +289,6 @@ typename BST<Data>::NodeLnk * BST<Data>::DetachMax(NodeLnk *& node) noexcept {
     return Skip2Left(FindPointerToMax(node));
 }
 
-// TODO decidi!
 template <typename Data>
 BST<Data>::NodeLnk * BST<Data>::Skip2Left(NodeLnk *& node) noexcept {
     NodeLnk *left = nullptr;
@@ -303,7 +301,6 @@ BST<Data>::NodeLnk * BST<Data>::Skip2Left(NodeLnk *& node) noexcept {
     return left;
 }
 
-// TODO vedi why return e why diverso dal prof
 template <typename Data>
 BST<Data>::NodeLnk * BST<Data>::Skip2Right(NodeLnk *& node) noexcept {
     NodeLnk *right = nullptr;
@@ -314,15 +311,6 @@ BST<Data>::NodeLnk * BST<Data>::Skip2Right(NodeLnk *& node) noexcept {
         --size;
     }
     return right;
-
-    // todo non funziona
-    // if (node != nullptr) {
-    //     NodeLnk *right = node->right;
-    //     node->right = nullptr;
-    //     node = right;
-    //     --size;
-    // }
-    // return node;
 }
 
 template <typename Data>
@@ -330,7 +318,6 @@ BST<Data>::NodeLnk*& BST<Data>::FindPointerToMin(NodeLnk*& root) noexcept {
     return const_cast<NodeLnk*&>(static_cast<const BST<Data>*>(this)->FindPointerToMin(root));
 }
 
-// TODO vedi why prof diverso
 template <typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToMin(const NodeLnk * const & root) const noexcept {
     const NodeLnk * const * curr = &root;
@@ -348,7 +335,6 @@ BST<Data>::NodeLnk*& BST<Data>::FindPointerToMax(NodeLnk*& root) noexcept {
     return const_cast<NodeLnk*&>(static_cast<const BST<Data>*>(this)->FindPointerToMax(root));
 }
 
-// TODO vedi why prof diverso
 template <typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToMax(const NodeLnk * const & root) const noexcept {
     const NodeLnk * const * curr = &root;
@@ -366,7 +352,6 @@ BST<Data>::NodeLnk*& BST<Data>::FindPointerTo(NodeLnk*& root, const Data& data) 
     return const_cast<NodeLnk*&>(static_cast<const BST<Data>*>(this)->FindPointerTo(root, data));
 }
 
-// TODO vedi why prof diverso
 template <typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerTo(const NodeLnk * const & root, const Data& data) const noexcept {
     if (root == nullptr) {
@@ -431,7 +416,6 @@ BST<Data>::NodeLnk *& BST<Data>::FindPointerToSuccessor(NodeLnk *& node, const D
     return const_cast<NodeLnk *&>(static_cast<const BST<Data> *>(this)->FindPointerToSuccessor(node, data));
 }
 
-// TODO Messo *&, also e diverso
 template<typename Data>
 const BST<Data>::NodeLnk * const & BST<Data>::FindPointerToSuccessor(const NodeLnk * const & node, const Data & data) const noexcept {
     if (node == nullptr)
