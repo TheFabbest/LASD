@@ -14,7 +14,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HashTableOpnAdr {
+class HashTableOpnAdr : virtual public HashTable<Data>{
   // Must extend HashTable<Data>
 
 private:
@@ -97,7 +97,7 @@ public:
 protected:
 
   // Auxiliary member functions
-
+  // TODO??? diff find e findempty, hashkey fa anche probing? cioe prende indice?
   // type HashKey(argument) specifiers;
   // type Find(argument) specifiers;
   // type FindEmpty(argument) specifiers;
