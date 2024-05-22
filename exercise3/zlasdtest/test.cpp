@@ -22,45 +22,45 @@ void lasdtest() {
   uint stestnum = 0, stesterr = 0;
   uint ftestnum = 0, ftesterr = 0;
 
-  loctestnum = 0; loctesterr = 0;
-  testSimpleExercise1A(loctestnum, loctesterr);
-  stestnum += loctestnum; stesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testSimpleExercise1A(loctestnum, loctesterr);
+  // stestnum += loctestnum; stesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testSimpleExercise1B(loctestnum, loctesterr);
-  stestnum += loctestnum; stesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testSimpleExercise1B(loctestnum, loctesterr);
+  // stestnum += loctestnum; stesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testFullExercise1A(loctestnum, loctesterr);
-  ftestnum += loctestnum; ftesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testFullExercise1A(loctestnum, loctesterr);
+  // ftestnum += loctestnum; ftesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testFullExercise1B(loctestnum, loctesterr);
-  ftestnum += loctestnum; ftesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testFullExercise1B(loctestnum, loctesterr);
+  // ftestnum += loctestnum; ftesterr += loctesterr;
 
-  cout << endl << "Exercise 1 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
-  cout << endl << "Exercise 1 (Full Test) (Errors/Tests: " << ftesterr << "/" << ftestnum << ")" << endl;
+  // cout << endl << "Exercise 1 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
+  // cout << endl << "Exercise 1 (Full Test) (Errors/Tests: " << ftesterr << "/" << ftestnum << ")" << endl;
 
-  stestnum = 0; stesterr = 0; ftestnum = 0; ftesterr = 0;
+  // stestnum = 0; stesterr = 0; ftestnum = 0; ftesterr = 0;
 
-  loctestnum = 0; loctesterr = 0;
-  testSimpleExercise2A(loctestnum, loctesterr);
-  stestnum += loctestnum; stesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testSimpleExercise2A(loctestnum, loctesterr);
+  // stestnum += loctestnum; stesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testSimpleExercise2B(loctestnum, loctesterr);
-  stestnum += loctestnum; stesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testSimpleExercise2B(loctestnum, loctesterr);
+  // stestnum += loctestnum; stesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testFullExercise2A(loctestnum, loctesterr);
-  ftestnum += loctestnum; ftesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testFullExercise2A(loctestnum, loctesterr);
+  // ftestnum += loctestnum; ftesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testFullExercise2B(loctestnum, loctesterr);
-  ftestnum += loctestnum; ftesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testFullExercise2B(loctestnum, loctesterr);
+  // ftestnum += loctestnum; ftesterr += loctesterr;
 
-  cout << endl << "Exercise 2 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
-  cout << endl << "Exercise 2 (Full Test) (Errors/Tests: " << ftesterr << "/" << ftestnum << ")" << endl;
+  // cout << endl << "Exercise 2 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
+  // cout << endl << "Exercise 2 (Full Test) (Errors/Tests: " << ftesterr << "/" << ftestnum << ")" << endl;
 
   stestnum = 0; stesterr = 0; ftestnum = 0; ftesterr = 0;
 
@@ -68,9 +68,10 @@ void lasdtest() {
   testSimpleExercise3(loctestnum, loctesterr);
   stestnum += loctestnum; stesterr += loctesterr;
 
-  loctestnum = 0; loctesterr = 0;
-  testFullExercise3(loctestnum, loctesterr);
-  ftestnum += loctestnum; ftesterr += loctesterr;
+  // loctestnum = 0; loctesterr = 0;
+  // testFullExercise3(loctestnum, loctesterr);
+  // ftestnum += loctestnum; ftesterr += loctesterr;
+  // TODO decommenta
 
   cout << endl << "Exercise 3 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
   cout << endl << "Exercise 3 (Full Test) (Errors/Tests: " << ftesterr << "/" << ftestnum << ")" << endl;

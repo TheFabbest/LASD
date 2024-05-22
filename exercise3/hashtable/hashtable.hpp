@@ -20,12 +20,11 @@ namespace lasd {
 // riduz. dopo
 // todo per random limite size?
 
-// hash enc dat-^ chiav
+// hash enc dat-> chiav
 template <typename Data>
 class Hashable {
 
 public:
-  // TODO vedi quaderno e chiedi
   unsigned long operator()(const Data& data) const noexcept = 0; // (concrete function should not throw exceptions)
 
 };
@@ -52,9 +51,6 @@ protected:
   unsigned long coeff_a = 1;
   unsigned long coeff_b = 0;
 
-  unsigned long table_size = 8; // TODO define here? potrei usare .Size() del vettore, funzione virtual che me la restituisce
-
-
 public:
 
   // Destructor
@@ -80,6 +76,8 @@ protected:
 
   virtual inline unsigned long HashKey(const Data& data) const noexcept;
   virtual unsigned long HashKey(const ulong key) const noexcept; // chiav ind
+
+  virtual inline unsigned long TableSize() const noexcept = 0;
 
 };
 

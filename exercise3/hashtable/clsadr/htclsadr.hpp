@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 
 #include "../hashtable.hpp"
-// #include ...
+#include "../../bst/bst.hpp"
 
 /* ************************************************************************** */
 
@@ -23,9 +23,13 @@ private:
 
 protected:
 
-  // using HashTable<Data>::???;
+  // using HashTable<Data>::???; TODO
 
-  Vector<List<Data>> table;
+  using HashTable<Data>::size;
+  using HashTable<Data>::coeff_a;
+  using HashTable<Data>::coeff_b;
+  using HashTable<Data>::HashKey;
+  Vector<BST<Data>> table;
 
 public:
 
@@ -37,9 +41,9 @@ public:
   // Specific constructors
   HashTableClsAdr(const unsigned long size); // A hash table of a given size
   HashTableClsAdr(const TraversableContainer<Data>& traversable); // A hash table obtained from a TraversableContainer
-  HashTableClsAdr(const TraversableContainer<Data>& traversable, unsigned long size); // A hash table of a given size obtained from a TraversableContainer
+  HashTableClsAdr(unsigned long size, const TraversableContainer<Data>& traversable); // A hash table of a given size obtained from a TraversableContainer
   HashTableClsAdr(MappableContainer<Data>&& mappable); // A hash table obtained from a MappableContainer
-  HashTableClsAdr(MappableContainer<Data>&& mappable, unsigned long size); // A hash table of a given size obtained from a MappableContainer
+  HashTableClsAdr(unsigned long size, MappableContainer<Data>&& mappable); // A hash table of a given size obtained from a MappableContainer
 
   /* ************************************************************************ */
 
@@ -93,6 +97,10 @@ public:
   // Specific member functions (inherited from ClearableContainer)
 
   void Clear() override; // Override Container member
+
+protected:
+  virtual inline unsigned long TableSize() const noexcept override;
+  inline void SetCoeffs() noexcept;
 
 };
 
