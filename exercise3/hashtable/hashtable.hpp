@@ -16,12 +16,17 @@ namespace lasd {
 
 /* ************************************************************************** */
 
+// 2^48 primo max
+// riduz. dopo
+// todo per random limite size?
+
+// hash enc dat-^ chiav
 template <typename Data>
 class Hashable {
 
 public:
   // TODO vedi quaderno e chiedi
-  unsigned long operator(const Data& data) const noexcept = 0; // (concrete function should not throw exceptions)
+  unsigned long operator()(const Data& data) const noexcept = 0; // (concrete function should not throw exceptions)
 
 };
 
@@ -42,7 +47,8 @@ protected:
 
   static const Hashable<Data> encodingHash;
 
-  // TODO static/const?
+  // TODO 
+  // ok cosi random (ma dopo)
   unsigned long coeff_a = 1;
   unsigned long coeff_b = 0;
 
@@ -73,7 +79,7 @@ protected:
   // Auxiliary member functions
 
   virtual inline unsigned long HashKey(const Data& data) const noexcept;
-  virtual unsigned long HashKey(const ulong key) const noexcept;
+  virtual unsigned long HashKey(const ulong key) const noexcept; // chiav ind
 
 };
 

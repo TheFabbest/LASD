@@ -97,7 +97,7 @@ public:
 protected:
 
   // Auxiliary member functions
-  // TODO??? diff find e findempty, hashkey fa anche probing? cioe prende indice?
+  // TODO??? diff find (prima disponibile, indice) e findempty (prima cella vuota), hashkey fa anche probing? cioe prende indice? rand fino a ts-1
   // type HashKey(argument) specifiers;
   // type Find(argument) specifiers;
   // type FindEmpty(argument) specifiers;

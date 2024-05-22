@@ -138,7 +138,7 @@ void HashTableClsAdr<Data>::Resize(unsigned long size) {
 
 template <typename Data>
 void HashTableClsAdr<Data>::Clear() {
-    // TODO keep size?
+    // TODO keep size? open addr? 1/4
     table.Traverse([](const List<Data>& curr){
         curr.Clear();
     });
