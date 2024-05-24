@@ -19,7 +19,7 @@ class HashTableClsAdr : virtual public HashTable<Data> {
 
 private:
 
-  static const unsigned long MIN_SIZE = 8;
+  static const unsigned long MIN_SIZE = 1; // TODO Posso?
 
 protected:
 
@@ -56,7 +56,7 @@ public:
   /* ************************************************************************ */
 
   // Destructor
-  virtual ~HashTableClsAdr() = default; // TODO vedi (anche in btvec)
+  virtual ~HashTableClsAdr();
 
   /* ************************************************************************ */
 

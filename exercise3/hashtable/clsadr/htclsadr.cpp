@@ -11,7 +11,7 @@ HashTableClsAdr<Data>::HashTableClsAdr() {
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<BST<Data>>(traversable.Size()); // todo MULTIPLY
+    table = Vector<BST<Data>>(traversable.Size()*2); // todo MULTIPLY
     SetCoeffs();
     traversable.Traverse([this](const Data& curr){
         this->Insert(curr);
@@ -62,6 +62,14 @@ HashTableClsAdr<Data>::HashTableClsAdr(HashTableClsAdr<Data>&& other) noexcept {
     std::swap(this->coeff_b, other.coeff_b);
     std::swap(this->table, other.table);
     std::swap(this->size, other.size);
+}
+
+
+template <typename Data>
+HashTableClsAdr<Data>::~HashTableClsAdr() {
+    table.Map([](BST<Data>& curr){
+        curr.Clear();
+    });
 }
 
 template <typename Data>
@@ -170,6 +178,7 @@ template <typename Data>
 inline unsigned long HashTableClsAdr<Data>::TableSize() const noexcept {
     return table.Size();
 }
+
 
 template <typename Data>
 inline void HashTableClsAdr<Data>::SetCoeffs() noexcept {

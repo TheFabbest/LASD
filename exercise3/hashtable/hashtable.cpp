@@ -46,6 +46,7 @@ unsigned long HashTable<Data>::HashKey(const ulong key) const noexcept {
     return (coeff_a * key + coeff_b) % TableSize();
 }
 
+
 /* ************************************************************************** */
 
 }

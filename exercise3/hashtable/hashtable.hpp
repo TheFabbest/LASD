@@ -46,10 +46,9 @@ protected:
 
   static const Hashable<Data> encodingHash;
 
-  // TODO 
-  // ok cosi random (ma dopo)
-  unsigned long coeff_a = 1;
-  unsigned long coeff_b = 0;
+  // TODO
+  unsigned long coeff_a;
+  unsigned long coeff_b;
 
 public:
 
