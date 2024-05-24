@@ -1,10 +1,11 @@
 #include <iostream>
 
-#include "hashtable/hashtable.h"
-#include "hashtable/clsadr/htclsadr.hpp"
-#include "hashtable/opnadr/htopnadr.hpp"
+#include "../hashtable/hashtable.hpp"
+#include "../hashtable/clsadr/htclsadr.hpp"
+#include "../hashtable/opnadr/htopnadr.hpp"
 
 using namespace std;
+using namespace lasd;
 
 /* ************************************************************************** */
 
@@ -23,29 +24,59 @@ void TellTest(const char *name)
   cout << endl << endl << "---STARTING TEST " << name << "---" << endl; 
 }
 
-void TestEmptyHashTable(HashTable<int> hashtable) {
-  const char* TEST_TITLE = "EmptyHashTable";
-  if (hashtable.Empty() == false) {
-    FoundError("Empty", TEST_TITLE);
-  }
-  if (hashtable.Size() != 0) {
-    FoundError("Size", TEST_TITLE);
-  }
+
+// TODO same for double and string
+int GetDataNotInVector(Vector<int>& t){
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx;
   
+  int candidate;
+  do { 
+    candidate = distx(genx);
+  } while (t.Exists(candidate));
+
+  return candidate;
 }
 
-void TestHashTable(HashTable<int> hashtable, unsigned long size) {
-  if (size == 0) {
-    TestEmptyHashTable(hashtable);
-  }
-  else {
 
+
+// HASHTABLE
+template <typename Data>
+void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>& belonging) {
+  const char* TEST_TITLE = "HashTable";
+  if (hashtable.Size() != size) {
+    FoundError("Size", TEST_TITLE);
   }
+  if (hashtable.Empty() != (size == 0)) {
+    FoundError("Empty", TEST_TITLE);
+  }
+  
+  belonging.Traverse([&hashtable, TEST_TITLE](const Data& data){
+    if (hashtable.Exists(data) == false) {
+      FoundError("Exists (should exist)", TEST_TITLE);
+    }
+  });
+
+  Data newdata = GetDataNotInVector(belonging);
+  if (hashtable.Exists(newdata)) {
+    FoundError("Exists (should not exist)", TEST_TITLE);
+  }
+
+
+}
+
+void TestClosedAddressingINT() {
+  TellTest("ClosedAddressing (INT)");
+
+  Vector<int> belonging;
+  HashTableClsAdr<int> hashtable;
+  TestHashTable(hashtable, 0, belonging);
 }
 
 void TestClosedAddressing() {
   TellTest("ClosedAddressing");
-  HashTable<int> hashtable;
+  TestClosedAddressingINT();
 }
 
 void TestOpenAddressing() {

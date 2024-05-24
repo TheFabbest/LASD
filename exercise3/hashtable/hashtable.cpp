@@ -23,9 +23,9 @@ class Hashable<double> {
 };
 
 template<>
-class Hashable<string> {
+class Hashable<std::string> {
     public:
-        unsigned long operator() (const string& data) const noexcept {
+        unsigned long operator() (const std::string& data) const noexcept {
             unsigned long hash = 5381;
             for (unsigned long i = 0; i < data.length(); ++i)
             {
@@ -46,7 +46,15 @@ unsigned long HashTable<Data>::HashKey(const ulong key) const noexcept {
     return (coeff_a * key + coeff_b) % TableSize();
 }
 
-
+template <typename Data>
+inline void HashTable<Data>::SetCoeffs() noexcept {
+    auto seed = std::random_device{}();
+    std::default_random_engine genx(seed);
+    std::uniform_int_distribution<int> distx(1);
+    coeff_a = distx(genx);
+    coeff_b = distx(genx);
+    std::cout << "params are " << coeff_a << ", " << coeff_b << std::endl; // TODO remove
+}
 /* ************************************************************************** */
 
 }

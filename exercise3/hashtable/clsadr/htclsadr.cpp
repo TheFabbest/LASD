@@ -81,7 +81,7 @@ HashTableClsAdr<Data>& HashTableClsAdr<Data>::operator=(HashTableClsAdr<Data>&& 
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const unsigned long size) {
-    table = Vector<List<Data>()>((size >= MIN_SIZE) ? size : MIN_SIZE);
+    table = Vector<BST<Data>>((size >= MIN_SIZE) ? size : MIN_SIZE);
 }
 
 template <typename Data>
@@ -166,15 +166,6 @@ inline unsigned long HashTableClsAdr<Data>::TableSize() const noexcept {
 }
 
 
-template <typename Data>
-inline void HashTableClsAdr<Data>::SetCoeffs() noexcept {
-    auto seed = random_device{}();
-    default_random_engine genx(seed);
-    uniform_int_distribution<int> distx(1);
-    coeff_a = distx(genx);
-    coeff_b = distx(genx);
-    cout << "params are " << coeff_a << ", " << coeff_b << endl; // TODO remove
-}
 
 
 /* ************************************************************************** */

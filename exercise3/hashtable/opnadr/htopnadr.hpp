@@ -30,18 +30,21 @@ protected:
       Present,
       Absent,
       Removed
-    }
+    };
     
     TriState state = Absent;
     Data data{};
-  }
+  };
 
   using HashTable<Data>::size;
   using HashTable<Data>::coeff_a;
   using HashTable<Data>::coeff_b;
   using HashTable<Data>::HashKey;
+  using HashTable<Data>::SetCoeffs;
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
 
-  Array<Pair> table;
+  Vector<Pair> table;
   static const unsigned long MIN_SIZE = 32;
 
 public:
@@ -116,11 +119,12 @@ protected:
   // Auxiliary member functions
   // TODO??? diff find (prima disponibile, indice) e findempty (prima cella vuota), hashkey fa anche probing? cioe prende indice? rand fino a ts-1
   // type HashKey(argument) specifiers;
-  unsigned long Find(const Data& data) const noexcept;
-  unsigned long FindEmpty(const Data& data) const noexcept;
+  bool Find(const Data& data, unsigned long &position) const noexcept;
+  bool FindEmpty(const Data& data, unsigned long &position) const noexcept;
   // type Remove(argument) specifiers;
 
   virtual inline unsigned long TableSize() const noexcept override;
+  inline unsigned long Probe(unsigned long iteration, unsigned long current, unsigned long key) const noexcept;
 
 };
 

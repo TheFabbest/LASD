@@ -43,6 +43,8 @@ private:
 protected:
 
   using DictionaryContainer<Data>::size;
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
 
   static const Hashable<Data> encodingHash;
 
@@ -77,6 +79,7 @@ protected:
   virtual unsigned long HashKey(const ulong key) const noexcept; // chiav ind
 
   virtual inline unsigned long TableSize() const noexcept = 0;
+  inline void SetCoeffs() noexcept;
 
 };
 

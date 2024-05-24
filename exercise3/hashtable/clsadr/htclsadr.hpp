@@ -29,6 +29,9 @@ protected:
   using HashTable<Data>::coeff_a;
   using HashTable<Data>::coeff_b;
   using HashTable<Data>::HashKey;
+  using HashTable<Data>::SetCoeffs;
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
   Vector<BST<Data>> table;
 
 public:
@@ -100,7 +103,6 @@ public:
 
 protected:
   virtual inline unsigned long TableSize() const noexcept override;
-  inline void SetCoeffs() noexcept;
 
 };
 
