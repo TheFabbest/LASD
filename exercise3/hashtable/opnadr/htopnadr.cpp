@@ -57,7 +57,7 @@ template <typename Data>
 HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(const HashTableOpnAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
-    this->table = table;
+    this->table = other.table;
     this->size = other.size;
     return *this;
 }
@@ -98,17 +98,41 @@ bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
 
 template <typename Data>
 void HashTableOpnAdr<Data>::Resize(unsigned long size) {
-    
+    if (size < MIN_SIZE) {
+        size = MIN_SIZE;
+    }
+    if (size == TableSize()) {
+        return;
+    }
+
+    Array<Pair> new_table = Array<Pair>(size);
+    std::swap(new_table, table);
+    new_table.Traverse([this](const Pair& curr) {
+        if (curr.state == Present) {
+            this->Insert(curr.data);
+        }
+    });
 }
 
 template <typename Data>
 void HashTableOpnAdr<Data>::Clear() {
-    
+    for (unsigned long i = 0; i < TableSize(); ++i)
+    {
+        table[i].state = Absent; // TODO absent o removed
+    }
+    Resize(MIN_SIZE);
 }
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::operator==(const HashTableOpnAdr<Data>& other) const noexcept {
-    
+    for (unsigned long i = 0; i < TableSize(); ++i) {
+        if (table[i].state == Present) {
+            if (other.Exists(table[i].data) == false) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 template <typename Data>
@@ -125,7 +149,7 @@ inline unsigned long HashTableOpnAdr<Data>::TableSize() const noexcept {
 template <typename Data>
 inline unsigned long HashTableOpnAdr<Data>::Probe(unsigned long iteration, unsigned long current, unsigned long key) {
     default_random_engine genx(key);
-    uniform_int_distribution<int> distx(TableSize()-iteration);
+    uniform_int_distribution<int> distx(1, TableSize()-iteration);
     return (distx(genx) + current) % TableSize();
 }
 

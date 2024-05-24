@@ -11,49 +11,38 @@ HashTableClsAdr<Data>::HashTableClsAdr() {
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<BST<Data>>(traversable.Size()*2); // todo MULTIPLY
+    table = Vector<BST<Data>>(traversable.Size()*2);
     SetCoeffs();
-    traversable.Traverse([this](const Data& curr){
-        this->Insert(curr);
-    });
+    InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(unsigned long size, const TraversableContainer<Data>& traversable) {
     table = Vector<BST<Data>>(size);
     SetCoeffs();
-    traversable.Traverse([this](const Data& curr){
-        this->Insert(curr);
-    });
+    InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(MappableContainer<Data>&& mappable) {
     table = Vector<BST<Data>>(mappable.Size());
     SetCoeffs();
-    mappable.Mappable([this](Data&& curr){
-        this->Insert(curr);
-    });
+    InsertAll(mappable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(unsigned long size, MappableContainer<Data>&& mappable) {
     table = Vector<BST<Data>>(size);
     SetCoeffs();
-    mappable.Mappable([this](Data&& curr){
-        this->Insert(curr);
-    });
+    InsertAll(mappable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const HashTableClsAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
-    this->table = Vector<BST<Data>>(other.TableSize());
+    this->table = other.table;
     this->size = other.size;
-    for (unsigned long i = 0; i < TableSize(); ++i) {
-        this->table[i] = other.table[i];
-    }
 }
 
 template <typename Data>
@@ -76,11 +65,8 @@ template <typename Data>
 HashTableClsAdr<Data>& HashTableClsAdr<Data>::operator=(const HashTableClsAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
-    this->table = Vector<BST<Data>>(other.TableSize());
+    this->table = other.table;
     this->size = other.size;
-    for (unsigned long i = 0; i < TableSize(); ++i) {
-        this->table[i] = other.table[i];
-    }
     return *this;
 }
 
