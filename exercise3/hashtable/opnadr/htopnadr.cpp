@@ -3,6 +3,17 @@ namespace lasd {
 
 /* ************************************************************************** */
 
+// PAIR
+template <typename Data>
+inline bool HashTableOpnAdr<Data>::Pair::operator==(const HashTableOpnAdr<Data>::Pair& other) const noexcept {
+    return state == other.state && data == other.data;
+}
+
+template <typename Data>
+inline bool HashTableOpnAdr<Data>::Pair::operator!=(const HashTableOpnAdr<Data>::Pair& other) const noexcept {
+    return !(this->operator==(other));
+}
+
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr() {
     table = Vector<Pair>(MIN_SIZE);
@@ -78,12 +89,38 @@ HashTableOpnAdr<Data>::HashTableOpnAdr(const unsigned long size) {
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(const Data& data) {
-    return false;
+    unsigned long index;
+    bool found = FindEmpty(data, index);
+
+    if (!found) {
+        Resize(2*TableSize());
+        FindEmpty(data, index);
+    }
+
+    table[index].state = Pair::TriState::Present;
+    table[index].data = data;
+    ++size;
+
+    return true;
 }
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(Data&& data) {
-    return false;
+    unsigned long index;
+    Data d = std::move(data);
+    bool found = FindEmpty(d, index);
+        // TODO controlla presenza dato
+
+    if (!found) {
+        Resize(2*TableSize());
+        FindEmpty(d, index);
+    }
+
+    table[index].state = Pair::TriState::Present;
+    table[index].data = d;
+    ++size;
+
+    return true;
 }
 
 template <typename Data>
@@ -92,7 +129,9 @@ bool HashTableOpnAdr<Data>::Remove(const Data& data) {
     bool found = Find(data, index);
     if (found) {
         table[index].state = Pair::TriState::Removed;
+        --size;
     }
+        // TODO aggiornamento flag fatto bene
     return found;
 }
 
@@ -127,6 +166,7 @@ void HashTableOpnAdr<Data>::Clear() {
         table[i].state = Pair::TriState::Absent;
     }
     Resize(MIN_SIZE);
+    size = 0;
 }
 
 template <typename Data>
@@ -173,18 +213,33 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
             if (state == Pair::TriState::Present) {
                 return true;
             }
-            if (state == Pair::TriState::Removed) {
+            else if (state == Pair::TriState::Removed) {
                 return false;
             }
         }
         ++i;
-        Probe(i, position, key);
+        position = Probe(i, position, key);
+        state = table[position].state;
+        current_data = table[position].data;
     }
+    return false;
 }
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position) const noexcept {
-    return false; // TODO
+    unsigned long key = HashKey(data);
+    position = key;
+
+    typename Pair::TriState state = table[position].state;
+    unsigned long i = 0;
+
+    while (state == Pair::TriState::Present && i < TableSize()) {
+        ++i;
+        // TODO controlla presenza dato
+        position = Probe(i, position, key);
+        state = table[position].state;
+    }
+    return state != Pair::TriState::Present;
 }
 
 /* ************************************************************************** */
