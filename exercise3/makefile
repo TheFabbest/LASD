@@ -16,7 +16,7 @@ libexc2a = $(libexc) iterator/iterator.hpp binarytree/binarytree.cpp binarytree/
 
 libexc2b = $(libexc2a) bst/bst.cpp bst/bst.hpp
 
-libexc3 = $(libexc) hashtable/hashtable.cpp hashtable/hashtable.hpp hashtable/clsadr/htclsadr.cpp hashtable/clsadr/htclsadr.hpp hashtable/opnadr/htopnadr.cpp #hashtable/opnadr/htopnadr.hpp
+libexc3 = $(libexc) hashtable/hashtable.cpp hashtable/hashtable.hpp hashtable/clsadr/htclsadr.cpp hashtable/clsadr/htclsadr.hpp hashtable/opnadr/htopnadr.cpp
 
 main: $(objects)
 	$(cc) $(cflags) $(objects) -o main

@@ -42,7 +42,7 @@ inline unsigned long HashTable<Data>::HashKey(const Data& data) const noexcept {
 }
 
 template <typename Data>
-unsigned long HashTable<Data>::HashKey(const ulong key) const noexcept {
+unsigned long HashTable<Data>::HashKey(unsigned long key) const noexcept {
     return (coeff_a * key + coeff_b) % TableSize();
 }
 
@@ -54,6 +54,21 @@ inline void HashTable<Data>::SetCoeffs() noexcept {
     coeff_a = distx(genx);
     coeff_b = distx(genx);
     std::cout << "params are " << coeff_a << ", " << coeff_b << std::endl; // TODO remove
+}
+
+template <typename Data>
+unsigned long HashTable<Data>::NextPrime(unsigned long expectedsize) const noexcept {
+    static const unsigned long NUM_OF_PRIMES = sizeof(primes)/sizeof(primes[0]);
+
+    // could use binary search
+    unsigned long index = 0;
+    while(index < NUM_OF_PRIMES && expectedsize < primes[index]) {
+        ++index;
+    }
+    if (index == NUM_OF_PRIMES) {
+        --index;
+    }
+    return primes[index];
 }
 /* ************************************************************************** */
 

@@ -11,28 +11,28 @@ HashTableClsAdr<Data>::HashTableClsAdr() {
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<BST<Data>>(traversable.Size()*2);
+    table = Vector<BST<Data>>(NextPrime(traversable.Size()));
     SetCoeffs();
     InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(unsigned long size, const TraversableContainer<Data>& traversable) {
-    table = Vector<BST<Data>>(size);
+    table = Vector<BST<Data>>(NextPrime(size));
     SetCoeffs();
     InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(MappableContainer<Data>&& mappable) {
-    table = Vector<BST<Data>>(mappable.Size());
+    table = Vector<BST<Data>>(NextPrime(mappable.Size()));
     SetCoeffs();
     InsertAll(mappable);
 }
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(unsigned long size, MappableContainer<Data>&& mappable) {
-    table = Vector<BST<Data>>(size);
+    table = Vector<BST<Data>>(NextPrime(size));
     SetCoeffs();
     InsertAll(mappable);
 }
@@ -81,7 +81,7 @@ HashTableClsAdr<Data>& HashTableClsAdr<Data>::operator=(HashTableClsAdr<Data>&& 
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const unsigned long size) {
-    table = Vector<BST<Data>>((size >= MIN_SIZE) ? size : MIN_SIZE); //todo
+    table = Vector<BST<Data>>(NextPrime(size));
 }
 
 template <typename Data>
@@ -116,18 +116,21 @@ bool HashTableClsAdr<Data>::Exists(const Data& data) const noexcept {
     return table[HashKey(data)].Exists(data);
 }
 
+// TODO chiamata solo da utente?
 template <typename Data>
 void HashTableClsAdr<Data>::Resize(unsigned long size) {
-    if (size == TableSize()) return;
+    size = NextPrime(size);
+    if (size == TableSize()) {
+        return;
+    }
 
     this->size = 0;
     Vector<BST<Data>> oldtable = Vector<BST<Data>>(size);
     std::swap(oldtable, table);
+    SetCoeffs();
 
     oldtable.Traverse([this](const BST<Data>& curr) {
-        curr.Traverse([this](const Data& data){
-            this->Insert(data);
-        });
+        InsertAll(curr);
     });
 }
 
@@ -137,12 +140,16 @@ void HashTableClsAdr<Data>::Clear() {
     table.Map([](BST<Data>& curr){
         curr.Clear();
     });
-    this->size = 0;
+    table.Resize(primes[0]);
+    size = 0;
 }
 
 template <typename Data>
 bool HashTableClsAdr<Data>::operator==(const HashTableClsAdr<Data>& other) const noexcept {
-    if (size != other.size) return false;
+    if (size != other.size) {
+        return false;
+    }
+
     for (unsigned long i = 0; i < TableSize(); ++i) {
         BTPreOrderIterator iter(table[i]);
         while (iter.Terminated() == false) {
@@ -156,7 +163,7 @@ bool HashTableClsAdr<Data>::operator==(const HashTableClsAdr<Data>& other) const
 }
 
 template <typename Data>
-bool HashTableClsAdr<Data>::operator!=(const HashTableClsAdr<Data>& other) const noexcept {
+inline bool HashTableClsAdr<Data>::operator!=(const HashTableClsAdr<Data>& other) const noexcept {
     return !(this->operator==(other));
 }
 

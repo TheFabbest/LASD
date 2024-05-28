@@ -26,6 +26,8 @@ protected:
   using HashTable<Data>::coeff_b;
   using HashTable<Data>::HashKey;
   using HashTable<Data>::SetCoeffs;
+  using HashTable<Data>::primes;
+  using HashTable<Data>::NextPrime;
   using DictionaryContainer<Data>::InsertAll;
   using DictionaryContainer<Data>::RemoveAll;
   Vector<BST<Data>> table;
