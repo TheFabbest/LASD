@@ -5,7 +5,7 @@ namespace lasd {
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr() {
-    table = Vector<BST<Data>>(MIN_SIZE);
+    table = Vector<BST<Data>>(primes[0]);
     SetCoeffs();
 }
 
@@ -81,7 +81,7 @@ HashTableClsAdr<Data>& HashTableClsAdr<Data>::operator=(HashTableClsAdr<Data>&& 
 
 template <typename Data>
 HashTableClsAdr<Data>::HashTableClsAdr(const unsigned long size) {
-    table = Vector<BST<Data>>((size >= MIN_SIZE) ? size : MIN_SIZE);
+    table = Vector<BST<Data>>((size >= MIN_SIZE) ? size : MIN_SIZE); //todo
 }
 
 template <typename Data>

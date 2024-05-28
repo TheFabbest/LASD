@@ -35,7 +35,6 @@ protected:
     TriState state = Absent;
     Data data;
 
-
     inline bool operator==(const Pair& other) const noexcept;
     inline bool operator!=(const Pair& other) const noexcept;
   };

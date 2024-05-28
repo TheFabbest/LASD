@@ -19,11 +19,7 @@ class HashTableClsAdr : virtual public HashTable<Data> {
 
 private:
 
-  static const unsigned long MIN_SIZE = 1; // TODO Posso?
-
 protected:
-
-  // using HashTable<Data>::???; TODO
 
   using HashTable<Data>::size;
   using HashTable<Data>::coeff_a;

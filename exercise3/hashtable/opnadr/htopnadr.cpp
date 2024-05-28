@@ -131,7 +131,7 @@ bool HashTableOpnAdr<Data>::Remove(const Data& data) {
         table[index].state = Pair::TriState::Removed;
         --size;
     }
-        // TODO aggiornamento flag fatto bene
+    
     return found;
 }
 

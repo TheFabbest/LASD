@@ -50,7 +50,7 @@ template <typename Data>
 inline void HashTable<Data>::SetCoeffs() noexcept {
     auto seed = std::random_device{}();
     std::default_random_engine genx(seed);
-    std::uniform_int_distribution<int> distx(1);
+    std::uniform_int_distribution<int> distx(1, TableSize()-1);
     coeff_a = distx(genx);
     coeff_b = distx(genx);
     std::cout << "params are " << coeff_a << ", " << coeff_b << std::endl; // TODO remove
