@@ -85,7 +85,7 @@ protected:
   virtual unsigned long HashKey(unsigned long key) const noexcept; // chiav ind
 
   virtual inline unsigned long TableSize() const noexcept = 0;
-  inline void SetCoeffs() noexcept; //todo elimina e chiama costruttore hashtable
+  virtual inline void SetCoeffs() noexcept; //todo elimina e chiama costruttore hashtable?
   unsigned long NextPrime(unsigned long expectedsize) const noexcept;
 
 };

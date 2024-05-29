@@ -14,6 +14,7 @@ inline bool HashTableOpnAdr<Data>::Pair::operator!=(const HashTableOpnAdr<Data>:
     return !(this->operator==(other));
 }
 
+// HashTableOpnAdr
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr() {
     table = Vector<Pair>(primes[0]);
@@ -23,11 +24,12 @@ HashTableOpnAdr<Data>::HashTableOpnAdr() {
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const unsigned long size) {
     table = Vector<Pair>(NextPrime(size));
+    SetCoeffs();
 }
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<Pair>(NextPrime(traversable.Size() * 3)); // todo MULTIPLY
+    table = Vector<Pair>(NextPrime(traversable.Size() * 2)); // todo MULTIPLY
     SetCoeffs();
     InsertAll(traversable);
 }
@@ -41,7 +43,7 @@ HashTableOpnAdr<Data>::HashTableOpnAdr(unsigned long size, const TraversableCont
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(MappableContainer<Data>&& mappable) {
-    table = Vector<Pair>(NextPrime(mappable.Size()));
+    table = Vector<Pair>(NextPrime(mappable.Size() * 2));
     SetCoeffs();
     InsertAll(mappable);
 }
@@ -57,6 +59,7 @@ template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const HashTableOpnAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
+    this->hop = other.hop;
     this->table = other.table;
     this->size = other.size;
 }
@@ -65,6 +68,7 @@ template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(HashTableOpnAdr<Data>&& other) noexcept {
     std::swap(this->coeff_a, other.coeff_a);
     std::swap(this->coeff_b, other.coeff_b);
+    std::swap(this->hop, other.hop);
     std::swap(this->table, other.table);
     std::swap(this->size, other.size);
 }
@@ -73,6 +77,7 @@ template <typename Data>
 HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(const HashTableOpnAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
+    this->hop = other.hop;
     this->table = other.table;
     this->size = other.size;
     return *this;
@@ -82,66 +87,110 @@ template <typename Data>
 HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(HashTableOpnAdr<Data>&& other) noexcept {
     std::swap(this->coeff_a, other.coeff_a);
     std::swap(this->coeff_b, other.coeff_b);
+    std::swap(this->hop, other.hop);
     std::swap(this->table, other.table);
     std::swap(this->size, other.size);
     return *this;
 }
 
-
+// TODO RIGUARDA!!!!!!!!!!!!!!!
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(const Data& data) {
-    unsigned long index;
+    unsigned long iteration = 0;
+    unsigned long key = HashKey(data);
 
-    if (Exists(data)) {
+    if (size >= TableSize() * 0.6) {
+        Resize(2*TableSize());
+    }
+    
+    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
+        ++iteration;
+    }
+
+    unsigned long position = Probe(iteration, key);
+
+    if (table[position].data == data && table[position].state == Pair::TriState::Present) {
         return false;
     }
+    
+    typename Pair::TriState tmpStatus = table[position].state;
+    table[position].data = data;
+    table[position].state = Pair::TriState::Present;
 
-    bool found = FindEmpty(data, index);
-
-    if (!found) {
-        Resize(2*TableSize());
-        FindEmpty(data, index);
+    if (tmpStatus == Pair::TriState::Removed) {
+        ++iteration;
+        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != data && iteration < TableSize()) {
+            ++iteration;
+        }
+        if (iteration != TableSize()) {
+            position = Probe(iteration, key);
+            if (table[position].data == data){
+                table[position].state = Pair::TriState::Absent;
+                return false;
+            }
+        }
     }
 
-    table[index].state = Pair::TriState::Present;
-    table[index].data = data;
     ++size;
-
     return true;
 }
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(Data&& data) {
-    unsigned long index;
+    unsigned long iteration = 0;
     Data d = std::move(data);
+    unsigned long key = HashKey(d);
 
-    if (Exists(d)) {
+    if (size >= TableSize() * 0.6) {
+        Resize(2*TableSize());
+    }
+    
+    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != d) {
+        ++iteration;
+    }
+
+    unsigned long position = Probe(iteration, key);
+
+    if (table[position].data == d && table[position].state == Pair::TriState::Present) {
         return false;
     }
+    
+    typename Pair::TriState tmpStatus = table[position].state;
+    table[position].data = d;
+    table[position].state = Pair::TriState::Present;
 
-    bool found = FindEmpty(d, index);
-
-    if (!found) {
-        Resize(2*TableSize());
-        FindEmpty(d, index);
+    if (tmpStatus == Pair::TriState::Removed) {
+        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != d && iteration < TableSize()) {
+            ++iteration;
+        }
+        if (iteration != TableSize()) {
+            position = Probe(iteration, key);
+            if (table[position].data == d){
+                table[position].state = Pair::TriState::Absent;
+                return false;
+            }
+        }
     }
 
-    table[index].state = Pair::TriState::Present;
-    table[index].data = d;
     ++size;
-
     return true;
 }
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Remove(const Data& data) {
+    
     unsigned long index;
-    bool found = Find(data, index);
+    bool found = Find(data, index); // todo CONTROLLA find, vedi se toglierla
     if (found) {
         table[index].state = Pair::TriState::Removed;
         --size;
+        if (size < TableSize() / 8)
+        {
+            Resize(TableSize()/2);
+        }
     }
     
+    // se 1/8 fai resize a 1/2
     return found;
 }
 
@@ -172,7 +221,7 @@ void HashTableOpnAdr<Data>::Clear() {
     {
         table[i].state = Pair::TriState::Absent;
     }
-    Resize(MIN_SIZE);
+    Resize(primes[0]);
     size = 0;
 }
 
@@ -205,7 +254,7 @@ inline unsigned long HashTableOpnAdr<Data>::TableSize() const noexcept {
 // aux
 template <typename Data>
 inline unsigned long HashTableOpnAdr<Data>::Probe(unsigned long iteration, unsigned long key) const noexcept {
-    return (key + iteration * iteration * coeff_a + coeff_b) % TableSize();
+    return (key + iteration * iteration * hop) % TableSize();
 }
 
 template <typename Data>
@@ -217,14 +266,9 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
     Data current_data = table[position].data;
     unsigned long i = 0;
 
-    while (state != Pair::TriState::Absent && i < TableSize()) {
+    while (state == Pair::TriState::Present && i < TableSize()) {
         if (current_data == data) {
-            if (state == Pair::TriState::Present) {
-                return true;
-            }
-            else if (state == Pair::TriState::Removed) {
-                return false;
-            }
+            return true;
         }
         ++i;
         position = Probe(i, key);
@@ -234,6 +278,7 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
     return false;
 }
 
+// TODO rimuovi?
 template <typename Data>
 bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position) const noexcept {
     unsigned long key = HashKey(data);
@@ -251,6 +296,16 @@ bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position)
         state = table[position].state;
     }
     return i < TableSize();
+}
+
+template <typename Data>
+inline void HashTableOpnAdr<Data>::SetCoeffs() noexcept {
+    auto seed = std::random_device{}();
+    std::default_random_engine genx(seed);
+    std::uniform_int_distribution<int> distx(1, TableSize()-1);
+    coeff_a = distx(genx);
+    coeff_b = distx(genx);
+    hop = distx(genx);
 }
 
 /* ************************************************************************** */

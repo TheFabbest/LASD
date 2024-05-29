@@ -41,10 +41,9 @@ int GetDataNotInVector(Vector<int>& t){
 
 template <typename Data>
 Data GetDataInVector(Vector<Data>& t) {
-  unsigned long size = sizeof(t) / sizeof(Data);
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<int> distx(0, size-1);
+  uniform_int_distribution<int> distx(0, t.Size()-1);
   return t[distx(genx)];
 }
 
@@ -56,6 +55,7 @@ Data GetDataInVector(Vector<Data>& t) {
 template <typename Data>
 void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>& belonging) {
   const char* TEST_TITLE = "HashTable";
+  const unsigned long RANDOM_TEST_SIZE = 1; //todo 10000
 
   // size and empty
   if (hashtable.Size() != size) {
@@ -145,7 +145,7 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
   if (hashtable.InsertAll(belonging) == false) {
     FoundError("InsertAll (empty hashtable)", TEST_TITLE);
   }
-
+  
   // specific test for non-empty hashtables
   if (belonging.Size() != 0) {
 
@@ -153,7 +153,7 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     Data absent = GetDataNotInVector(belonging);
 
     // remove of present value should return true
-    if (hashtable.Remove(element)) {
+    if (hashtable.Remove(element) == false) {
       FoundError("Remove (present value)", TEST_TITLE);
     }
     // size should be decremented
@@ -169,11 +169,7 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     if (hashtable.InsertSome(belonging) == false) {
       FoundError("InsertSome (only one value absent)", TEST_TITLE);
     }
-    hashtable.Remove(element); //already tested
 
-    Vector<Data> vec(2);
-    vec[0] = element;
-    vec[1] = absent;
 
     //removesome 1/1-2/0-0/2
     //insertall 0/2-2/0-1/1
@@ -186,6 +182,9 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     //removesome (map) 2/0-0/2-1/1
     //removeall (map) 2/0-0/2-1/1
 
+    Vector<Data> vec(2);
+    vec[0] = element;
+    vec[1] = absent;
 
     // removesome of vec should be true ("element" belongs to vec, "absent" does not)
     if (hashtable.RemoveSome(vec) == false) {
@@ -219,6 +218,7 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     if (hashtable.InsertSome(vec) == false) {
       FoundError("InsertSome (belonging: 0, absent: 2)", TEST_TITLE);
     }
+    hashtable.RemoveAll(vec);
     // remove of absent elements should be false
     if (hashtable.Remove(element)) {
       FoundError("Remove (absent)", TEST_TITLE);
@@ -236,11 +236,11 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
       FoundError("Insert (present)", TEST_TITLE);
     }
     // insertsome of vec should be true
-    if (hashtable.InsertSome(vec)) {
+    if (hashtable.InsertSome(vec) == false) {
       FoundError("InsertSome (belonging: 1, absent: 1)", TEST_TITLE);
     }
     // remove of present element should be true
-    if (hashtable.Remove(element)) {
+    if (hashtable.Remove(element) == false) {
       FoundError("Remove (present)", TEST_TITLE);
     }
     // insertall of vec should be false
@@ -322,15 +322,103 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     }
   }
 
+  // after clear is called, hashtable should be empty
+  hashtable.Clear();
+  if (hashtable.Size() != 0) {
+    FoundError("Clear (size is not 0)", TEST_TITLE);
+  }
+  if (hashtable.Empty() == false) {
+    FoundError("Clear (is not empty)", TEST_TITLE);
+  }
+
+  if (size != 0) {
+    // doing some random operations to check robustness
+    hashtable.InsertAll(belonging);
+
+    auto seed = random_device{}();
+    cout << "Seed for random test: " << seed << endl;
+    default_random_engine genx(seed);
+    uniform_int_distribution<int> distx(0,1);
+
+    // choosing other "size" objects that do not belong to the initial hashtable
+    Vector<Data> domain = belonging;
+    domain.Resize(belonging.Size()*2);
+    for (unsigned long i = 0; i < belonging.Size(); ++i) {
+      Data data = GetDataNotInVector(domain);
+      domain[belonging.Size()+i] = data;
+    }
+
+    unsigned long currentSize = size;
+    for (unsigned long i = 0; i < RANDOM_TEST_SIZE; ++i) {
+      bool insert = distx(genx);
+      
+      // inserting random value
+      if (insert) {
+        Data data = GetDataInVector(domain);
+        bool exists = hashtable.Exists(data);
+        if (!exists) {
+          ++currentSize;
+        }
+        // insert should return false if the data is present, false otherwise
+        if (hashtable.Insert(data) == exists) {
+          FoundError("Insert (random)", TEST_TITLE);
+        }
+      }
+      // removing random value
+      else {
+        Data data = GetDataInVector(domain);
+        bool exists = hashtable.Exists(data);
+        if (exists) {
+          --currentSize;
+        }
+        // remove should return true if the data is present, false otherwise
+        if (hashtable.Remove(data) != exists) {
+          FoundError("Remove (random)", TEST_TITLE);
+        }
+      }
+
+      // size should be as expected
+      if (currentSize != hashtable.Size()) {
+        FoundError("Size (random)", TEST_TITLE);
+      }
+    }
+  }
+  
 
 }
 
 void TestClosedAddressingINT() {
   TellTest("ClosedAddressing (INT)");
+  const char* addressing = "closed";
+  const char* datatype = "int";
 
+  // empty, size=1, size=8 (same hash), 
+
+  cout << "Empty " << addressing << " " << datatype << endl;
   Vector<int> belonging;
   HashTableClsAdr<int> hashtable;
   TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = 0;
+  hashtable = HashTableClsAdr<int> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = 0;
+  belonging[1] = 1;
+  belonging[2] = -1;
+  belonging[3] = 23;
+  belonging[4] = 24;
+  belonging[5] = -24;
+  belonging[6] = -23;
+  belonging[7] = 46;
+  hashtable = HashTableClsAdr<int> (belonging);
+  TestHashTable(hashtable, 8, belonging);
+
+  // all other constructors, vector with repetitions
 }
 
 void TestClosedAddressing() {
@@ -340,10 +428,34 @@ void TestClosedAddressing() {
 
 void TestOpenAddressingINT() {
   TellTest("OpenAddressing (INT)");
+  const char* addressing = "open";
+  const char* datatype = "int";
 
+  // empty, size=1, size=8 (same hash), 
+
+  cout << "Empty " << addressing << " " << datatype << endl;
   Vector<int> belonging;
   HashTableOpnAdr<int> hashtable;
   TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = 0;
+  hashtable = HashTableOpnAdr<int> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = 0;
+  belonging[1] = 1;
+  belonging[2] = -1;
+  belonging[3] = 23;
+  belonging[4] = 24;
+  belonging[5] = -24;
+  belonging[6] = -23;
+  belonging[7] = 46;
+  hashtable = HashTableOpnAdr<int> (belonging);
+  TestHashTable(hashtable, 8, belonging);
 }
 
 void TestOpenAddressing() {

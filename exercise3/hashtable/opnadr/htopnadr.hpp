@@ -25,6 +25,7 @@ private:
 
 protected:
 
+  // todo refactor
   struct Pair {
     enum TriState {
       Present,
@@ -48,7 +49,7 @@ protected:
   using HashTable<Data>::NextPrime;
 
   Vector<Pair> table;
-  static const unsigned long MIN_SIZE = 32;
+  unsigned long hop;
 
 public:
 
@@ -131,6 +132,7 @@ protected:
 
   virtual inline unsigned long TableSize() const noexcept override;
   inline unsigned long Probe(unsigned long iteration, unsigned long key) const noexcept;
+  virtual inline void SetCoeffs() noexcept override;
 
 };
 
