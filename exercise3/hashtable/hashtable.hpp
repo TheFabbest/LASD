@@ -43,8 +43,6 @@ private:
 protected:
 
   using DictionaryContainer<Data>::size;
-  using DictionaryContainer<Data>::InsertAll;
-  using DictionaryContainer<Data>::RemoveAll;
 
   static const Hashable<Data> encodingHash;
 
@@ -59,6 +57,8 @@ protected:
     863108703229, 1726217406467, 3452434812973, 6904869625971};
 
 public:
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
 
   // Destructor
   virtual ~HashTable() = default;

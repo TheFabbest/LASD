@@ -28,11 +28,11 @@ protected:
   using HashTable<Data>::SetCoeffs;
   using HashTable<Data>::primes;
   using HashTable<Data>::NextPrime;
-  using DictionaryContainer<Data>::InsertAll;
-  using DictionaryContainer<Data>::RemoveAll;
   Vector<BST<Data>> table;
 
 public:
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
 
   // Default constructor
   HashTableClsAdr();

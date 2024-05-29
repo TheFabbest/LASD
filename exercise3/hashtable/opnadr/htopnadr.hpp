@@ -46,13 +46,14 @@ protected:
   using HashTable<Data>::SetCoeffs;
   using HashTable<Data>::primes;
   using HashTable<Data>::NextPrime;
-  using DictionaryContainer<Data>::InsertAll;
-  using DictionaryContainer<Data>::RemoveAll;
 
   Vector<Pair> table;
   static const unsigned long MIN_SIZE = 32;
 
 public:
+
+  using DictionaryContainer<Data>::InsertAll;
+  using DictionaryContainer<Data>::RemoveAll;
 
   // Default constructor
   HashTableOpnAdr();
