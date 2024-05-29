@@ -104,6 +104,7 @@ void stestHashTableInt(uint & testnum, uint & testerr) {
     lasd::HashTableClsAdr<int> htclsadr(83, vec);
     cout << endl << "Begin of HashTableClsAdr<int> Test:" << endl;
     stestHashTableInt(htclsadr, vec, loctestnum, loctesterr);
+    cout << "here" << endl;
     lasd::HashTableOpnAdr<int> htopnadr(83, vec);
     cout << endl << "Begin of HashTableOpnAdr<int> Test:" << endl;
     stestHashTableInt(htopnadr, vec, loctestnum, loctesterr);

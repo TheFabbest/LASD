@@ -16,34 +16,39 @@ inline bool HashTableOpnAdr<Data>::Pair::operator!=(const HashTableOpnAdr<Data>:
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr() {
-    table = Vector<Pair>(MIN_SIZE);
+    table = Vector<Pair>(primes[0]);
     SetCoeffs();
 }
 
 template <typename Data>
+HashTableOpnAdr<Data>::HashTableOpnAdr(const unsigned long size) {
+    table = Vector<Pair>(NextPrime(size));
+}
+
+template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<Pair>(traversable.Size() * 4); // todo MULTIPLY
+    table = Vector<Pair>(NextPrime(traversable.Size() * 3)); // todo MULTIPLY
     SetCoeffs();
     InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(unsigned long size, const TraversableContainer<Data>& traversable) {
-    table = Vector<Pair>(size);
+    table = Vector<Pair>(NextPrime(size));
     SetCoeffs();
     InsertAll(traversable);
 }
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(MappableContainer<Data>&& mappable) {
-    table = Vector<Pair>(mappable.Size());
+    table = Vector<Pair>(NextPrime(mappable.Size()));
     SetCoeffs();
     InsertAll(mappable);
 }
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(unsigned long size, MappableContainer<Data>&& mappable) {
-    table = Vector<Pair>((size >= MIN_SIZE) ? size : MIN_SIZE);
+    table = Vector<Pair>(NextPrime(size));
     SetCoeffs();
     InsertAll(mappable);
 }
@@ -82,14 +87,15 @@ HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(HashTableOpnAdr<Data>&& 
     return *this;
 }
 
-template <typename Data>
-HashTableOpnAdr<Data>::HashTableOpnAdr(const unsigned long size) {
-    table = Vector<Pair>((size >= MIN_SIZE) ? size : MIN_SIZE);
-}
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     unsigned long index;
+
+    if (Exists(data)) {
+        return false;
+    }
+
     bool found = FindEmpty(data, index);
 
     if (!found) {
@@ -108,8 +114,12 @@ template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(Data&& data) {
     unsigned long index;
     Data d = std::move(data);
+
+    if (Exists(d)) {
+        return false;
+    }
+
     bool found = FindEmpty(d, index);
-        // TODO controlla presenza dato
 
     if (!found) {
         Resize(2*TableSize());
@@ -142,16 +152,13 @@ bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
 }
 
 template <typename Data>
-void HashTableOpnAdr<Data>::Resize(unsigned long size) {
-    if (size < MIN_SIZE) {
-        size = MIN_SIZE;
-    }
-    if (size == TableSize()) {
-        return;
-    }
+void HashTableOpnAdr<Data>::Resize(unsigned long tablesize) {
+    tablesize = NextPrime(tablesize);
 
-    Vector<Pair> new_table = Vector<Pair>(size);
+    Vector<Pair> new_table = Vector<Pair>(tablesize);
     std::swap(new_table, table);
+    SetCoeffs();
+    size = 0;
     new_table.Traverse([this](const Pair& curr) {
         if (curr.state == Pair::TriState::Present) {
             this->Insert(curr.data);
@@ -171,6 +178,10 @@ void HashTableOpnAdr<Data>::Clear() {
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::operator==(const HashTableOpnAdr<Data>& other) const noexcept {
+    if (size != other.size) {
+        return false;
+    }
+    
     for (unsigned long i = 0; i < TableSize(); ++i) {
         if (table[i].state == Pair::TriState::Present) {
             if (other.Exists(table[i].data) == false) {
@@ -193,10 +204,8 @@ inline unsigned long HashTableOpnAdr<Data>::TableSize() const noexcept {
 
 // aux
 template <typename Data>
-inline unsigned long HashTableOpnAdr<Data>::Probe(unsigned long iteration, unsigned long current, unsigned long key) const noexcept {
-    default_random_engine genx(key);
-    uniform_int_distribution<int> distx(1, TableSize()-iteration);
-    return (distx(genx) + current) % TableSize();
+inline unsigned long HashTableOpnAdr<Data>::Probe(unsigned long iteration, unsigned long key) const noexcept {
+    return (key + iteration * iteration * coeff_a + coeff_b) % TableSize();
 }
 
 template <typename Data>
@@ -218,7 +227,7 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
             }
         }
         ++i;
-        position = Probe(i, position, key);
+        position = Probe(i, key);
         state = table[position].state;
         current_data = table[position].data;
     }
@@ -234,12 +243,14 @@ bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position)
     unsigned long i = 0;
 
     while (state == Pair::TriState::Present && i < TableSize()) {
+        if (table[position].data == data) {
+            return false; // TODO vedi se va bene
+        }
         ++i;
-        // TODO controlla presenza dato
-        position = Probe(i, position, key);
+        position = Probe(i, key);
         state = table[position].state;
     }
-    return state != Pair::TriState::Present;
+    return i < TableSize();
 }
 
 /* ************************************************************************** */

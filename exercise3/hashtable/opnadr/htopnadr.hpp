@@ -44,6 +44,8 @@ protected:
   using HashTable<Data>::coeff_b;
   using HashTable<Data>::HashKey;
   using HashTable<Data>::SetCoeffs;
+  using HashTable<Data>::primes;
+  using HashTable<Data>::NextPrime;
   using DictionaryContainer<Data>::InsertAll;
   using DictionaryContainer<Data>::RemoveAll;
 
@@ -127,7 +129,7 @@ protected:
   // type Remove(argument) specifiers;
 
   virtual inline unsigned long TableSize() const noexcept override;
-  inline unsigned long Probe(unsigned long iteration, unsigned long current, unsigned long key) const noexcept;
+  inline unsigned long Probe(unsigned long iteration, unsigned long key) const noexcept;
 
 };
 

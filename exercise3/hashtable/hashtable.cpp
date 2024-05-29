@@ -53,7 +53,6 @@ inline void HashTable<Data>::SetCoeffs() noexcept {
     std::uniform_int_distribution<int> distx(1, TableSize()-1);
     coeff_a = distx(genx);
     coeff_b = distx(genx);
-    std::cout << "params are " << coeff_a << ", " << coeff_b << std::endl; // TODO remove
 }
 
 template <typename Data>
@@ -62,7 +61,7 @@ unsigned long HashTable<Data>::NextPrime(unsigned long expectedsize) const noexc
 
     // could use binary search
     unsigned long index = 0;
-    while(index < NUM_OF_PRIMES && expectedsize < primes[index]) {
+    while(index < NUM_OF_PRIMES && expectedsize > primes[index]) {
         ++index;
     }
     if (index == NUM_OF_PRIMES) {
