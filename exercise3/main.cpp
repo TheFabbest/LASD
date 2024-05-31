@@ -21,7 +21,7 @@ int main() {
   // if (input == 0) lasdtest();
   // else if (input == 1) mytest();
 
-  mytest();
+  lasdtest();
 
   return 0;
 }

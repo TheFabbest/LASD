@@ -29,7 +29,7 @@ HashTableOpnAdr<Data>::HashTableOpnAdr(const unsigned long size) {
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const TraversableContainer<Data>& traversable) {
-    table = Vector<Pair>(NextPrime(traversable.Size() * 2)); // todo MULTIPLY
+    table = Vector<Pair>(NextPrime(traversable.Size() * 3));
     SetCoeffs();
     InsertAll(traversable);
 }
@@ -43,7 +43,7 @@ HashTableOpnAdr<Data>::HashTableOpnAdr(unsigned long size, const TraversableCont
 
 template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(MappableContainer<Data>&& mappable) {
-    table = Vector<Pair>(NextPrime(mappable.Size() * 2));
+    table = Vector<Pair>(NextPrime(mappable.Size() * 3));
     SetCoeffs();
     InsertAll(mappable);
 }
@@ -59,7 +59,6 @@ template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(const HashTableOpnAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
-    this->hop = other.hop;
     this->table = other.table;
     this->size = other.size;
 }
@@ -68,7 +67,6 @@ template <typename Data>
 HashTableOpnAdr<Data>::HashTableOpnAdr(HashTableOpnAdr<Data>&& other) noexcept {
     std::swap(this->coeff_a, other.coeff_a);
     std::swap(this->coeff_b, other.coeff_b);
-    std::swap(this->hop, other.hop);
     std::swap(this->table, other.table);
     std::swap(this->size, other.size);
 }
@@ -77,7 +75,6 @@ template <typename Data>
 HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(const HashTableOpnAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
     this->coeff_b = other.coeff_b;
-    this->hop = other.hop;
     this->table = other.table;
     this->size = other.size;
     return *this;
@@ -87,36 +84,35 @@ template <typename Data>
 HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(HashTableOpnAdr<Data>&& other) noexcept {
     std::swap(this->coeff_a, other.coeff_a);
     std::swap(this->coeff_b, other.coeff_b);
-    std::swap(this->hop, other.hop);
     std::swap(this->table, other.table);
     std::swap(this->size, other.size);
     return *this;
 }
 
 // TODO RIGUARDA!!!!!!!!!!!!!!!
+// todo riscrivi
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     unsigned long iteration = 0;
     unsigned long key = HashKey(data);
-
-    if (size >= TableSize() * 0.6) {
-        Resize(2*TableSize());
-    }
     
+    // iterate until data is found or an empty cell is found
     while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
         ++iteration;
     }
-
     unsigned long position = Probe(iteration, key);
 
+    // if data was found, insert should do nothing and return false
     if (table[position].data == data && table[position].state == Pair::TriState::Present) {
         return false;
     }
     
+    // insert the data at the first "logically" empty cell
     typename Pair::TriState tmpStatus = table[position].state;
     table[position].data = data;
     table[position].state = Pair::TriState::Present;
 
+    // if the cell was not "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
         ++iteration;
         while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != data && iteration < TableSize()) {
@@ -132,6 +128,9 @@ bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     }
 
     ++size;
+    if (size >= TableSize() / 2) {
+        Resize(2*TableSize());
+    }
     return true;
 }
 
@@ -140,26 +139,26 @@ bool HashTableOpnAdr<Data>::Insert(Data&& data) {
     unsigned long iteration = 0;
     Data d = std::move(data);
     unsigned long key = HashKey(d);
-
-    if (size >= TableSize() * 0.6) {
-        Resize(2*TableSize());
-    }
     
+    // iterate until data is found or an empty cell is found
     while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != d) {
         ++iteration;
     }
-
     unsigned long position = Probe(iteration, key);
 
+    // if data was found, insert should do nothing and return false
     if (table[position].data == d && table[position].state == Pair::TriState::Present) {
         return false;
     }
     
+    // insert the data at the first "logically" empty cell
     typename Pair::TriState tmpStatus = table[position].state;
     table[position].data = d;
     table[position].state = Pair::TriState::Present;
 
+    // if the cell was not "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
+        ++iteration;
         while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != d && iteration < TableSize()) {
             ++iteration;
         }
@@ -173,6 +172,9 @@ bool HashTableOpnAdr<Data>::Insert(Data&& data) {
     }
 
     ++size;
+    if (size >= TableSize() / 2) {
+        Resize(2*TableSize());
+    }
     return true;
 }
 
@@ -189,8 +191,7 @@ bool HashTableOpnAdr<Data>::Remove(const Data& data) {
             Resize(TableSize()/2);
         }
     }
-    
-    // se 1/8 fai resize a 1/2
+
     return found;
 }
 
@@ -254,7 +255,7 @@ inline unsigned long HashTableOpnAdr<Data>::TableSize() const noexcept {
 // aux
 template <typename Data>
 inline unsigned long HashTableOpnAdr<Data>::Probe(unsigned long iteration, unsigned long key) const noexcept {
-    return (key + iteration * iteration * hop) % TableSize();
+    return (key + iteration * iteration) % TableSize();
 }
 
 template <typename Data>
@@ -279,34 +280,24 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
 }
 
 // TODO rimuovi?
-template <typename Data>
-bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position) const noexcept {
-    unsigned long key = HashKey(data);
-    position = key;
+// template <typename Data>
+// bool HashTableOpnAdr<Data>::FindEmpty(const Data& data, unsigned long &position) const noexcept {
+//     unsigned long key = HashKey(data);
+//     position = key;
 
-    typename Pair::TriState state = table[position].state;
-    unsigned long i = 0;
+//     typename Pair::TriState state = table[position].state;
+//     unsigned long i = 0;
 
-    while (state == Pair::TriState::Present && i < TableSize()) {
-        if (table[position].data == data) {
-            return false; // TODO vedi se va bene
-        }
-        ++i;
-        position = Probe(i, key);
-        state = table[position].state;
-    }
-    return i < TableSize();
-}
-
-template <typename Data>
-inline void HashTableOpnAdr<Data>::SetCoeffs() noexcept {
-    auto seed = std::random_device{}();
-    std::default_random_engine genx(seed);
-    std::uniform_int_distribution<int> distx(1, TableSize()-1);
-    coeff_a = distx(genx);
-    coeff_b = distx(genx);
-    hop = distx(genx);
-}
+//     while (state == Pair::TriState::Present && i < TableSize()) {
+//         if (table[position].data == data) {
+//             return false; // TODO vedi se va bene
+//         }
+//         ++i;
+//         position = Probe(i, key);
+//         state = table[position].state;
+//     }
+//     return i < TableSize();
+// }
 
 /* ************************************************************************** */
 

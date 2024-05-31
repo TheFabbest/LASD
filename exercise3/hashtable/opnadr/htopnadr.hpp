@@ -49,8 +49,7 @@ protected:
   using HashTable<Data>::NextPrime;
 
   Vector<Pair> table;
-  unsigned long hop;
-
+  
 public:
 
   using DictionaryContainer<Data>::InsertAll;
@@ -132,8 +131,6 @@ protected:
 
   virtual inline unsigned long TableSize() const noexcept override;
   inline unsigned long Probe(unsigned long iteration, unsigned long key) const noexcept;
-  virtual inline void SetCoeffs() noexcept override;
-
 };
 
 /* ************************************************************************** */
