@@ -47,8 +47,8 @@ protected:
   static const Hashable<Data> encodingHash;
 
   // TODO
-  unsigned long coeff_a;
-  unsigned long coeff_b;
+  unsigned long coeff_a = 1;
+  unsigned long coeff_b = 0;
 
 
   static constexpr unsigned long primes[37] = {23, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437, 102877, 205759,

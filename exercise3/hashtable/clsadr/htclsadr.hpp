@@ -28,7 +28,7 @@ protected:
   using HashTable<Data>::SetCoeffs;
   using HashTable<Data>::primes;
   using HashTable<Data>::NextPrime;
-  Vector<BST<Data>> table;
+  Vector<BST<Data>> table = Vector<BST<Data>>(1);
 
 public:
   using DictionaryContainer<Data>::InsertAll;

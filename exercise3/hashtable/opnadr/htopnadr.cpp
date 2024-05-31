@@ -205,7 +205,6 @@ bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
 
 template <typename Data>
 void HashTableOpnAdr<Data>::Resize(unsigned long tablesize) {
-                cout << "that resize" << endl;
     tablesize = NextPrime(tablesize);
 
     Vector<Pair> new_table = Vector<Pair>(tablesize);

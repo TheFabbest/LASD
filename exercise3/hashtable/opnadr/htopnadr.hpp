@@ -48,7 +48,7 @@ protected:
   using HashTable<Data>::primes;
   using HashTable<Data>::NextPrime;
 
-  Vector<Pair> table;
+  Vector<Pair> table = Vector<Pair>(1);
   
 public:
 
