@@ -8,6 +8,8 @@
 using namespace std;
 using namespace lasd;
 
+#define TEST_RANDOM_POPULATION_SIZE 10000
+
 /* ************************************************************************** */
 
 namespace fab{
@@ -26,7 +28,6 @@ void TellTest(const char *name)
 }
 
 
-// TODO same for double and string
 int GetDataNotInVector(Vector<int>& t){
   auto seed = random_device{}();
   default_random_engine genx(seed);
@@ -35,6 +36,32 @@ int GetDataNotInVector(Vector<int>& t){
   int candidate;
   do { 
     candidate = distx(genx);
+  } while (t.Exists(candidate));
+
+  return candidate;
+}
+
+double GetDataNotInVector(Vector<double>& t){
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx;
+  
+  double candidate;
+  do { 
+    candidate = distx(genx) / 100;
+  } while (t.Exists(candidate));
+
+  return candidate;
+}
+
+string GetDataNotInVector(Vector<string>& t){
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<int> distx;
+  
+  string candidate;
+  do { 
+    candidate = to_string(distx(genx));
   } while (t.Exists(candidate));
 
   return candidate;
@@ -257,9 +284,11 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
       FoundError("InsertSome map (belonging: 0, absent: 2)", TEST_TITLE);
     }
     // insertsome of vec should be false
+    cout << hashtable.Size() << endl;
     if (hashtable.InsertSome(std::move(Vector<Data>(vec)))) {
       FoundError("InsertSome map (belonging: 2, absent: 0)", TEST_TITLE);
     }
+    cout << hashtable.Size() << endl;
     // insertall of vec should be false
     if (hashtable.InsertAll(std::move(Vector<Data>(vec)))) {
       FoundError("InsertAll map (belonging: 2, absent: 0)", TEST_TITLE);
@@ -395,12 +424,12 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
   hashtable.InsertSome(belonging);
 }
 
-void TestSpecificClosedAddressingInt(){
+void TestSpecificOpenAddressingInt(){
   // specific test
   // TODO in specific test check if removeall removes only present data ?
 
   // fast test to check what happens when a certain amount of cells are "removed"
-  HashTableClsAdr<int> table;
+  HashTableOpnAdr<int> table;
   Vector<int> emptyvec(0);
 
   // "26" is chosen because the minimum size of hashtables is known (23) but a higher value could be needed
@@ -463,7 +492,7 @@ void TestClosedAddressingINT() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1,10000); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -530,12 +559,238 @@ void TestClosedAddressingINT() {
 
 
   // specific test
-  TestSpecificClosedAddressingInt();
+  // todo TestSpecificClosedAddressingInt();
+}
+
+void TestClosedAddressingDOUBLE() {
+  const char* addressing = "closed";
+  const char* datatype = "double";
+  const char* TEST_TITLE = "TestClosedAddressingDOUBLE";
+  TellTest("ClosedAddressing (DOUBLE)");
+
+  cout << "Empty " << addressing << " " << datatype << endl;
+  Vector<double> belonging;
+  HashTableClsAdr<double> hashtable;
+  TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = 0;
+  hashtable = HashTableClsAdr<double> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = 0;
+  belonging[1] = 1.5;
+  belonging[2] = -1.5;
+  belonging[3] = 23.1;
+  belonging[4] = 24;
+  belonging[5] = -24;
+  belonging[6] = -23.1;
+  belonging[7] = 46;
+  hashtable = HashTableClsAdr<double> (belonging);
+  TestHashTable(hashtable, 8, belonging);
+
+  cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
+  belonging [3] = 1.5;
+  belonging [4] = 1.5;
+  belonging [7] = -23.1;
+  hashtable = HashTableClsAdr<double> (belonging);
+  belonging.Resize(5);
+  belonging[0] = 0;
+  belonging[1] = 1.5;
+  belonging[2] = -1.5;
+  belonging[3] = -24;
+  belonging[4] = -23.1;
+  TestHashTable(hashtable, 5, belonging);
+
+  // random
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  cout << "seed for TestClosedAddressingDOUBLE is " << seed << endl;
+
+  // init tree
+  BST <double> tree;
+  unsigned long randomSize = distx(genx);
+  for (unsigned long i = 0; i < randomSize; ++i) {
+    tree.Insert(distx(genx) / 100);
+  }
+  
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  belonging = Vector<double>(tree);
+  hashtable = HashTableClsAdr<double> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
+
+  // constructors and assignments
+  Vector<double> empty(0);
+
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableClsAdr<double> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
+
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableClsAdr<double> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableClsAdr<double> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableClsAdr<double> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+  }
+}
+
+void TestClosedAddressingSTRING() {
+  const char* addressing = "closed";
+  const char* datatype = "string";
+  const char* TEST_TITLE = "TestClosedAddressingSTRING";
+  TellTest("ClosedAddressing (STRING)");
+
+  cout << "Empty " << addressing << " " << datatype << endl;
+  Vector<string> belonging;
+  HashTableClsAdr<string> hashtable;
+  TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = "0";
+  hashtable = HashTableClsAdr<string> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = "0";
+  belonging[1] = "aaaaaaaaaaaaaaaaaaa"; // some of the strings have the same hash
+  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[3] = "123";
+  belonging[4] = "Z1A";
+  belonging[5] = "Xpa";
+  belonging[6] = "0Ps";
+  belonging[7] = "stringa";
+  hashtable = HashTableClsAdr<string> (belonging);
+  TestHashTable(hashtable, 8, belonging);
+
+  cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
+  belonging [3] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [4] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [7] = "0Ps";
+  hashtable = HashTableClsAdr<string> (belonging);
+  belonging.Resize(5);
+  belonging[0] = "0";
+  belonging[1] = "aaaaaaaaaaaaaaaaaaa";
+  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[3] = "Xpa";
+  belonging[4] = "0Ps";
+  TestHashTable(hashtable, 5, belonging);
+
+  // random
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
+
+  // init tree
+  BST <string> tree;
+  unsigned long randomSize = distx(genx);
+  for (unsigned long i = 0; i < randomSize; ++i) {
+    tree.Insert(to_string(distx(genx)));
+  }
+  
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  belonging = Vector<string>(tree);
+  hashtable = HashTableClsAdr<string> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
+
+  // constructors and assignments
+  Vector<string> empty(0);
+
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableClsAdr<string> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
+
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableClsAdr<string> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableClsAdr<string> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableClsAdr<string> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+  }
 }
 
 void TestClosedAddressing() {
   TellTest("ClosedAddressing");
   TestClosedAddressingINT();
+  TestClosedAddressingDOUBLE();
+  TestClosedAddressingSTRING();
 }
 
 void TestOpenAddressingINT() {
@@ -586,7 +841,7 @@ void TestOpenAddressingINT() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1,10000); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -653,12 +908,242 @@ void TestOpenAddressingINT() {
 
 
   // specific test
-  // TODO TestSpecificOpenAddressingInt();
+  TestSpecificOpenAddressingInt();
+}
+
+void TestOpenAddressingDOUBLE() {
+  const char* addressing = "open";
+  const char* datatype = "double";
+  const char* TEST_TITLE = "TestOpenAddressingDOUBLE";
+  TellTest("OpenAddressing (DOUBLE)");
+
+  cout << "Empty " << addressing << " " << datatype << endl;
+  Vector<double> belonging;
+  HashTableOpnAdr<double> hashtable;
+  TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = 0;
+  hashtable = HashTableOpnAdr<double> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = 0;
+  belonging[1] = 1.5;
+  belonging[2] = -1.5;
+  belonging[3] = 23.1;
+  belonging[4] = 24;
+  belonging[5] = -24;
+  belonging[6] = -23.1;
+  belonging[7] = 46;
+  hashtable = HashTableOpnAdr<double> (belonging);
+  TestHashTable(hashtable, 8, belonging);
+
+  cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
+  belonging [3] = 1.5;
+  belonging [4] = 1.5;
+  belonging [7] = -23.1;
+  hashtable = HashTableOpnAdr<double> (belonging);
+  belonging.Resize(5);
+  belonging[0] = 0;
+  belonging[1] = 1.5;
+  belonging[2] = -1.5;
+  belonging[3] = -24;
+  belonging[4] = -23.1;
+  TestHashTable(hashtable, 5, belonging);
+
+  // random
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  cout << "seed for TestOpenAddressingDOUBLE is " << seed << endl;
+
+  // init tree
+  BST <double> tree;
+  unsigned long randomSize = distx(genx);
+  for (unsigned long i = 0; i < randomSize; ++i) {
+    tree.Insert(distx(genx) / 100);
+  }
+  
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  belonging = Vector<double>(tree);
+  hashtable = HashTableOpnAdr<double> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
+
+  // constructors and assignments
+  Vector<double> empty(0);
+
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableOpnAdr<double> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
+
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableOpnAdr<double> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableOpnAdr<double> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableOpnAdr<double> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+  }
+  // specific test
+  // TODO TestSpecificOpenAddressingDouble();
+}
+
+void TestOpenAddressingSTRING() {
+  const char* addressing = "open";
+  const char* datatype = "string";
+  const char* TEST_TITLE = "TestOpenAddressingSTRING";
+  TellTest("OpenAddressing (STRING)");
+
+  cout << "Empty " << addressing << " " << datatype << endl;
+  Vector<string> belonging;
+  HashTableOpnAdr<string> hashtable;
+  TestHashTable(hashtable, 0, belonging);
+
+  cout << "from vector of size=1 " << addressing << " " << datatype << endl;
+  belonging.Resize(1);
+  belonging[0] = "0";
+  hashtable = HashTableOpnAdr<string> (belonging);
+  TestHashTable(hashtable, 1, belonging);
+
+  cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
+  belonging.Resize(8);
+  belonging[0] = "0";
+  belonging[1] = "aaaaaaaaaaaaaaaaaaa"; // some of the strings have the same hash
+  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[3] = "123";
+  belonging[4] = "Z1A";
+  belonging[5] = "Xpa";
+  belonging[6] = "0Ps";
+  belonging[7] = "stringa";
+  hashtable = HashTableOpnAdr<string> (belonging);
+  TestHashTable(hashtable, 8, belonging);
+
+  cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
+  belonging [3] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [4] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [7] = "0Ps";
+  hashtable = HashTableOpnAdr<string> (belonging);
+  belonging.Resize(5);
+  belonging[0] = "0";
+  belonging[1] = "aaaaaaaaaaaaaaaaaaa";
+  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[3] = "Xpa";
+  belonging[4] = "0Ps";
+  TestHashTable(hashtable, 5, belonging);
+
+  // random
+  auto seed = random_device{}();
+  default_random_engine genx(seed);
+  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
+
+  // init tree
+  BST <string> tree;
+  unsigned long randomSize = distx(genx);
+  for (unsigned long i = 0; i < randomSize; ++i) {
+    tree.Insert(to_string(distx(genx)));
+  }
+  
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  belonging = Vector<string>(tree);
+  hashtable = HashTableOpnAdr<string> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
+
+  // constructors and assignments
+  Vector<string> empty(0);
+
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableOpnAdr<string> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
+
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableOpnAdr<string> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableOpnAdr<string> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableOpnAdr<string> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+  }
+
+  // todo specific
 }
 
 void TestOpenAddressing() {
   TellTest("OpenAddressing");
   TestOpenAddressingINT();
+  TestOpenAddressingDOUBLE();
+  TestOpenAddressingSTRING();
 }
 
 }
@@ -668,6 +1153,42 @@ void TestOpenAddressing() {
 
 
 void mytest() {
+
+  // Hashable<string> hash;
+  // unsigned long l = hash("123");
+
+  // int curr[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  // char letters[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+  // 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'};
+  // for (int i = 0; i < 10; ++i) {
+  //   int k = 0;
+  //   while (k < i) {
+  //     k = 0;
+  //     string s = "";
+  //     for (int j = 0; j < i; ++j) {
+  //       s += letters[curr[j]];
+  //     }
+      
+  //     if (hash(s) == l) {
+  //       cout << "RESULT:" << s << endl;
+  //       int n;
+  //       cin >> n;
+  //     }
+
+  //     bool repeat = true;
+  //     while (repeat && k < i) {
+  //       ++curr[k];
+  //       if (curr[k] == 62) {
+  //         curr[k] = 0;
+  //         ++k;
+  //       }
+  //       else {
+  //         repeat = false;
+  //       }
+  //     }
+  //   }
+  // }
+  // return;
   fab::TestClosedAddressing();
   fab::TestOpenAddressing();
   cout << endl << "END" << endl << "Errors: " << fab::num_of_errors << endl;
