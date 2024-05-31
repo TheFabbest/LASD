@@ -73,10 +73,10 @@ public:
 
   /* ************************************************************************ */
 
-  // Comparison operators (TODO not required)
+  // Comparison operators
   bool operator==(const HashTable& other) const noexcept = delete; // Comparison of abstract hashtable is possible but not required.
   bool operator!=(const HashTable& other) const noexcept = delete; // Comparison of abstract hashtable is possible but not required.
-
+  
 protected:
 
   // Auxiliary member functions

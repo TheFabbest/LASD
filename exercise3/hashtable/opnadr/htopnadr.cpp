@@ -96,14 +96,14 @@ bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     unsigned long iteration = 0;
     unsigned long key = HashKey(data);
     
-    // iterate until data is found or an empty cell is found
+    // iterate until data is found or an empty cell is found todo find
     while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
         ++iteration;
     }
     unsigned long position = Probe(iteration, key);
 
     // if data was found, insert should do nothing and return false
-    if (table[position].data == data && table[position].state == Pair::TriState::Present) {
+    if (table[position].state == Pair::TriState::Present && table[position].data == data) {
         return false;
     }
     
@@ -115,13 +115,13 @@ bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     // if the cell was not "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
         ++iteration;
-        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != data && iteration < TableSize()) {
+        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != data && iteration < TableSize()-1) { // TODO salva posizione di inserimento e confronta con quella corrente
             ++iteration;
         }
         if (iteration != TableSize()) {
             position = Probe(iteration, key);
-            if (table[position].data == data){
-                table[position].state = Pair::TriState::Absent;
+            if (table[position].state == Pair::TriState::Present && table[position].data == data){
+                table[position].state = Pair::TriState::Removed;
                 return false;
             }
         }
@@ -140,8 +140,8 @@ bool HashTableOpnAdr<Data>::Insert(Data&& data) {
     Data d = std::move(data);
     unsigned long key = HashKey(d);
     
-    // iterate until data is found or an empty cell is found
-    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != d) {
+    // iterate until data is found or an empty cell is found todo find
+    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
         ++iteration;
     }
     unsigned long position = Probe(iteration, key);
@@ -159,13 +159,13 @@ bool HashTableOpnAdr<Data>::Insert(Data&& data) {
     // if the cell was not "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
         ++iteration;
-        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != d && iteration < TableSize()) {
+        while (table[Probe(iteration, key)].state != Pair::TriState::Absent && table[Probe(iteration, key)].data != d && iteration < TableSize()-1) {
             ++iteration;
         }
         if (iteration != TableSize()) {
             position = Probe(iteration, key);
-            if (table[position].data == d){
-                table[position].state = Pair::TriState::Absent;
+            if (table[position].state == Pair::TriState::Present && table[position].data == d){
+                table[position].state = Pair::TriState::Removed;
                 return false;
             }
         }
@@ -195,6 +195,8 @@ bool HashTableOpnAdr<Data>::Remove(const Data& data) {
     return found;
 }
 
+
+
 template <typename Data>
 bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
     unsigned long l;
@@ -203,6 +205,7 @@ bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
 
 template <typename Data>
 void HashTableOpnAdr<Data>::Resize(unsigned long tablesize) {
+                cout << "that resize" << endl;
     tablesize = NextPrime(tablesize);
 
     Vector<Pair> new_table = Vector<Pair>(tablesize);
@@ -211,7 +214,7 @@ void HashTableOpnAdr<Data>::Resize(unsigned long tablesize) {
     size = 0;
     new_table.Traverse([this](const Pair& curr) {
         if (curr.state == Pair::TriState::Present) {
-            this->Insert(curr.data);
+            Insert(curr.data);
         }
     });
 }
@@ -267,8 +270,8 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
     Data current_data = table[position].data;
     unsigned long i = 0;
 
-    while (state == Pair::TriState::Present && i < TableSize()) {
-        if (current_data == data) {
+    while (state != Pair::TriState::Absent && i < TableSize()) {
+        if (state == Pair::TriState::Present && current_data == data) {
             return true;
         }
         ++i;
