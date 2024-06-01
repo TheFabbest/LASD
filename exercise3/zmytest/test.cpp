@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <chrono> // TODO remove
 #include "../list/list.hpp"
 #include "../hashtable/hashtable.hpp"
 #include "../hashtable/clsadr/htclsadr.hpp"
@@ -8,8 +8,8 @@
 using namespace std;
 using namespace lasd;
 
-#define TEST_RANDOM_POPULATION_SIZE 10000
-
+#define CONTAINER_SIZE_FOR_RANDOM_TESTING 10000
+// todo incrementa
 /* ************************************************************************** */
 
 namespace fab{
@@ -29,7 +29,7 @@ void TellTest(const char *name)
 
 
 int GetDataNotInVector(Vector<int>& t){
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx;
   
@@ -42,7 +42,7 @@ int GetDataNotInVector(Vector<int>& t){
 }
 
 double GetDataNotInVector(Vector<double>& t){
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx;
   
@@ -55,7 +55,7 @@ double GetDataNotInVector(Vector<double>& t){
 }
 
 string GetDataNotInVector(Vector<string>& t){
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx;
   
@@ -69,7 +69,7 @@ string GetDataNotInVector(Vector<string>& t){
 
 template <typename Data>
 Data GetDataInVector(Vector<Data>& t) {
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
   uniform_int_distribution<int> distx(0, t.Size()-1);
   return t[distx(genx)];
@@ -284,11 +284,9 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
       FoundError("InsertSome map (belonging: 0, absent: 2)", TEST_TITLE);
     }
     // insertsome of vec should be false
-    cout << hashtable.Size() << endl;
     if (hashtable.InsertSome(std::move(Vector<Data>(vec)))) {
       FoundError("InsertSome map (belonging: 2, absent: 0)", TEST_TITLE);
     }
-    cout << hashtable.Size() << endl;
     // insertall of vec should be false
     if (hashtable.InsertAll(std::move(Vector<Data>(vec)))) {
       FoundError("InsertAll map (belonging: 2, absent: 0)", TEST_TITLE);
@@ -362,6 +360,7 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
     hashtable.InsertAll(belonging);
 
     auto seed = random_device{}();
+    seed = 289431; // todo remove
     cout << "Seed for random test: " << seed << endl;
     default_random_engine genx(seed);
     uniform_int_distribution<int> distx(0,1);
@@ -490,9 +489,9 @@ void TestClosedAddressingINT() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -606,9 +605,9 @@ void TestClosedAddressingDOUBLE() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingDOUBLE is " << seed << endl;
 
   // init tree
@@ -718,9 +717,9 @@ void TestClosedAddressingSTRING() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
 
   // init tree
@@ -839,9 +838,9 @@ void TestOpenAddressingINT() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -955,9 +954,9 @@ void TestOpenAddressingDOUBLE() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestOpenAddressingDOUBLE is " << seed << endl;
 
   // init tree
@@ -1069,9 +1068,9 @@ void TestOpenAddressingSTRING() {
   TestHashTable(hashtable, 5, belonging);
 
   // random
-  auto seed = random_device{}();
+  auto seed = random_device{}();seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, TEST_RANDOM_POPULATION_SIZE); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
   cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
 
   // init tree
@@ -1153,43 +1152,24 @@ void TestOpenAddressing() {
 
 
 void mytest() {
+  using std::chrono::high_resolution_clock;
+  using std::chrono::duration_cast;
+  using std::chrono::duration;
+  using std::chrono::milliseconds;
 
-  // Hashable<string> hash;
-  // unsigned long l = hash("ABC");
-
-  // int curr[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  // char letters[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-  // 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'};
-  // for (int i = 0; i < 10; ++i) {
-  //   int k = 0;
-  //   while (k < i) {
-  //     k = 0;
-  //     string s = "";
-  //     for (int j = 0; j < i; ++j) {
-  //       s += letters[curr[j]];
-  //     }
-      
-  //     if (hash(s) == l) {
-  //       cout << "RESULT:" << s << endl;
-  //       int n;
-  //       cin >> n;
-  //     }
-
-  //     bool repeat = true;
-  //     while (repeat && k < i) {
-  //       ++curr[k];
-  //       if (curr[k] == 62) {
-  //         curr[k] = 0;
-  //         ++k;
-  //       }
-  //       else {
-  //         repeat = false;
-  //       }
-  //     }
-  //   }
-  // }
-  // return;
-  fab::TestClosedAddressing();
+  auto t1 = high_resolution_clock::now();
   fab::TestOpenAddressing();
-  cout << endl << "END" << endl << "Errors: " << fab::num_of_errors << endl;
+  auto t2 = high_resolution_clock::now();
+
+  /* Getting number of milliseconds as an integer. */
+  auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+  /* Getting number of milliseconds as a double. */
+  duration<double, std::milli> ms_double = t2 - t1;
+
+  std::cout << ms_int.count() << "ms\n";
+  std::cout << ms_double.count() << "ms\n";
+  // fab::TestClosedAddressing();
+  // fab::TestOpenAddressing(); 652.778ms
+  // cout << endl << "END" << endl << "Errors: " << fab::num_of_errors << endl;
 }

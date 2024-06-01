@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "../hashtable.hpp"
-// #include ...
+#define MAX_LOAD_FACTOR 0.66
 
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ class HashTableOpnAdr : virtual public HashTable<Data>{
   // Must extend HashTable<Data>
 
 private:
-
-  // ...
 
 protected:
 
@@ -123,12 +121,7 @@ public:
 protected:
 
   // Auxiliary member functions
-  // TODO??? diff find (prima disponibile, indice) e findempty (prima cella vuota), hashkey fa anche probing? cioe prende indice? rand fino a ts-1
-  // type HashKey(argument) specifiers;
   bool Find(const Data& data, unsigned long &position) const noexcept;
-  bool FindEmpty(const Data& data, unsigned long &position) const noexcept;
-  // type Remove(argument) specifiers;
-
   virtual inline unsigned long TableSize() const noexcept override;
   inline unsigned long Probe(unsigned long iteration, unsigned long key) const noexcept;
 };

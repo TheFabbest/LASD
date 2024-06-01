@@ -45,6 +45,8 @@
         "limits": "cpp",
         "numbers": "cpp",
         "typeinfo": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }
