@@ -104,7 +104,7 @@ public:
 
   // Specific member functions (inherited from TestableContainer)
 
-  bool Exists(const Data& data) const noexcept override; // Override TestableContainer member
+  inline bool Exists(const Data& data) const noexcept override; // Override TestableContainer member
 
   /* ************************************************************************ */
 

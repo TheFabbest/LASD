@@ -97,17 +97,19 @@ bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     unsigned long iteration = 0;
     
     // iterate until data is found or an empty cell is found todo find
-    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
+    unsigned long position = key;
+    while (table[position].state == Pair::TriState::Present && table[position].data != data) {
         ++iteration;
+        position = Probe(iteration, key);
     }
 
     // if data is found, Insert should do nothing and return false
-    if (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data == data) {
+    if (table[position].state == Pair::TriState::Present && table[position].data == data) {
         return false;
     }
     
     // insert the data at the first "logically" empty cell
-    unsigned long position = Probe(iteration, key);
+    
     typename Pair::TriState tmpStatus = table[position].state;
     table[position].data = data;
     table[position].state = Pair::TriState::Present;
@@ -140,17 +142,18 @@ bool HashTableOpnAdr<Data>::Insert(Data&& dat) {
     unsigned long iteration = 0;
     
     // iterate until data is found or an empty cell is found todo find
-    while (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data != data) {
+    unsigned long position = key;
+    while (table[position].state == Pair::TriState::Present && table[position].data != data) {
         ++iteration;
+        position = Probe(iteration, key);
     }
 
     // if data is found, Insert should do nothing and return false
-    if (table[Probe(iteration, key)].state == Pair::TriState::Present && table[Probe(iteration, key)].data == data) {
+    if (table[position].state == Pair::TriState::Present && table[position].data == data) {
         return false;
     }
     
     // insert the data at the first "logically" empty cell
-    unsigned long position = Probe(iteration, key);
     typename Pair::TriState tmpStatus = table[position].state;
     table[position].data = data;
     table[position].state = Pair::TriState::Present;
@@ -178,9 +181,8 @@ bool HashTableOpnAdr<Data>::Insert(Data&& dat) {
 
 template <typename Data>
 bool HashTableOpnAdr<Data>::Remove(const Data& data) {
-    
     unsigned long index;
-    bool found = Find(data, index); // todo CONTROLLA find, vedi se toglierla
+    bool found = Find(data, index);
     if (found) {
         table[index].state = Pair::TriState::Removed;
         --size;
@@ -196,9 +198,9 @@ bool HashTableOpnAdr<Data>::Remove(const Data& data) {
 
 
 template <typename Data>
-bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
-    unsigned long l;
-    return Find(data, l);
+inline bool HashTableOpnAdr<Data>::Exists(const Data& data) const noexcept {
+    unsigned long dummy;
+    return Find(data, dummy);
 }
 
 template <typename Data>

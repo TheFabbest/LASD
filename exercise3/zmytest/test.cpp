@@ -7,8 +7,8 @@
 using namespace std;
 using namespace lasd;
 
-#define CONTAINER_SIZE_FOR_RANDOM_TESTING 10000
-// todo incrementa
+#define CONTAINER_SIZE_FOR_RANDOM_TESTING 5000
+
 /* ************************************************************************** */
 
 namespace fab{
