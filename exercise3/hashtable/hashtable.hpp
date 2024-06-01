@@ -16,11 +16,6 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// 2^48 primo max
-// riduz. dopo
-// todo per random limite size?
-
-// hash enc dat-> chiav
 template <typename Data>
 class Hashable {
 
@@ -46,7 +41,6 @@ protected:
 
   static const Hashable<Data> encodingHash;
 
-  // TODO
   unsigned long coeff_a = 1;
   unsigned long coeff_b = 0;
 
@@ -82,10 +76,10 @@ protected:
   // Auxiliary member functions
 
   virtual inline unsigned long HashKey(const Data& data) const noexcept;
-  virtual unsigned long HashKey(unsigned long key) const noexcept; // chiav ind
+  virtual unsigned long HashKey(unsigned long key) const noexcept;
 
   virtual inline unsigned long TableSize() const noexcept = 0;
-  virtual inline void SetCoeffs() noexcept; //todo elimina e chiama costruttore hashtable?
+  virtual inline void SetCoeffs() noexcept;
   unsigned long NextPrime(unsigned long expectedsize) const noexcept;
 
 };

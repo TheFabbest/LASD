@@ -89,42 +89,39 @@ HashTableOpnAdr<Data>& HashTableOpnAdr<Data>::operator=(HashTableOpnAdr<Data>&& 
     return *this;
 }
 
-// TODO RIGUARDA!!!!!!!!!!!!!!!
-// todo riscrivi
 template <typename Data>
 bool HashTableOpnAdr<Data>::Insert(const Data& data) {
     unsigned long key = HashKey(data);
     unsigned long iteration = 0;
     
-    // iterate until data is found or an empty cell is found todo find
-    unsigned long position = key;
-    while (table[position].state == Pair::TriState::Present && table[position].data != data) {
+    // iterate until data is found or an empty cell is found
+    unsigned long index = key;
+    while (table[index].state == Pair::TriState::Present && table[index].data != data) {
         ++iteration;
-        position = Probe(iteration, key);
+        index = Probe(iteration, key);
     }
 
     // if data is found, Insert should do nothing and return false
-    if (table[position].state == Pair::TriState::Present && table[position].data == data) {
+    if (table[index].state == Pair::TriState::Present && table[index].data == data) {
         return false;
     }
     
     // insert the data at the first "logically" empty cell
-    
-    typename Pair::TriState tmpStatus = table[position].state;
-    table[position].data = data;
-    table[position].state = Pair::TriState::Present;
+    typename Pair::TriState tmpStatus = table[index].state;
+    table[index].data = data;
+    table[index].state = Pair::TriState::Present;
 
-    // if the cell was not "physically" empty, I might find the data later in the iteration
+    // if the cell was not also "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
         ++iteration;
-        position = Probe(iteration, key);
-        while (table[position].state != Pair::TriState::Absent && iteration < TableSize()) {
-            if (table[position].state == Pair::TriState::Present && table[position].data == data) {
-                table[position].state = Pair::TriState::Removed;
+        index = Probe(iteration, key);
+        while (table[index].state != Pair::TriState::Absent && iteration < TableSize()) {
+            if (table[index].state == Pair::TriState::Present && table[index].data == data) {
+                table[index].state = Pair::TriState::Removed;
                 return false;
             }
 
-            position = Probe(++iteration, key);
+            index = Probe(++iteration, key);
         }
     }
 
@@ -141,34 +138,34 @@ bool HashTableOpnAdr<Data>::Insert(Data&& dat) {
     unsigned long key = HashKey(data);
     unsigned long iteration = 0;
     
-    // iterate until data is found or an empty cell is found todo find
-    unsigned long position = key;
-    while (table[position].state == Pair::TriState::Present && table[position].data != data) {
+    // iterate until data is found or an empty cell is found
+    unsigned long index = key;
+    while (table[index].state == Pair::TriState::Present && table[index].data != data) {
         ++iteration;
-        position = Probe(iteration, key);
+        index = Probe(iteration, key);
     }
 
     // if data is found, Insert should do nothing and return false
-    if (table[position].state == Pair::TriState::Present && table[position].data == data) {
+    if (table[index].state == Pair::TriState::Present && table[index].data == data) {
         return false;
     }
     
     // insert the data at the first "logically" empty cell
-    typename Pair::TriState tmpStatus = table[position].state;
-    table[position].data = data;
-    table[position].state = Pair::TriState::Present;
+    typename Pair::TriState tmpStatus = table[index].state;
+    table[index].data = data;
+    table[index].state = Pair::TriState::Present;
 
     // if the cell was not "physically" empty, I might find the data later in the iteration
     if (tmpStatus == Pair::TriState::Removed) {
         ++iteration;
-        position = Probe(iteration, key);
-        while (table[position].state != Pair::TriState::Absent && iteration < TableSize()) {
-            if (table[position].state == Pair::TriState::Present && table[position].data == data) {
-                table[position].state = Pair::TriState::Removed;
+        index = Probe(iteration, key);
+        while (table[index].state != Pair::TriState::Absent && iteration < TableSize()) {
+            if (table[index].state == Pair::TriState::Present && table[index].data == data) {
+                table[index].state = Pair::TriState::Removed;
                 return false;
             }
 
-            position = Probe(++iteration, key);
+            index = Probe(++iteration, key);
         }
     }
 
@@ -276,7 +273,7 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
         if (state == Pair::TriState::Present && current_data == data) {
             return true;
         }
-        // could check state == Pair::TriState::Removed && current_data == data if "data" is simple enough, personal test found it not useful
+        // could check state == Pair::TriState::Removed && current_data == data if "data" is simple enough, a personal test found it not useful
         ++i;
         position = Probe(i, key);
         state = table[position].state;

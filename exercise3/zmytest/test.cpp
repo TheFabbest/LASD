@@ -11,7 +11,7 @@ using namespace lasd;
 
 /* ************************************************************************** */
 
-namespace fab{
+namespace fab_ex3{
 unsigned long num_of_errors = 0;
 
 // AUXILIARY FUNCTIONS
@@ -28,9 +28,9 @@ void TellTest(const char *name)
 
 
 int GetDataNotInVector(Vector<int>& t){
-  auto seed = random_device{}();
-  default_random_engine genx(seed);
-  uniform_int_distribution<int> distx;
+  static auto seed = random_device{}();
+  static default_random_engine genx(seed);
+  static uniform_int_distribution<int> distx;
   
   int candidate;
   do { 
@@ -41,9 +41,9 @@ int GetDataNotInVector(Vector<int>& t){
 }
 
 double GetDataNotInVector(Vector<double>& t){
-  auto seed = random_device{}();
-  default_random_engine genx(seed);
-  uniform_int_distribution<int> distx;
+  static auto seed = random_device{}();
+  static default_random_engine genx(seed);
+  static uniform_int_distribution<int> distx;
   
   double candidate;
   do { 
@@ -54,9 +54,9 @@ double GetDataNotInVector(Vector<double>& t){
 }
 
 string GetDataNotInVector(Vector<string>& t){
-  auto seed = random_device{}();
-  default_random_engine genx(seed);
-  uniform_int_distribution<int> distx;
+  static auto seed = random_device{}();
+  static default_random_engine genx(seed);
+  static uniform_int_distribution<int> distx;
   
   string candidate;
   do { 
@@ -68,8 +68,8 @@ string GetDataNotInVector(Vector<string>& t){
 
 template <typename Data>
 Data GetDataInVector(Vector<Data>& t) {
-  auto seed = random_device{}();
-  default_random_engine genx(seed);
+  static auto seed = random_device{}();
+  static default_random_engine genx(seed);
   uniform_int_distribution<int> distx(0, t.Size()-1);
   return t[distx(genx)];
 }
@@ -489,7 +489,7 @@ void TestClosedAddressingINT() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -519,7 +519,7 @@ void TestClosedAddressingINT() {
   HashTableClsAdr<int> move_constr (std::move(hashtable));
   TestHashTable(move_constr, effectiveSize, belonging);
   cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);// TODO
+  TestHashTable(hashtable, 0, empty);
 
   // copy assignment
   cout << "copy assignment" << endl;
@@ -553,10 +553,6 @@ void TestClosedAddressingINT() {
   if (copy_constr == move_constr) {
     FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
   }
-
-
-  // specific test
-  // todo TestSpecificClosedAddressingInt();
 }
 
 void TestClosedAddressingDOUBLE() {
@@ -605,7 +601,7 @@ void TestClosedAddressingDOUBLE() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestClosedAddressingDOUBLE is " << seed << endl;
 
   // init tree
@@ -691,8 +687,8 @@ void TestClosedAddressingSTRING() {
   cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
   belonging.Resize(8);
   belonging[0] = "0";
-  belonging[1] = "aaaaaaaaaaaaaaaaaaa"; // some of the strings have the same hash
-  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[1] = "ABC"; // some of the strings have the same hash
+  belonging[2] = "AAc";
   belonging[3] = "123";
   belonging[4] = "Z1A";
   belonging[5] = "Xpa";
@@ -702,14 +698,14 @@ void TestClosedAddressingSTRING() {
   TestHashTable(hashtable, 8, belonging);
 
   cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
-  belonging [3] = "aaaaaaaaaaaaaaaaaaa";
-  belonging [4] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [3] = "ABC";
+  belonging [4] = "ABC";
   belonging [7] = "0Ps";
   hashtable = HashTableClsAdr<string> (belonging);
   belonging.Resize(5);
   belonging[0] = "0";
-  belonging[1] = "aaaaaaaaaaaaaaaaaaa";
-  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[1] = "ABC";
+  belonging[2] = "AAc";
   belonging[3] = "Xpa";
   belonging[4] = "0Ps";
   TestHashTable(hashtable, 5, belonging);
@@ -717,7 +713,7 @@ void TestClosedAddressingSTRING() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
 
   // init tree
@@ -838,7 +834,7 @@ void TestOpenAddressingINT() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestClosedAddressingINT is " << seed << endl;
 
   // init tree
@@ -868,7 +864,7 @@ void TestOpenAddressingINT() {
   HashTableOpnAdr<int> move_constr (std::move(hashtable));
   TestHashTable(move_constr, effectiveSize, belonging);
   cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);// TODO
+  TestHashTable(hashtable, 0, empty);
 
   // copy assignment
   cout << "copy assignment" << endl;
@@ -902,7 +898,6 @@ void TestOpenAddressingINT() {
   if (copy_constr == move_constr) {
     FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
   }
-
 
   // specific test
   TestSpecificOpenAddressingInt();
@@ -954,7 +949,7 @@ void TestOpenAddressingDOUBLE() {
   // random
   auto seed = random_device{}();
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestOpenAddressingDOUBLE is " << seed << endl;
 
   // init tree
@@ -1018,8 +1013,6 @@ void TestOpenAddressingDOUBLE() {
   if (copy_constr == move_constr) {
     FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
   }
-  // specific test
-  // TODO TestSpecificOpenAddressingDouble();
 }
 
 void TestOpenAddressingSTRING() {
@@ -1067,9 +1060,8 @@ void TestOpenAddressingSTRING() {
 
   // random
   auto seed = random_device{}();
-  seed = 289431; // todo remove
   default_random_engine genx(seed);
-  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING); // todo fai piu piccolo
+  uniform_int_distribution<unsigned long> distx(1, CONTAINER_SIZE_FOR_RANDOM_TESTING);
   cout << "seed for TestClosedAddressingSTRING is " << seed << endl;
 
   // init tree
@@ -1133,8 +1125,6 @@ void TestOpenAddressingSTRING() {
   if (copy_constr == move_constr) {
     FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
   }
-
-  // todo specific
 }
 
 void TestOpenAddressing() {
@@ -1151,7 +1141,7 @@ void TestOpenAddressing() {
 
 
 void mytest() {
-  fab::TestClosedAddressing();
-  fab::TestOpenAddressing();
-  cout << endl << "END" << endl << "Errors: " << fab::num_of_errors << endl;
+  fab_ex3::TestClosedAddressing();
+  fab_ex3::TestOpenAddressing();
+  cout << endl << "END" << endl << "Errors: " << fab_ex3::num_of_errors << endl;
 }

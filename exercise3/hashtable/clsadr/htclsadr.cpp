@@ -53,14 +53,6 @@ HashTableClsAdr<Data>::HashTableClsAdr(HashTableClsAdr<Data>&& other) noexcept {
     std::swap(this->size, other.size);
 }
 
-
-template <typename Data>
-HashTableClsAdr<Data>::~HashTableClsAdr() {
-    table.Map([](BST<Data>& curr){
-        curr.Clear();
-    });
-}
-
 template <typename Data>
 HashTableClsAdr<Data>& HashTableClsAdr<Data>::operator=(const HashTableClsAdr<Data>& other) {
     this->coeff_a = other.coeff_a;
@@ -116,7 +108,6 @@ bool HashTableClsAdr<Data>::Exists(const Data& data) const noexcept {
     return table[HashKey(data)].Exists(data);
 }
 
-// TODO chiamata solo da utente?
 template <typename Data>
 void HashTableClsAdr<Data>::Resize(unsigned long size) {
     size = NextPrime(size);
@@ -136,7 +127,6 @@ void HashTableClsAdr<Data>::Resize(unsigned long size) {
 
 template <typename Data>
 void HashTableClsAdr<Data>::Clear() {
-    // TODO keep size? open addr? 1/4
     table.Map([](BST<Data>& curr){
         curr.Clear();
     });
