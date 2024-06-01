@@ -1045,8 +1045,8 @@ void TestOpenAddressingSTRING() {
   cout << "from vector of 8 different values " << addressing << " " << datatype << endl;
   belonging.Resize(8);
   belonging[0] = "0";
-  belonging[1] = "aaaaaaaaaaaaaaaaaaa"; // some of the strings have the same hash
-  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[1] = "ABC"; // some of the strings have the same hash
+  belonging[2] = "AAc";
   belonging[3] = "123";
   belonging[4] = "Z1A";
   belonging[5] = "Xpa";
@@ -1056,14 +1056,14 @@ void TestOpenAddressingSTRING() {
   TestHashTable(hashtable, 8, belonging);
 
   cout << "from vector of 5 repeated values " << addressing << " " << datatype << endl;
-  belonging [3] = "aaaaaaaaaaaaaaaaaaa";
-  belonging [4] = "aaaaaaaaaaaaaaaaaaa";
+  belonging [3] = "ABC";
+  belonging [4] = "ABC";
   belonging [7] = "0Ps";
   hashtable = HashTableOpnAdr<string> (belonging);
   belonging.Resize(5);
   belonging[0] = "0";
-  belonging[1] = "aaaaaaaaaaaaaaaaaaa";
-  belonging[2] = "oaaaaaaaaaaaaa";
+  belonging[1] = "ABC";
+  belonging[2] = "AAc";
   belonging[3] = "Xpa";
   belonging[4] = "0Ps";
   TestHashTable(hashtable, 5, belonging);
@@ -1155,7 +1155,7 @@ void TestOpenAddressing() {
 void mytest() {
 
   // Hashable<string> hash;
-  // unsigned long l = hash("123");
+  // unsigned long l = hash("ABC");
 
   // int curr[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   // char letters[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
