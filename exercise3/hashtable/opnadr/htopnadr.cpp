@@ -274,7 +274,7 @@ bool HashTableOpnAdr<Data>::Find(const Data& data, unsigned long &position) cons
         if (state == Pair::TriState::Present && current_data == data) {
             return true;
         }
-        // could check state == Pair::TriState::Removed && current_data == data if "data" is simple enough, personal 
+        // could check state == Pair::TriState::Removed && current_data == data if "data" is simple enough, personal test found it not useful
         ++i;
         position = Probe(i, key);
         state = table[position].state;
