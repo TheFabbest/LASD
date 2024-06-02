@@ -59,7 +59,7 @@ template <typename Data>
 unsigned long HashTable<Data>::NextPrime(unsigned long expectedsize) const noexcept {
     static const unsigned long NUM_OF_PRIMES = sizeof(primes)/sizeof(primes[0]);
 
-    // could use binary search
+    // could use binary search but the array is too small to benefit
     unsigned long index = 0;
     while(index < NUM_OF_PRIMES && expectedsize > primes[index]) {
         ++index;

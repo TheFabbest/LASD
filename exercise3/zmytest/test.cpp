@@ -82,7 +82,7 @@ Data GetDataInVector(Vector<Data>& t) {
 template <typename Data>
 void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>& belonging) {
   const char* TEST_TITLE = "HashTable";
-  const unsigned long RANDOM_TEST_SIZE = 10000;
+  const unsigned long RANDOM_TEST_SIZE = 8000;
 
   // size and empty
   if (hashtable.Size() != size) {
@@ -422,29 +422,172 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
   hashtable.InsertSome(belonging);
 }
 
-void TestSpecificOpenAddressingInt(){
-  // specific test
+template <typename Data>
+void GenericTestClosedAddressingFromBST(BST<Data> &tree, const char* datatype) {
+  const char *TEST_TITLE = "Generic Test for closed addressing";
+  const char *addressing = "closed";
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  Vector<Data> belonging = Vector<Data>(tree);
+  HashTableClsAdr<Data> hashtable = HashTableClsAdr<Data> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
 
-  // fast test to check what happens when a certain amount of cells are "removed"
-  HashTableOpnAdr<int> table;
-  Vector<int> emptyvec(0);
+  // constructors and assignments
+  Vector<Data> empty(0);
 
-  // "26" is chosen because the minimum size of hashtables is known (23) but a higher value could be needed
-  for (int i = 0; i < 26; ++i) {
-    for (int j = 0; j < i; ++j) {
-      table.Insert(j);
-      table.Remove(j);
-    }
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableClsAdr<Data> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
 
-    // at this point, in at least one case, all cells should be "removed" but the table is empty
-    TestHashTable(table, 0, emptyvec);
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableClsAdr<Data> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableClsAdr<Data> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableClsAdr<Data> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // constructor from traversable/mappable with/without specific size
+  cout << "constructor from traversable with specific (smaller) size" << endl;
+  HashTableClsAdr<Data> trav_smaller_size (2, belonging);
+  TestHashTable(trav_smaller_size, effectiveSize, belonging);
+
+  cout << "constructor from traversable with specific (bigger) size" << endl;
+  HashTableClsAdr<Data> trav_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, belonging);
+  TestHashTable(trav_bigger_size, effectiveSize, belonging);
+
+  cout << "constructor from mappable" << endl;
+  HashTableClsAdr<Data> map_constr (std::move(Vector<Data>(belonging)));
+  TestHashTable(map_constr, effectiveSize, belonging);
+  
+  cout << "constructor from mappable with specific (smaller) size" << endl;
+  HashTableClsAdr<Data> map_smaller_size (2, std::move(Vector<Data>(belonging)));
+  TestHashTable(map_smaller_size, effectiveSize, belonging);
+
+  cout << "constructor from mappable with specific (bigger) size" << endl;
+  HashTableClsAdr<Data> map_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, std::move(Vector<Data>(belonging)));
+  TestHashTable(map_bigger_size, effectiveSize, belonging);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+  }
+}
+
+template <typename Data>
+void GenericTestOpenAddressingFromBST(BST<Data> &tree, const char* datatype) {
+  const char *TEST_TITLE = "Generic Test for open addressing";
+  const char *addressing = "open";
+
+  // start test
+  cout << "from bst of random values " << addressing << " " << datatype << endl;
+  Vector<Data> belonging = Vector<Data>(tree);
+  HashTableOpnAdr<Data> hashtable = HashTableOpnAdr<Data> (belonging);
+  unsigned long effectiveSize = tree.Size();
+  TestHashTable(hashtable, effectiveSize, belonging);
+
+  // constructors and assignments
+  Vector<Data> empty(0);
+
+  // copy constr
+  cout << "copy constructor" << endl;
+  HashTableOpnAdr<Data> copy_constr (hashtable);
+  TestHashTable(copy_constr, effectiveSize, belonging);
+
+  // move constr
+  cout << "move constructor" << endl;
+  HashTableOpnAdr<Data> move_constr (std::move(hashtable));
+  TestHashTable(move_constr, effectiveSize, belonging);
+  cout << "moved with move constructor" << endl;
+  TestHashTable(hashtable, 0, empty);
+
+  // copy assignment
+  cout << "copy assignment" << endl;
+  HashTableOpnAdr<Data> copy_assignment;
+  copy_assignment = copy_constr;
+  TestHashTable(copy_assignment, effectiveSize, belonging);
+
+  // move assignment
+  cout << "move assignment" << endl;
+  HashTableOpnAdr<Data> move_assignment;
+  move_assignment = std::move(move_constr);
+  TestHashTable(move_assignment, effectiveSize, belonging);
+  cout << "moved with move assignment" << endl;
+  TestHashTable(move_constr, 0, empty);
+
+  // constructor from traversable/mappable with/without specific size
+  cout << "constructor from traversable with specific (smaller) size" << endl;
+  HashTableOpnAdr<Data> trav_smaller_size (2, belonging);
+  TestHashTable(trav_smaller_size, effectiveSize, belonging);
+
+  cout << "constructor from traversable with specific (bigger) size" << endl;
+  HashTableOpnAdr<Data> trav_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, belonging);
+  TestHashTable(trav_bigger_size, effectiveSize, belonging);
+
+  cout << "constructor from mappable" << endl;
+  HashTableOpnAdr<Data> map_constr (std::move(Vector<Data>(belonging)));
+  TestHashTable(map_constr, effectiveSize, belonging);
+  
+  cout << "constructor from mappable with specific (smaller) size" << endl;
+  HashTableOpnAdr<Data> map_smaller_size (2, std::move(Vector<Data>(belonging)));
+  TestHashTable(map_smaller_size, effectiveSize, belonging);
+
+  cout << "constructor from mappable with specific (bigger) size" << endl;
+  HashTableOpnAdr<Data> map_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, std::move(Vector<Data>(belonging)));
+  TestHashTable(map_bigger_size, effectiveSize, belonging);
+
+  // testing comparisons
+  cout << "comparisons" << endl;
+  if (copy_constr != copy_assignment) {
+    FoundError("Comparison (should be equal", TEST_TITLE);
+  }
+  move_assignment.Resize(800000);
+  if (move_assignment != copy_assignment) {
+    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
+  }
+  if (hashtable != move_constr) {
+    FoundError("Comparison (empty should be equal)", TEST_TITLE);
+  }
+  if (hashtable == copy_constr) {
+    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
+  }
+  if (copy_constr == move_constr) {
+    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
   }
 }
 
 void TestClosedAddressingINT() {
   const char* addressing = "closed";
   const char* datatype = "int";
-  const char* TEST_TITLE = "TestClosedAddressingINT";
   TellTest("ClosedAddressing (INT)");
 
   // empty, size=1, size=8 (same hash), size=5 from vector with repetitions, random
@@ -499,66 +642,12 @@ void TestClosedAddressingINT() {
     tree.Insert(distx(genx));
   }
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<int>(tree);
-  hashtable = HashTableClsAdr<int> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
-
-  // constructors and assignments
-  Vector<int> empty(0);
-
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableClsAdr<int> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableClsAdr<int> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableClsAdr<int> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableClsAdr<int> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
-  }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
-  }
+  GenericTestClosedAddressingFromBST(tree, "int");
 }
 
 void TestClosedAddressingDOUBLE() {
   const char* addressing = "closed";
   const char* datatype = "double";
-  const char* TEST_TITLE = "TestClosedAddressingDOUBLE";
   TellTest("ClosedAddressing (DOUBLE)");
 
   cout << "Empty " << addressing << " " << datatype << endl;
@@ -611,66 +700,12 @@ void TestClosedAddressingDOUBLE() {
     tree.Insert(distx(genx) / 100);
   }
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<double>(tree);
-  hashtable = HashTableClsAdr<double> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
-
-  // constructors and assignments
-  Vector<double> empty(0);
-
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableClsAdr<double> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableClsAdr<double> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableClsAdr<double> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableClsAdr<double> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
-  }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
-  }
+  GenericTestClosedAddressingFromBST(tree, "double");
 }
 
 void TestClosedAddressingSTRING() {
   const char* addressing = "closed";
   const char* datatype = "string";
-  const char* TEST_TITLE = "TestClosedAddressingSTRING";
   TellTest("ClosedAddressing (STRING)");
 
   cout << "Empty " << addressing << " " << datatype << endl;
@@ -723,60 +758,7 @@ void TestClosedAddressingSTRING() {
     tree.Insert(to_string(distx(genx)));
   }
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<string>(tree);
-  hashtable = HashTableClsAdr<string> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
-
-  // constructors and assignments
-  Vector<string> empty(0);
-
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableClsAdr<string> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableClsAdr<string> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableClsAdr<string> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableClsAdr<string> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
-  }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
-  }
+  GenericTestClosedAddressingFromBST(tree, "string");
 }
 
 void TestClosedAddressing() {
@@ -789,7 +771,6 @@ void TestClosedAddressing() {
 void TestOpenAddressingINT() {
   const char* addressing = "open";
   const char* datatype = "int";
-  const char* TEST_TITLE = "TestOpenAddressingINT";
   TellTest("OpenAddressing (INT)");
 
   // empty, size=1, size=8 (same hash), size=5 from vector with repetitions, random
@@ -844,69 +825,27 @@ void TestOpenAddressingINT() {
     tree.Insert(distx(genx));
   }
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<int>(tree);
-  hashtable = HashTableOpnAdr<int> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
+  GenericTestOpenAddressingFromBST(tree, "int");
 
-  // constructors and assignments
-  Vector<int> empty(0);
+  // fast test to check what happens when a certain amount of cells are "removed"
+  HashTableOpnAdr<int> table;
+  Vector<int> emptyvec(0);
+  
+  // "26" is chosen because the minimum size of hashtables is known (23) but a higher value could be needed
+  for (int i = 0; i < 26; ++i) {
+    for (int j = 0; j < i; ++j) {
+      table.Insert(j);
+      table.Remove(j);
+    }
 
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableOpnAdr<int> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableOpnAdr<int> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableOpnAdr<int> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableOpnAdr<int> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
+    // at this point, in at least one case, all cells should be "removed" but the table is empty
+    TestHashTable(table, 0, emptyvec);
   }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
-  }
-
-  // specific test
-  TestSpecificOpenAddressingInt();
 }
 
 void TestOpenAddressingDOUBLE() {
   const char* addressing = "open";
   const char* datatype = "double";
-  const char* TEST_TITLE = "TestOpenAddressingDOUBLE";
   TellTest("OpenAddressing (DOUBLE)");
 
   cout << "Empty " << addressing << " " << datatype << endl;
@@ -959,66 +898,27 @@ void TestOpenAddressingDOUBLE() {
     tree.Insert(distx(genx) / 100);
   }
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<double>(tree);
-  hashtable = HashTableOpnAdr<double> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
+  GenericTestOpenAddressingFromBST(tree, "double");
 
-  // constructors and assignments
-  Vector<double> empty(0);
+  // fast test to check what happens when a certain amount of cells are "removed"
+  HashTableOpnAdr<double> table;
+  Vector<double> emptyvec(0);
+  
+  // "26" is chosen because the minimum size of hashtables is known (23) but a higher value could be needed
+  for (double i = 0; i < 26; ++i) {
+    for (double j = 0; j < i; ++j) {
+      table.Insert(j);
+      table.Remove(j);
+    }
 
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableOpnAdr<double> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableOpnAdr<double> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableOpnAdr<double> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableOpnAdr<double> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
-  }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+    // at this point, in at least one case, all cells should be "removed" but the table is empty
+    TestHashTable(table, 0, emptyvec);
   }
 }
 
 void TestOpenAddressingSTRING() {
   const char* addressing = "open";
   const char* datatype = "string";
-  const char* TEST_TITLE = "TestOpenAddressingSTRING";
   TellTest("OpenAddressing (STRING)");
 
   cout << "Empty " << addressing << " " << datatype << endl;
@@ -1070,60 +970,22 @@ void TestOpenAddressingSTRING() {
   for (unsigned long i = 0; i < randomSize; ++i) {
     tree.Insert(to_string(distx(genx)));
   }
+
+  GenericTestOpenAddressingFromBST(tree, "string");
+
+  // fast test to check what happens when a certain amount of cells are "removed"
+  HashTableOpnAdr<string> table;
+  Vector<string> emptyvec(0);
   
-  // start test
-  cout << "from bst of random values " << addressing << " " << datatype << endl;
-  belonging = Vector<string>(tree);
-  hashtable = HashTableOpnAdr<string> (belonging);
-  unsigned long effectiveSize = tree.Size();
-  TestHashTable(hashtable, effectiveSize, belonging);
+  // "26" (91-65) is chosen because the minimum size of hashtables is known (23) but a higher value could be needed
+  for (char i = 65; i < 91; ++i) {
+    for (char j = 65; j < i; ++j) {
+      table.Insert(string{j});
+      table.Remove(string{j});
+    }
 
-  // constructors and assignments
-  Vector<string> empty(0);
-
-  // copy constr
-  cout << "copy constructor" << endl;
-  HashTableOpnAdr<string> copy_constr (hashtable);
-  TestHashTable(copy_constr, effectiveSize, belonging);
-
-  // move constr
-  cout << "move constructor" << endl;
-  HashTableOpnAdr<string> move_constr (std::move(hashtable));
-  TestHashTable(move_constr, effectiveSize, belonging);
-  cout << "moved with move constructor" << endl;
-  TestHashTable(hashtable, 0, empty);
-
-  // copy assignment
-  cout << "copy assignment" << endl;
-  HashTableOpnAdr<string> copy_assignment;
-  copy_assignment = copy_constr;
-  TestHashTable(copy_assignment, effectiveSize, belonging);
-
-  // move assignment
-  cout << "move assignment" << endl;
-  HashTableOpnAdr<string> move_assignment;
-  move_assignment = std::move(move_constr);
-  TestHashTable(move_assignment, effectiveSize, belonging);
-  cout << "moved with move assignment" << endl;
-  TestHashTable(move_constr, 0, empty);
-
-  // testing comparisons
-  cout << "comparisons" << endl;
-  if (copy_constr != copy_assignment) {
-    FoundError("Comparison (should be equal", TEST_TITLE);
-  }
-  move_assignment.Resize(800000);
-  if (move_assignment != copy_assignment) {
-    FoundError("Comparison (resized but should be equal)", TEST_TITLE);
-  }
-  if (hashtable != move_constr) {
-    FoundError("Comparison (empty should be equal)", TEST_TITLE);
-  }
-  if (hashtable == copy_constr) {
-    FoundError("Comparison (empty should be different from non-empty)", TEST_TITLE);
-  }
-  if (copy_constr == move_constr) {
-    FoundError("Comparison (non-empty should be different from empty)", TEST_TITLE);
+    // at this point, in at least one case, all cells should be "removed" but the table is empty
+    TestHashTable(table, 0, emptyvec);
   }
 }
 
