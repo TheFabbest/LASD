@@ -37,7 +37,7 @@ protected:
   public:
     NodeLnk *left = nullptr;
     NodeLnk *right = nullptr;
-    Data data;
+    Data data{};
     
     // specific constructors
     NodeLnk(const Data& data);

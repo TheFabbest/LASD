@@ -36,7 +36,7 @@ protected:
     friend class BinaryTreeVec<Data>;
 
     bool valid = false;
-    Data data;
+    Data data{};
     BinaryTreeVec *tree = nullptr;
     inline unsigned long BaseAddress() const noexcept;
     inline unsigned long Index() const noexcept;
