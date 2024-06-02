@@ -331,6 +331,16 @@ void TestHashTable(HashTable<Data>& hashtable, unsigned long size, Vector<Data>&
       FoundError("RemoveAll map (belonging: 1, absent: 1)", TEST_TITLE);
     }
 
+    // insert move
+    if (hashtable.Insert(std::move(Data(element))) == false) {
+      FoundError("Insert (absent)", TEST_TITLE);
+    }
+    if (hashtable.Insert(std::move(Data(element)))) {
+      FoundError("Insert (present)", TEST_TITLE);
+    }
+    hashtable.Remove(element);
+
+
 
     if (belonging.Size() == 1) {
       if (hashtable.RemoveSome(belonging)) {
@@ -483,6 +493,10 @@ void GenericTestClosedAddressingFromBST(BST<Data> &tree, const char* datatype) {
   HashTableClsAdr<Data> map_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, std::move(Vector<Data>(belonging)));
   TestHashTable(map_bigger_size, effectiveSize, belonging);
 
+  cout << "constructor from size" << endl;
+  HashTableClsAdr<Data> from_size (10);
+  TestHashTable(from_size, 0, empty);
+
   // testing comparisons
   cout << "comparisons" << endl;
   if (copy_constr != copy_assignment) {
@@ -565,6 +579,10 @@ void GenericTestOpenAddressingFromBST(BST<Data> &tree, const char* datatype) {
   HashTableOpnAdr<Data> map_bigger_size (CONTAINER_SIZE_FOR_RANDOM_TESTING + 1, std::move(Vector<Data>(belonging)));
   TestHashTable(map_bigger_size, effectiveSize, belonging);
 
+  cout << "constructor from size" << endl;
+  HashTableOpnAdr<Data> from_size (10);
+  TestHashTable(from_size, 0, empty);
+  
   // testing comparisons
   cout << "comparisons" << endl;
   if (copy_constr != copy_assignment) {

@@ -23,7 +23,6 @@ private:
 
 protected:
 
-  // todo refactor
   struct Pair {
     enum TriState {
       Present,
